@@ -1,0 +1,383 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --blob-color: linear-gradient(
+        to right,
+        rgba(255, 182, 193, 0.3),    /* More transparent pink */
+        rgba(255, 192, 203, 0.3)      /* More transparent pink */
+    );
+    --blob-size: 400px;
+    --text-color: #E0E3E6;           /* Silvery grey for text */
+    --text-color-muted: #A0A7AD;     /* Muted silvery grey for secondary text */
+    --bg-color: #1A1E23;             /* Dark bluish-grey background */
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    padding: 2rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+    position: relative;
+    margin: 0;
+}
+
+main {
+    max-width: 300px;
+    margin-left: 2rem;
+    position: relative;
+}
+
+header {
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.ingress {
+    font-size: 1.2rem;
+    color: var(--text-color-muted);
+}
+
+.category {
+    margin-bottom: 1rem;
+}
+
+.category h2 {
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+    color: var(--text-color);
+}
+
+.category h2:hover {
+    color: var(--text-color-muted);
+}
+
+.subcategory h3 {
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
+    margin-left: 1rem;
+    transition: color 0.3s ease;
+    color: var(--text-color);
+}
+
+.subcategory h3:hover {
+    color: var(--text-color-muted);
+}
+
+.content, .subcontent {
+    display: none;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.content.active, .subcontent.active {
+    display: block;
+}
+
+/* Adding connecting line styles */
+.content.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--text-color-muted);
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: lineGrow 0.3s forwards;
+}
+
+@keyframes lineGrow {
+    to {
+        transform: scaleY(1);
+    }
+}
+
+/* Remove the old cursor trail styles and replace with these new ones */
+.expand {
+    width: 30px;
+    height: 30px;
+}
+
+svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+}
+
+svg line {
+    stroke-width: 20px; /* Much thicker lines */
+    stroke-linecap: round;
+}
+
+/* Project Grid Styles */
+.project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.content.active .project-grid {
+    opacity: 1;
+    height: auto;
+    overflow: visible;
+}
+
+.project-card {
+    background: var(--bg-color);
+    border: 1px solid var(--text-color-muted);
+    padding: 1rem;
+    transition: transform 0.3s ease;
+    margin-left: 1rem;
+}
+
+.project-card:hover {
+    transform: translateX(10px);
+}
+
+.project-card img {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    object-fit: cover;
+    margin: 0;
+    display: block;
+    margin-bottom: 1rem;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.project-card:hover img {
+    filter: grayscale(0%);
+}
+
+.project-info {
+    max-width: 800px;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+}
+
+.project-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.project-date {
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.project-desc {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-color);
+    font-family: 'Courier New', monospace;
+    border-left: 2px solid var(--text-color-muted);
+    padding-left: 1rem;
+    margin-top: 1rem;
+}
+
+/* Add some brutalist hover effects */
+.project-card:hover .project-info h3 {
+    color: #FF3366;
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .project-desc {
+    border-left-color: #FF3366;
+}
+
+/* Add some responsive design */
+@media (min-width: 768px) {
+    .project-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+} 
+
+/* Project list styles */
+.project-list {
+    display: none;
+    padding-left: 1rem;
+}
+
+.content.active .project-list {
+    display: block;
+}
+
+.project-title {
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: transform 0.3s ease;
+}
+
+.project-title h3 {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.project-year {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+}
+
+.project-title:hover {
+    transform: translateX(10px);
+}
+
+/* Project details container */
+.project-details-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: calc(100% - 400px);
+    height: 100vh;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.project-details {
+    display: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding-left: 0;
+    margin-top: 0.5rem;
+    position: relative;
+    width: 95vw;
+    background: var(--bg-color);
+}
+
+.project-details.active {
+    display: block;
+    opacity: 1;
+    max-height: 2000px;
+    overflow: visible;
+}
+
+/* Update project card styles */
+.project-card {
+    max-width: 100%;
+    border: 1px solid var(--text-color-muted);
+    padding: 1rem;
+    margin-left: 0;
+    background: var(--bg-color);
+}
+
+.project-card img {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    object-fit: cover;
+    margin: 0;
+    display: block;
+    margin-bottom: 1rem;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.project-card:hover img {
+    filter: grayscale(0%);
+}
+
+/* Remove the project-details-container styles and update project styles */
+.project-item {
+    margin-bottom: 1rem;
+}
+
+.project-title {
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: transform 0.3s ease;
+}
+
+.project-title h3 {
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.project-year {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+}
+
+.project-details {
+    display: none;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+}
+
+.project-details.active {
+    display: block;
+    opacity: 1;
+    height: auto;
+    overflow: visible;
+}
+
+.project-card {
+    max-width: 100%;
+    border: 1px solid var(--text-color-muted);
+    padding: 1rem;
+}
+
+.cursor-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.cursor-toggle:hover {
+    background: var(--text-color-muted);
+    color: var(--bg-color);
+}
+
+/* Add this class to hide SVGs */
+.cursor-effect-disabled svg {
+    display: none;
+} 
