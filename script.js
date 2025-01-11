@@ -148,7 +148,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add newsletter submit handler
     const newsletterForm = document.querySelector('.signup-form');
     newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        
         try {
+            // Submit the form data to Netlify
+            const formData = new FormData(newsletterForm);
+            await fetch('/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+            });
+            
             const button = newsletterForm.querySelector('button');
             createRandomParticleExplosions();
             window.createRainbowTrails();
