@@ -24,37 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
     projectTitles.forEach(title => {
         title.addEventListener('click', async () => {
             const projectId = title.getAttribute('data-project');
-            console.log('Project clicked:', projectId);
             const projectDetails = document.getElementById(projectId);
-            const projectConfig = projectsConfig[projectId];
-            console.log('Project config:', projectConfig);
+            
+            console.log('Clicked project:', projectId);
             
             if (projectDetails.classList.contains('active')) {
                 projectDetails.classList.remove('active');
             } else {
-                // Load content if not already loaded
-                if (!projectDetails.dataset.loaded) {
-                    const content = await loadProjectContent(projectConfig.folder);
-                    console.log('Loaded content:', content);
-                    const html = marked.parse(content); // Convert markdown to HTML
-                    console.log('Parsed HTML:', html);
-                    
-                    // Create project card with dynamic content
-                    projectDetails.innerHTML = `
-                        <article class="project-card">
-                            <div class="project-images">
-                                <img src="content/projects/${projectConfig.folder}/P1120480.JPG" alt="${projectConfig.title}">
-                                <img src="content/projects/${projectConfig.folder}/Artboard 2-100.jpg" alt="${projectConfig.title}">
-                                <img src="content/projects/${projectConfig.folder}/2 - Trend.png" alt="${projectConfig.title}">
-                                <img src="content/projects/${projectConfig.folder}/4 - Statistic.png" alt="${projectConfig.title}">
-                            </div>
-                            <div class="project-info">
-                                ${html}
-                            </div>
-                        </article>
-                    `;
-                    projectDetails.dataset.loaded = 'true';
-                }
                 projectDetails.classList.add('active');
             }
         });
@@ -193,6 +169,45 @@ document.addEventListener('DOMContentLoaded', () => {
             window.createRainbowTrails();
         });
     }
+
+    // Modal functionality
+    const modal = document.querySelector('.modal');
+    const modalImg = modal.querySelector('img');
+    const modalClose = modal.querySelector('.modal-close');
+    
+    // Image click handler
+    document.body.addEventListener('click', (e) => {
+        if (e.target.closest('.project-images img')) {
+            const img = e.target;
+            console.log('Image clicked:', img.src);
+            modalImg.src = img.src;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    });
+    
+    // Close modal
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target === modalClose) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Blog post expansion
+    document.querySelectorAll('.blog-post').forEach(post => {
+        post.addEventListener('click', () => {
+            post.classList.toggle('active');
+        });
+    });
 }); 
 
 const projectsConfig = {
@@ -336,3 +351,85 @@ function createRandomParticleExplosions() {
         }, i * 200); // Stagger the explosions
     }
 } 
+
+// Add image modal functionality
+const modal = document.querySelector('.modal');
+const modalImg = modal.querySelector('img');
+const modalClose = modal.querySelector('.modal-close');
+
+// Use event delegation for image clicks
+document.addEventListener('click', function(e) {
+    if (e.target.matches('.project-images img')) {
+        console.log('Image clicked:', e.target.src);
+        modalImg.src = e.target.src;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target === modalClose) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+});
+
+// Add keyboard support for closing modal
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}); 
+
+// Update subscriber count
+async function updateSubscriberCount() {
+    try {
+        const response = await fetch('subscribe.php');
+        const data = await response.json();
+        document.getElementById('subscriberCount').textContent = data.count;
+    } catch (error) {
+        console.error('Error fetching subscriber count:', error);
+    }
+}
+
+// Handle newsletter submit
+const newsletterForm = document.querySelector('.signup-form');
+newsletterForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = newsletterForm.querySelector('input').value;
+    
+    try {
+        const response = await fetch('subscribe.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message);
+        }
+        
+        const button = newsletterForm.querySelector('button');
+        createRandomParticleExplosions();
+        window.createRainbowTrails();
+        
+        button.textContent = 'Subscribed! ✨';
+        setTimeout(() => {
+            button.textContent = 'Subscribe';
+        }, 2000);
+        
+        updateSubscriberCount();
+        newsletterForm.reset();
+    } catch (error) {
+        console.error('Error adding subscriber:', error);
+        alert('Could not subscribe: ' + error.message);
+    }
+});
+
+// Initial count update
+updateSubscriberCount(); 

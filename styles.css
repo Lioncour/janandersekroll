@@ -64,6 +64,9 @@ h1 {
     color: var(--text-color);
     line-height: 1.3;
     max-width: 800px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .category h2:hover {
@@ -153,36 +156,28 @@ svg line {
 
 .project-card {
     background: var(--bg-color);
-    border: 1px solid var(--text-color-muted);
     padding: 1rem;
-    transition: transform 0.3s ease;
-    margin-left: 1rem;
-}
-
-.project-card:hover {
-    transform: translateX(10px);
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+    flex-direction: row-reverse;
 }
 
 .project-card img {
-    width: 100%;
-    max-width: 800px;
-    height: 400px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     margin: 0;
     display: block;
-    margin-bottom: 1rem;
-    filter: grayscale(100%);
-    transition: filter 0.3s ease;
-}
-
-.project-card:hover img {
-    filter: grayscale(0%);
+    cursor: pointer;
 }
 
 .project-info {
-    max-width: 800px;
-    margin: 1rem 0;
-    font-family: 'Space Mono', monospace;
+    flex: 1;
+    padding: 0;
+    position: sticky;
+    top: 2rem;
+    min-width: 250px;
 }
 
 .project-info h3 {
@@ -207,7 +202,7 @@ svg line {
     font-family: 'Space Mono', monospace;
     border-left: 2px solid var(--text-color-muted);
     padding-left: 1rem;
-    margin-top: 1rem;
+    margin: 0;
 }
 
 /* Add some brutalist hover effects */
@@ -272,431 +267,51 @@ svg line {
     display: none;
     opacity: 0;
     overflow: hidden;
-    transition: opacity 0.3s ease;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
+    transition: all 0.3s ease;
 }
 
 .project-details.active {
     display: block;
     opacity: 1;
     overflow: visible;
-    max-height: none;
-    animation: slideDown 0.3s ease forwards;
-}
-
-@keyframes slideDown {
-    from {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Update project card styles */
-.project-card {
-    max-width: 100%;
     border: 1px solid var(--text-color-muted);
     padding: 1rem;
-    margin-left: 0;
-    background: var(--bg-color);
-}
-
-.project-card img {
-    width: 100%;
-    max-width: 800px;
-    height: 400px;
-    object-fit: cover;
-    margin: 0;
-    display: block;
-    margin-bottom: 1rem;
-    filter: grayscale(100%);
-    transition: filter 0.3s ease;
-}
-
-.project-card:hover img {
-    filter: grayscale(0%);
-}
-
-/* Remove the project-details-container styles and update project styles */
-.project-item {
-    margin-bottom: 1rem;
-}
-
-.project-title {
-    cursor: pointer;
-    padding: 0.5rem 0;
-    transition: transform 0.3s ease;
-}
-
-.project-title h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1rem;
-    color: var(--text-color);
-    margin: 0;
-}
-
-.project-year {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text-color-muted);
-}
-
-.project-details {
-    display: none;
-    opacity: 0;
-    overflow: hidden;
-    transition: opacity 0.3s ease;
-    padding-left: 1rem;
-    margin-top: 0.5rem;
-}
-
-.project-details.active {
-    display: block;
-    opacity: 1;
-    overflow: visible;
-    max-height: none;
-    animation: slideDown 0.3s ease forwards;
-}
-
-.project-card {
-    max-width: 100%;
-    border: 1px solid var(--text-color-muted);
-    padding: 1rem;
-}
-
-.cursor-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--text-color-muted);
-    color: var(--text-color);
-    font-family: 'Space Mono', monospace;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-.cursor-toggle:hover {
-    background: var(--text-color-muted);
-    color: var(--bg-color);
-}
-
-/* Add this class to hide SVGs */
-.cursor-effect-disabled svg {
-    display: none;
-} 
-
-.about-content {
-    max-width: 600px;
-    font-family: 'Space Mono', monospace;
-    line-height: 1.8;
-}
-
-.about-content p {
-    margin-bottom: 1.5rem;
-    color: var(--text-color);
-}
-
-.about-content ul {
-    list-style: none;
-    margin: 1rem 0 2rem 0;
-}
-
-.about-content ul li {
-    margin-bottom: 0.5rem;
-    padding-left: 1.5rem;
+    margin-top: 1rem;
+    width: calc(100vw - 4rem);
+    margin-left: calc(-2rem);
     position: relative;
-    color: var(--text-color-muted);
 }
-
-.about-content ul li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--text-color-muted);
-} 
-
-/* Blog styles */
-.blog-content {
-    max-width: 800px;
-    position: relative;
-    margin-right: 500px;
-}
-
-.blog-post {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--text-color-muted);
-}
-
-.blog-post h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-}
-
-.post-date {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text-color-muted);
-    margin-bottom: 1rem;
-    font-family: 'Space Mono', monospace;
-}
-
-/* Newsletter signup styles */
-.newsletter-signup {
-    position: absolute;
-    top: 0;
-    left: calc(100% - 300px);
-    width: 300px;
-    padding: 2rem;
-    background: rgba(255, 192, 203, 0.1);
-    border: 1px solid var(--text-color-muted);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s ease;
-}
-
-.newsletter-signup:hover {
-    background: rgba(255, 192, 203, 0.15);
-}
-
-.newsletter-signup h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #FFB6C1;
-}
-
-.newsletter-signup p {
-    color: var(--text-color-muted);
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-}
-
-.signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.signup-form input {
-    padding: 0.8rem;
-    background: transparent;
-    border: 1px solid var(--text-color-muted);
-    color: var(--text-color);
-    font-family: 'Space Mono', monospace;
-}
-
-.signup-form button {
-    padding: 0.8rem;
-    background: transparent;
-    border: 1px solid var(--text-color-muted);
-    color: var(--text-color);
-    cursor: pointer;
-    font-family: 'Space Mono', monospace;
-    transition: all 0.3s ease;
-}
-
-.signup-form button:hover {
-    background: var(--text-color-muted);
-    color: var(--bg-color);
-} 
-
-/* Add this to make blog post content wider */
-.blog-post p {
-    max-width: 700px;
-    font-size: 1rem;
-    line-height: 1.6;
-} 
-
-/* YouTube channel styles */
-.youtube-channel {
-    max-width: 800px;
-    margin-bottom: 2rem;
-    border: 1px solid var(--text-color-muted);
-    padding: 1.5rem;
-    transition: transform 0.3s ease;
-}
-
-.youtube-channel:hover {
-    transform: translateX(10px);
-}
-
-.channel-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.channel-logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-right: 1rem;
-    border: 1px solid var(--text-color-muted);
-}
-
-.channel-info h4 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-}
-
-.channel-link {
-    color: var(--text-color-muted);
-    text-decoration: none;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
-}
-
-.channel-link:hover {
-    color: #FF69B4;
-}
-
-.channel-banner {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    margin-bottom: 1rem;
-    filter: grayscale(100%);
-    transition: filter 0.3s ease;
-}
-
-.youtube-channel:hover .channel-banner {
-    filter: grayscale(0%);
-}
-
-.channel-desc {
-    font-family: 'Space Mono', monospace;
-    color: var(--text-color-muted);
-    line-height: 1.6;
-    font-size: 0.9rem;
-} 
-
-/* Other Things styles */
-.other-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 800px;
-}
-
-.other-item {
-    border: 1px solid var(--text-color-muted);
-    padding: 1rem;
-    transition: all 0.3s ease;
-}
-
-.other-item:hover {
-    transform: translateX(10px);
-}
-
-.other-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    margin-bottom: 1rem;
-    filter: grayscale(100%);
-    transition: filter 0.3s ease;
-}
-
-.other-item:hover .other-image {
-    filter: grayscale(0%);
-}
-
-.other-info h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-}
-
-.other-info p {
-    font-family: 'Space Mono', monospace;
-    color: var(--text-color-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-} 
-
-/* Webpage styles */
-.webpage-list {
-    max-width: 800px;
-}
-
-.webpage-item {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--text-color-muted);
-    transition: transform 0.3s ease;
-}
-
-.webpage-item:hover {
-    transform: translateX(10px);
-}
-
-.webpage-title {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.webpage-title h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    color: var(--text-color);
-}
-
-.webpage-link {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--text-color-muted);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.webpage-link:hover {
-    color: #FF69B4;
-}
-
-.webpage-desc {
-    font-family: 'Space Mono', monospace;
-    color: var(--text-color-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-left: 0;
-} 
 
 .project-images {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.5rem;
+    flex: 2;
+    padding-bottom: 1rem;
+    margin-top: 0;
 }
 
 .project-images img {
-    width: 100%;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
-    filter: grayscale(100%);
-    transition: filter 0.3s ease;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
 .project-images img:hover {
-    filter: grayscale(0%);
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .project-info {
+    flex: 1;
     padding: 1rem 0;
+    position: sticky;
+    top: 2rem;
+    min-width: 250px;
 }
 
 .project-info h1 {
@@ -784,7 +399,6 @@ h1, h2, h3, h4, p, a, .project-year {
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.3s ease;
-    border: 1px solid var(--text-color-muted);
     position: relative;
 }
 
@@ -849,4 +463,296 @@ h1, h2, h3, h4, p, a, .project-year {
     .blog-content {
         margin-right: 0;
     }
+} 
+
+@keyframes expandContent {
+    from {
+        max-height: 300px;
+    }
+    to {
+        max-height: 2000px;
+    }
+} 
+
+.project-details:not(.active) .project-card.preview {
+    opacity: 1;
+    max-height: 300px;
+}
+
+.project-card.preview:hover {
+    transform: translateX(10px);
+} 
+
+/* Hide expanded content initially */
+.project-expanded {
+    display: none;
+}
+
+/* Show expanded content when active */
+.project-details.active .project-expanded {
+    display: block;
+}
+
+/* Ensure preview is always visible */
+.project-card.preview {
+    display: flex !important;
+} 
+
+.cursor-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.cursor-toggle:hover {
+    background: var(--text-color-muted);
+    color: var(--bg-color);
+}
+
+/* Add this class to hide SVGs */
+.cursor-effect-disabled svg {
+    display: none;
+} 
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.98);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 95%;
+    max-height: 95vh;
+    object-fit: contain;
+    cursor: default;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.modal-close:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.1);
+}
+
+/* Customize scrollbar */
+.project-images::-webkit-scrollbar {
+    height: 8px;
+}
+
+.project-images::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+.project-images::-webkit-scrollbar-thumb {
+    background: var(--text-color-muted);
+    border-radius: 4px;
+} 
+
+/* Blog styles */
+.blog-content {
+    max-width: 800px;
+    position: relative;
+    padding-right: 2rem;
+}
+
+.blog-post {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--text-color-muted);
+    cursor: pointer;
+    max-width: calc(100% - 350px);
+}
+
+.blog-post .full-content {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--text-color-muted);
+}
+
+.blog-post.active .full-content {
+    display: block;
+}
+
+/* Newsletter signup styles */
+.newsletter-signup {
+    position: fixed;
+    top: 8.5rem;
+    right: 2rem;
+    width: 300px;
+    padding: 2rem;
+    background: rgba(255, 192, 203, 0.1);
+    border: 1px solid var(--text-color-muted);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+}
+
+.newsletter-signup:hover {
+    background: rgba(255, 192, 203, 0.15);
+}
+
+/* Keep the mobile styles for blog */
+@media (max-width: 768px) {
+    .newsletter-signup {
+        position: relative;
+        left: 0;
+        width: 100%;
+        margin-top: 2rem;
+    }
+
+    .blog-content {
+        margin-right: 0;
+    }
+} 
+
+.signup-form button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.signup-form button:hover {
+    background: #FF69B4;
+    border-color: #FF69B4;
+    color: var(--bg-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+}
+
+.signup-form input {
+    width: 100%;
+    padding: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    margin-top: 0.5rem;
+}
+
+.signup-form input:focus {
+    outline: none;
+    border-color: #FF69B4;
+} 
+
+/* YouTube channel styles */
+.youtube-channel {
+    border: 1px solid var(--text-color-muted);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+    background: rgba(255, 192, 203, 0.02);
+}
+
+.youtube-channel:hover {
+    transform: translateX(10px);
+    background: rgba(255, 192, 203, 0.04);
+}
+
+.channel-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.channel-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.channel-logo:hover {
+    transform: scale(1.1);
+}
+
+.channel-info h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+    color: var(--text-color);
+    letter-spacing: 0.5px;
+}
+
+.channel-link {
+    color: var(--text-color-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.channel-link:hover {
+    color: #FF69B4;
+}
+
+.channel-desc {
+    color: var(--text-color-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--text-color-muted);
+} 
+
+.webpage-item {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--text-color-muted);
+}
+
+.webpage-link {
+    color: rgba(224, 227, 230, 0.8);  /* Lighter version of var(--text-color) */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.webpage-desc {
+    color: var(--text-color-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+} 
+
+.subscriber-count {
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+    margin-bottom: 1rem;
+}
+
+.subscriber-count span {
+    color: #FF69B4;
+    font-weight: bold;
 } 
