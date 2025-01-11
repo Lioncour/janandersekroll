@@ -147,17 +147,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add newsletter submit handler
     const newsletterForm = document.querySelector('.signup-form');
-    newsletterForm.addEventListener('submit', (e) => {
+    newsletterForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const button = newsletterForm.querySelector('button');
-        createRandomParticleExplosions();
-        window.createRainbowTrails();
         
-        // Show success message
-        button.textContent = 'Subscribed! ✨';
-        setTimeout(() => {
-            button.textContent = 'Subscribe';
-        }, 2000);
+        try {
+            await fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(newsletterForm)).toString()
+            });
+            
+            const button = newsletterForm.querySelector('button');
+            createRandomParticleExplosions();
+            window.createRainbowTrails();
+            
+            button.textContent = 'Subscribed! ✨';
+            setTimeout(() => {
+                button.textContent = 'Subscribe';
+            }, 2000);
+            
+            newsletterForm.reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Could not subscribe. Please try again later.');
+        }
     });
 
     // Add profile image click handler
@@ -381,55 +394,3 @@ document.addEventListener('keydown', (e) => {
         document.body.style.overflow = '';
     }
 }); 
-
-// Update subscriber count
-async function updateSubscriberCount() {
-    try {
-        const response = await fetch('subscribe.php');
-        const data = await response.json();
-        document.getElementById('subscriberCount').textContent = data.count;
-    } catch (error) {
-        console.error('Error fetching subscriber count:', error);
-    }
-}
-
-// Handle newsletter submit
-const newsletterForm = document.querySelector('.signup-form');
-newsletterForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = newsletterForm.querySelector('input').value;
-    
-    try {
-        const response = await fetch('subscribe.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email })
-        });
-        
-        const data = await response.json();
-        
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-        
-        const button = newsletterForm.querySelector('button');
-        createRandomParticleExplosions();
-        window.createRainbowTrails();
-        
-        button.textContent = 'Subscribed! ✨';
-        setTimeout(() => {
-            button.textContent = 'Subscribe';
-        }, 2000);
-        
-        updateSubscriberCount();
-        newsletterForm.reset();
-    } catch (error) {
-        console.error('Error adding subscriber:', error);
-        alert('Could not subscribe: ' + error.message);
-    }
-});
-
-// Initial count update
-updateSubscriberCount(); 

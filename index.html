@@ -12,6 +12,10 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+    <!-- Form for Netlify -->
+    <form name="newsletter" netlify netlify-honeypot="bot-field" hidden>
+        <input type="email" name="email">
+    </form>
     <svg></svg>
     <button id="cursor-toggle" class="cursor-toggle">Toggle Cursor Effect</button>
     
@@ -326,10 +330,10 @@
                     
                     <div class="newsletter-signup">
                         <h3>Newsletter</h3>
-                        <p class="subscriber-count"><span id="subscriberCount">0</span> subscribers</p>
                         <p>Get updates on new projects and blog posts</p>
-                        <form class="signup-form">
-                            <input type="email" placeholder="your@email.com" required>
+                        <form name="newsletter" method="POST" data-netlify="true" class="signup-form">
+                            <input type="email" name="email" placeholder="your@email.com" required>
+                            <input type="hidden" name="form-name" value="newsletter">
                             <button type="submit">Subscribe</button>
                         </form>
                     </div>
