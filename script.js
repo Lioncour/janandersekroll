@@ -148,15 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add newsletter submit handler
     const newsletterForm = document.querySelector('.signup-form');
     newsletterForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
         try {
-            await fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(new FormData(newsletterForm)).toString()
-            });
-            
             const button = newsletterForm.querySelector('button');
             createRandomParticleExplosions();
             window.createRainbowTrails();
