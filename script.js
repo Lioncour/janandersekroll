@@ -145,36 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Add newsletter submit handler
-    const newsletterForm = document.querySelector('.signup-form');
-    newsletterForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent default form submission
-        
-        try {
-            // Submit the form data to Netlify
-            const formData = new FormData(newsletterForm);
-            await fetch('/', {
-                method: 'POST',
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString()
-            });
-            
-            const button = newsletterForm.querySelector('button');
-            createRandomParticleExplosions();
-            window.createRainbowTrails();
-            
-            button.textContent = 'Subscribed! ✨';
-            setTimeout(() => {
-                button.textContent = 'Subscribe';
-            }, 2000);
-            
-            newsletterForm.reset();
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            alert('Could not subscribe. Please try again later.');
-        }
-    });
-
     // Add profile image click handler
     const profileImage = document.querySelector('.profile-image-container');
     if (profileImage) {
@@ -223,6 +193,24 @@ document.addEventListener('DOMContentLoaded', () => {
             post.classList.toggle('active');
         });
     });
+
+    // Add newsletter submit handler
+    const newsletterForm = document.querySelector('form[name="newsletter"]');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            // Don't prevent default - let Netlify handle the submission
+            const button = newsletterForm.querySelector('button');
+            
+            // Add visual effects
+            createRandomParticleExplosions();
+            window.createRainbowTrails();
+            
+            button.textContent = 'Subscribed! ✨';
+            setTimeout(() => {
+                button.textContent = 'Subscribe';
+            }, 2000);
+        });
+    }
 }); 
 
 const projectsConfig = {
