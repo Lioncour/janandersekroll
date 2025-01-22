@@ -31,8 +31,8 @@ const projectsConfig = {
             'Som er en digital nøkkel som gir deg utvidet og enklere tilgang til flere av byens lokaler og tjenester via en app på din mobiltelefon.\n\n' + 
             'Vært med på hele reisen og fikk gjort så utrolig mye forskjellige sammen med de aller beste folkene.',
         videos: [
-            'https://youtu.be/elWT_AbjGoE',
-            'https://youtu.be/U3mbjSVsb1c'
+            'https://www.youtube.com/embed/elWT_AbjGoE',
+            'https://www.youtube.com/embed/U3mbjSVsb1c'
         ]
     }
 };
@@ -105,20 +105,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Add videos if they exist
                         if (projectConfig.videos && projectConfig.videos.length > 0) {
                             projectConfig.videos.forEach(videoUrl => {
+                                // Convert YouTube URLs to embed format if needed
+                                const embedUrl = videoUrl.includes('embed') 
+                                    ? videoUrl 
+                                    : videoUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+
                                 const videoContainer = document.createElement('div');
                                 videoContainer.className = 'video-container';
                                 videoContainer.innerHTML = `
                                     <iframe 
                                         width="560" 
                                         height="315" 
-                                        src="${videoUrl}" 
+                                        src="${embedUrl}"
                                         title="YouTube video player" 
                                         frameborder="0" 
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                         allowfullscreen>
                                     </iframe>
                                 `;
-                                imagesContainer.appendChild(videoContainer);
+                                imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
                             });
                         }
 

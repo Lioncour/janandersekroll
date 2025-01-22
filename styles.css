@@ -306,7 +306,7 @@ svg line {
     padding: 1rem;
     margin-top: 1rem;
     width: calc(100vw - 4rem);
-    margin-left: -1rem;
+    margin-left: -2rem;
     position: relative;
 }
 
@@ -320,7 +320,7 @@ svg line {
 
 .project-images img {
     width: calc(25% - 1rem);
-    aspect-ratio: 1;  /* Makes images square */
+    aspect-ratio: 1;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
@@ -866,10 +866,12 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-bottom: calc(50% - 1rem); /* Make videos take up half width */
     height: 0;
     overflow: hidden;
     margin-bottom: 1rem;
+    width: calc(50% - 1rem);
+    display: inline-block;
 }
 
 .video-container iframe {
@@ -893,6 +895,11 @@ h1, h2, h3, h4, p, a, .project-year {
     .project-images img {
         width: calc(50% - 1rem);
         aspect-ratio: 1;
+    }
+
+    .video-container {
+        width: 100%;
+        padding-bottom: 56.25%; /* Return to 16:9 ratio on smaller screens */
     }
 }
 
