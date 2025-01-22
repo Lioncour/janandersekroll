@@ -25,12 +25,14 @@ body {
     overflow-x: hidden;
     position: relative;
     margin: 0;
+    font-weight: 300;
 }
 
 main {
     max-width: 1200px;
     margin-left: 2rem;
     position: relative;
+    z-index: 1;
 }
 
 header {
@@ -43,7 +45,7 @@ h1 {
     color: var(--text-color);
     font-family: 'Space Mono', monospace;
     white-space: nowrap;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: -1px;
 }
 
@@ -67,6 +69,7 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 300;
 }
 
 .category h2:hover {
@@ -80,6 +83,7 @@ h1 {
     margin-left: 1rem;
     transition: color 0.3s ease;
     color: var(--text-color);
+    font-weight: 300;
 }
 
 .subcategory h3:hover {
@@ -184,7 +188,7 @@ svg line {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
     color: var(--text-color);
-    font-weight: bold;
+    font-weight: 400;
     letter-spacing: 2px;
 }
 
@@ -203,6 +207,8 @@ svg line {
     border-left: 2px solid var(--text-color-muted);
     padding-left: 1rem;
     margin: 0;
+    white-space: pre-wrap;
+    max-width: 800px;
 }
 
 /* Add some brutalist hover effects */
@@ -233,6 +239,27 @@ svg line {
     cursor: pointer;
     padding: 0.5rem 0;
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.project-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.project-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-title:hover .project-preview {
+    transform: scale(1.1);
 }
 
 .project-title h3 {
@@ -240,6 +267,7 @@ svg line {
     font-size: 1rem;
     color: var(--text-color);
     margin: 0;
+    font-weight: 300;
 }
 
 .project-year {
@@ -278,32 +306,28 @@ svg line {
     padding: 1rem;
     margin-top: 1rem;
     width: calc(100vw - 4rem);
-    margin-left: calc(-2rem);
+    margin-left: -1rem;
     position: relative;
 }
 
 .project-images {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 0.5rem;
-    flex: 2;
-    padding-bottom: 1rem;
-    margin-top: 0;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+    width: 100%;
 }
 
 .project-images img {
-    width: 250px;
-    height: 250px;
+    width: calc(25% - 1rem);
+    aspect-ratio: 1;  /* Makes images square */
     object-fit: cover;
     transition: transform 0.3s ease;
-    cursor: pointer;
-    flex-shrink: 0;
 }
 
 .project-images img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 .project-info {
@@ -463,6 +487,11 @@ h1, h2, h3, h4, p, a, .project-year {
     .blog-content {
         margin-right: 0;
     }
+
+    .project-images img {
+        width: 100%;
+        aspect-ratio: 1;
+    }
 } 
 
 @keyframes expandContent {
@@ -496,30 +525,6 @@ h1, h2, h3, h4, p, a, .project-year {
 /* Ensure preview is always visible */
 .project-card.preview {
     display: flex !important;
-} 
-
-.cursor-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--text-color-muted);
-    color: var(--text-color);
-    font-family: 'Space Mono', monospace;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-.cursor-toggle:hover {
-    background: var(--text-color-muted);
-    color: var(--bg-color);
-}
-
-/* Add this class to hide SVGs */
-.cursor-effect-disabled svg {
-    display: none;
 } 
 
 .modal {
@@ -576,17 +581,25 @@ h1, h2, h3, h4, p, a, .project-year {
 
 /* Blog styles */
 .blog-content {
-    max-width: 800px;
+    max-width: 1200px;
     position: relative;
-    padding-right: 2rem;
+    padding: 2rem;  /* Add padding all around */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4rem;  /* Increase gap between blog posts and newsletter */
+}
+
+.blog-posts {
+    flex: 2;
 }
 
 .blog-post {
     margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    padding: 1.5rem;  /* Add more padding around blog posts */
     border-bottom: 1px solid var(--text-color-muted);
     cursor: pointer;
-    max-width: calc(100% - 350px);
+    max-width: 100%;
 }
 
 .blog-post .full-content {
@@ -602,39 +615,50 @@ h1, h2, h3, h4, p, a, .project-year {
 
 /* Newsletter signup styles */
 .newsletter-signup {
-    position: fixed;
-    top: 8.5rem;
-    right: 2rem;
-    width: 300px;
-    padding: 2rem;
-    background: rgba(255, 192, 203, 0.1);
+    flex: 1.2;
+    min-width: 400px;
+    padding: 3rem;  /* Increase padding in newsletter box */
     border: 1px solid var(--text-color-muted);
+    border-radius: 4px;
+    margin-top: 0;
+    background: rgba(255, 192, 203, 0.1);
     backdrop-filter: blur(5px);
-    z-index: 100;
 }
 
 .newsletter-signup:hover {
     background: rgba(255, 192, 203, 0.15);
+    transition: all 0.3s ease;
 }
 
-/* Keep the mobile styles for blog */
-@media (max-width: 768px) {
-    .newsletter-signup {
-        position: relative;
-        left: 0;
-        width: 100%;
-        margin-top: 2rem;
-    }
+.newsletter-signup h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
 
-    .blog-content {
-        margin-right: 0;
-    }
-} 
+.newsletter-signup p {
+    margin-bottom: 1.5rem;
+    color: var(--text-color-muted);
+}
+
+.signup-form input {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+}
+
+.signup-form input:focus {
+    outline: none;
+    border-color: #FF69B4;
+}
 
 .signup-form button {
     width: 100%;
-    padding: 0.8rem;
-    margin-top: 1rem;
+    padding: 1rem;
     background: transparent;
     border: 1px solid var(--text-color-muted);
     color: var(--text-color);
@@ -652,21 +676,6 @@ h1, h2, h3, h4, p, a, .project-year {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
 }
-
-.signup-form input {
-    width: 100%;
-    padding: 0.8rem;
-    background: transparent;
-    border: 1px solid var(--text-color-muted);
-    color: var(--text-color);
-    font-family: 'Space Mono', monospace;
-    margin-top: 0.5rem;
-}
-
-.signup-form input:focus {
-    outline: none;
-    border-color: #FF69B4;
-} 
 
 /* YouTube channel styles */
 .youtube-channel {
@@ -704,6 +713,7 @@ h1, h2, h3, h4, p, a, .project-year {
     margin-bottom: 0.2rem;
     color: var(--text-color);
     letter-spacing: 0.5px;
+    font-weight: 300;
 }
 
 .channel-link {
@@ -754,5 +764,141 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .subscriber-count span {
     color: #FF69B4;
-    font-weight: bold;
+    font-weight: 400;
+} 
+
+.markdown-content {
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    line-height: 1.6;
+}
+
+.markdown-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.markdown-content h2 {
+    font-size: 1.4rem;
+    margin: 1.5rem 0 1rem;
+    color: var(--text-color);
+}
+
+.markdown-content h3 {
+    font-size: 1.2rem;
+    margin: 1.2rem 0 0.8rem;
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+    color: var(--text-color-muted);
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color-muted);
+}
+
+.markdown-content li {
+    margin-bottom: 0.5rem;
+} 
+
+.other-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    padding: 1rem 0;
+    margin-top: 1rem;
+    width: calc(100vw - 4rem - 2rem);
+    margin-left: 0;
+    padding-right: 0;
+}
+
+.other-grid img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: var(--bg-color);
+}
+
+.other-grid img:hover {
+    transform: scale(1.05);
+} 
+
+.cursor-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.cursor-toggle:hover {
+    background: var(--text-color-muted);
+    color: var(--bg-color);
+} 
+
+.cursor-trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.cursor-trail line {
+    stroke-width: 24;
+    stroke-linecap: round;
+    opacity: 0.25;
+    transition: stroke 0.1s ease;
+} 
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+} 
+
+/* Update responsive breakpoints */
+@media (max-width: 1400px) {
+    .project-images img {
+        width: calc(33.33% - 1rem);
+        aspect-ratio: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .project-images img {
+        width: calc(50% - 1rem);
+        aspect-ratio: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .project-images img {
+        width: 100%;
+        aspect-ratio: 1;
+    }
 } 

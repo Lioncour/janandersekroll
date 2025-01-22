@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jan Anders Ekroll - Product Designer</title>
+    <link rel="icon" type="image/png" href="content/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <svg></svg>
+    <svg class="cursor-trail"></svg>
     <button id="cursor-toggle" class="cursor-toggle">Toggle Cursor Effect</button>
     
     <main>
@@ -27,20 +28,38 @@
                 <div class="content">
                     <div class="project-list">
                         <div class="project-item">
+                            <div class="project-title" data-project="Oslonøkkelen">
+                                <div class="project-preview">
+                                    <img src="" alt="Preview">
+                                </div>
+                                <h3>Oslonøkkelen</h3>
+                            </div>
+                            <div class="project-details" id="Oslonøkkelen">
+                                <article class="project-card">
+                                    <div class="project-images">
+                                        <!-- Images will be loaded dynamically -->
+                                    </div>
+                                    <div class="project-info">
+                                        <p class="project-desc"></p>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div class="project-item">
                             <div class="project-title" data-project="medical-projects">
+                                <div class="project-preview">
+                                    <img src="" alt="Preview">
+                                </div>
                                 <h3>A bunch of medical projects</h3>
-                                <span class="project-year">2024</span>
                             </div>
                             <div class="project-details" id="medical-projects">
                                 <article class="project-card">
                                     <div class="project-images">
-                                        <img src="content/projects/A bunch of medical projects/images/P1120480.JPG" alt="Medical Project 1" loading="lazy" class="modal-trigger">
-                                        <img src="content/projects/A bunch of medical projects/images/Artboard 2-100.jpg" alt="Medical Project 2">
-                                        <img src="content/projects/A bunch of medical projects/images/2 - Trend.png" alt="Medical Project 3">
-                                        <img src="content/projects/A bunch of medical projects/images/4 - Statistic.png" alt="Medical Project 4">
+                                        <!-- Images will be loaded dynamically -->
                                     </div>
                                     <div class="project-info">
-                                        <p class="project-desc">Collection of medical design projects and prototypes.</p>
+                                        <p class="project-desc"></p>
                                     </div>
                                 </article>
                             </div>
@@ -49,17 +68,16 @@
                         <div class="project-item">
                             <div class="project-title" data-project="funny-project">
                                 <h3>Funny project</h3>
-                                <span class="project-year">2024</span>
                             </div>
                             <div class="project-details" id="funny-project">
-                                <article class="project-card preview">
-                                    <img src="content/projects/Funny project/images/01.jpg" alt="Funny Project 1">
-                                    <img src="content/projects/Funny project/images/02.jpg" alt="Funny Project 2">
-                                    <img src="content/projects/Funny project/images/03.jpg" alt="Funny Project 3">
+                                <article class="project-card">
+                                    <div class="project-images">
+                                        <img src="content/projects/Funny project/images/01.jpg" alt="Funny Project 1" loading="lazy">
+                                        <img src="content/projects/Funny project/images/02.jpg" alt="Funny Project 2">
+                                        <img src="content/projects/Funny project/images/03.jpg" alt="Funny Project 3">
+                                    </div>
                                     <div class="project-info">
-                                        <h3>Funny project</h3>
-                                        <p class="project-date">2024</p>
-                                        <p class="project-desc">Experimental design explorations with a twist.</p>
+                                        <p class="project-desc"></p>
                                     </div>
                                 </article>
                             </div>
@@ -67,18 +85,18 @@
 
                         <div class="project-item">
                             <div class="project-title" data-project="fylgja">
+                                <div class="project-preview">
+                                    <img src="content/projects/Fylgja/images/01.png" alt="Preview">
+                                </div>
                                 <h3>Fylgja</h3>
-                                <span class="project-year">2023</span>
                             </div>
                             <div class="project-details" id="fylgja">
-                                <article class="project-card preview">
-                                    <img src="content/projects/Fylgja/images/01.jpg" alt="Fylgja 1">
-                                    <img src="content/projects/Fylgja/images/02.jpg" alt="Fylgja 2">
-                                    <img src="content/projects/Fylgja/images/03.jpg" alt="Fylgja 3">
+                                <article class="project-card">
+                                    <div class="project-images">
+                                        <!-- Images will be loaded dynamically -->
+                                    </div>
                                     <div class="project-info">
-                                        <h3>Fylgja</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Innovative design solutions for modern challenges.</p>
+                                        <p class="project-desc"></p>
                                     </div>
                                 </article>
                             </div>
@@ -86,8 +104,10 @@
 
                         <div class="project-item">
                             <div class="project-title" data-project="lego">
+                                <div class="project-preview">
+                                    <img src="content/projects/Lego/images/01.jpg" alt="Preview">
+                                </div>
                                 <h3>Lego</h3>
-                                <span class="project-year">2023</span>
                             </div>
                             <div class="project-details" id="lego">
                                 <article class="project-card">
@@ -97,9 +117,7 @@
                                         <img src="content/projects/Lego/images/03.jpg" alt="Lego Project 3">
                                     </div>
                                     <div class="project-info">
-                                        <h3>Lego</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Creative explorations in modular design.</p>
+                                        <p class="project-desc"></p>
                                     </div>
                                 </article>
                             </div>
@@ -107,33 +125,18 @@
 
                         <div class="project-item">
                             <div class="project-title" data-project="master-thesis">
+                                <div class="project-preview">
+                                    <img src="" alt="Preview">
+                                </div>
                                 <h3>Master Thesis</h3>
-                                <span class="project-year">2023</span>
                             </div>
                             <div class="project-details" id="master-thesis">
                                 <article class="project-card">
-                                    <img src="content/projects/Master Thesis/images/main.jpg" alt="Master Thesis">
-                                    <div class="project-info">
-                                        <h3>Master Thesis</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Research and development in product design.</p>
+                                    <div class="project-images">
+                                        <!-- Images will be loaded dynamically -->
                                     </div>
-                                </article>
-                            </div>
-                        </div>
-
-                        <div class="project-item">
-                            <div class="project-title" data-project="oslonokelen">
-                                <h3>Oslonøkelen</h3>
-                                <span class="project-year">2023</span>
-                            </div>
-                            <div class="project-details" id="oslonokelen">
-                                <article class="project-card">
-                                    <img src="content/projects/Oslonokelen/images/main.jpg" alt="Oslonøkelen">
                                     <div class="project-info">
-                                        <h3>Oslonøkelen</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Urban accessibility solutions for Oslo.</p>
+                                        <p class="project-desc"></p>
                                     </div>
                                 </article>
                             </div>
@@ -235,57 +238,8 @@
             <div class="category">
                 <h2>Other things, nice pictures, small projects & odd bits</h2>
                 <div class="content">
-                    <div class="project-list">
-                        <div class="project-item">
-                            <div class="project-title" data-project="other1">
-                                <h3>RANDOM SKETCHES_01</h3>
-                                <span class="project-year">2024</span>
-                            </div>
-                            <div class="project-details" id="other1">
-                                <article class="project-card">
-                                    <img src="content/other/random-sketches/images/main.jpg" alt="Sketch Collection">
-                                    <div class="project-info">
-                                        <h3>RANDOM SKETCHES_01</h3>
-                                        <p class="project-date">2024</p>
-                                        <p class="project-desc">Quick design explorations and random thoughts on paper.</p>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-
-                        <div class="project-item">
-                            <div class="project-title" data-project="other2">
-                                <h3>FAILED PROTOTYPES_02</h3>
-                                <span class="project-year">2023</span>
-                            </div>
-                            <div class="project-details" id="other2">
-                                <article class="project-card">
-                                    <img src="content/other/failed-prototypes/images/main.jpg" alt="Failed Prototypes">
-                                    <div class="project-info">
-                                        <h3>FAILED PROTOTYPES_02</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Because not everything works out, and that's okay.</p>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-
-                        <div class="project-item">
-                            <div class="project-title" data-project="other3">
-                                <h3>MATERIAL TESTS_03</h3>
-                                <span class="project-year">2023</span>
-                            </div>
-                            <div class="project-details" id="other3">
-                                <article class="project-card">
-                                    <img src="content/other/material-tests/images/main.jpg" alt="Material Tests">
-                                    <div class="project-info">
-                                        <h3>MATERIAL TESTS_03</h3>
-                                        <p class="project-date">2023</p>
-                                        <p class="project-desc">Exploring new materials and their possibilities.</p>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
+                    <div class="other-grid">
+                        <!-- Images will be loaded dynamically -->
                     </div>
                 </div>
             </div>
@@ -294,43 +248,45 @@
                 <h2>Blog</h2>
                 <div class="content">
                     <div class="blog-content">
-                        <article class="blog-post">
-                            <h3>Making Things That Last</h3>
-                            <span class="post-date">Feb 2024</span>
-                            <p>Thoughts on sustainable design and the beauty of aging materials...</p>
-                            <div class="full-content">
-                                <p>When we think about design, we often focus on the immediate impact - how something looks, feels, or functions right now. But what about how it ages? How it develops character over time? This is where the true beauty of sustainable design emerges.</p>
-                                <p>In this exploration of lasting design, we'll look at:</p>
-                                <ul>
-                                    <li>Materials that age gracefully</li>
-                                    <li>Design principles for longevity</li>
-                                    <li>The environmental impact of lasting products</li>
-                                </ul>
-                            </div>
-                        </article>
-                        <article class="blog-post">
-                            <h3>The Art of Concrete</h3>
-                            <span class="post-date">Jan 2024</span>
-                            <p>Exploring the possibilities of concrete in modern furniture design...</p>
-                            <div class="full-content">
-                                <p>Concrete - a material often associated with cold, industrial spaces - has untapped potential in furniture design. Its raw beauty and versatility offer unique opportunities for creating pieces that are both functional and sculptural.</p>
-                                <p>Key aspects we'll explore:</p>
-                                <ul>
-                                    <li>Mixing techniques for different finishes</li>
-                                    <li>Form design and mold making</li>
-                                    <li>Surface treatments and sealing</li>
-                                </ul>
-                            </div>
-                        </article>
-                    </div>
-                    
-                    <div class="newsletter-signup">
-                        <h3>Newsletter</h3>
-                        <p>Get updates on new projects and blog posts</p>
-                        <form name="newsletter" netlify class="signup-form">
-                            <input type="email" name="email" placeholder="your@email.com" required>
-                            <button type="submit">Subscribe</button>
-                        </form>
+                        <div class="blog-posts">
+                            <article class="blog-post">
+                                <h3>Making Things That Last</h3>
+                                <span class="post-date">Feb 2024</span>
+                                <p>Thoughts on sustainable design and the beauty of aging materials...</p>
+                                <div class="full-content">
+                                    <p>When we think about design, we often focus on the immediate impact - how something looks, feels, or functions right now. But what about how it ages? How it develops character over time? This is where the true beauty of sustainable design emerges.</p>
+                                    <p>In this exploration of lasting design, we'll look at:</p>
+                                    <ul>
+                                        <li>Materials that age gracefully</li>
+                                        <li>Design principles for longevity</li>
+                                        <li>The environmental impact of lasting products</li>
+                                    </ul>
+                                </div>
+                            </article>
+                            <article class="blog-post">
+                                <h3>The Art of Concrete</h3>
+                                <span class="post-date">Jan 2024</span>
+                                <p>Exploring the possibilities of concrete in modern furniture design...</p>
+                                <div class="full-content">
+                                    <p>Concrete - a material often associated with cold, industrial spaces - has untapped potential in furniture design. Its raw beauty and versatility offer unique opportunities for creating pieces that are both functional and sculptural.</p>
+                                    <p>Key aspects we'll explore:</p>
+                                    <ul>
+                                        <li>Mixing techniques for different finishes</li>
+                                        <li>Form design and mold making</li>
+                                        <li>Surface treatments and sealing</li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
+                        
+                        <div class="newsletter-signup">
+                            <h3>Newsletter</h3>
+                            <p>Get updates on new projects and blog posts</p>
+                            <form name="newsletter" netlify class="signup-form">
+                                <input type="email" name="email" placeholder="your@email.com" required>
+                                <button type="submit">Subscribe</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

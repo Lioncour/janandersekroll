@@ -1,2 +1,1 @@
-Had the pleasure of working for Lego as a consultant. It was superfun and super secret.
-UX and product development
+Was lucky enough to work on a couple of projects for LEGO. Super fun, I do believe one of the projects made it into the store in the end :D Had to sign a bunch of NDAs so not really allowed to show much :(

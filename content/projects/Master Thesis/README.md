@@ -1,25 +1,22 @@
-# CONCRETE LAMP_01
+# Master Thesis
 
-## Overview
-Brutalist concrete lamp design exploring the raw beauty of industrial materials. Cast in single piece.
+Industrial design research and development project.
 
-## Details
-- **Year:** 2024
-- **Materials:** Concrete, LED components
-- **Dimensions:** 30cm x 15cm x 15cm
+## Project Overview
+Comprehensive exploration of design methodology and practical application.
 
-## Process
-The lamp was created through a multi-step process:
-1. Form design and prototyping
-2. Mold creation
-3. Concrete casting
-4. Electronics integration
+### Key Features
+- Research-based approach
+- Innovative solutions
+- User-centered design
 
-## Images
-![Main View](images/main.jpg)
-![Detail View](images/detail1.jpg)
+### Process
+1. Literature review
+2. User research
+3. Design development
+4. Testing and validation
 
-## Technical Specifications
-- Power: 12V DC
-- LED Type: Warm White, 3000K
-- Weight: 2.5kg 
+## Technical Details
+- Research methodology
+- Design implementation
+- Documentation and findings 
