@@ -178,10 +178,10 @@ svg line {
 
 .project-info {
     flex: 1;
-    padding: 0;
+    padding: 0 0 2rem 0;
     position: sticky;
     top: 2rem;
-    min-width: 250px;
+    min-width: 300px;
 }
 
 .project-info h3 {
@@ -208,7 +208,8 @@ svg line {
     padding-left: 1rem;
     margin: 0;
     white-space: pre-wrap;
-    max-width: 800px;
+    max-width: 1400px;  /* Wider text area */
+    margin-bottom: 2rem;
 }
 
 /* Add some brutalist hover effects */
@@ -303,7 +304,7 @@ svg line {
     opacity: 1;
     overflow: visible;
     border: 1px solid var(--text-color-muted);
-    padding: 1rem;
+    padding: 2rem;
     margin-top: 1rem;
     width: calc(100vw - 4rem);
     margin-left: -2rem;
@@ -328,14 +329,6 @@ svg line {
 .project-images img:hover {
     transform: scale(1.05);
     cursor: pointer;
-}
-
-.project-info {
-    flex: 1;
-    padding: 1rem 0;
-    position: sticky;
-    top: 2rem;
-    min-width: 250px;
 }
 
 .project-info h1 {
@@ -491,6 +484,11 @@ h1, h2, h3, h4, p, a, .project-year {
     .project-images img {
         width: 100%;
         aspect-ratio: 1;
+    }
+
+    .project-desc {
+        max-width: 95vw;  /* Almost full width on mobile */
+        font-size: 0.85rem;  /* Slightly smaller text on mobile */
     }
 } 
 
@@ -813,6 +811,8 @@ h1, h2, h3, h4, p, a, .project-year {
     width: calc(100vw - 4rem - 2rem);
     margin-left: 0;
     padding-right: 0;
+    will-change: transform;  /* Optimize for animations */
+    contain: content;  /* Improve rendering performance */
 }
 
 .other-grid img {
@@ -822,6 +822,8 @@ h1, h2, h3, h4, p, a, .project-year {
     cursor: pointer;
     transition: transform 0.3s ease;
     background: var(--bg-color);
+    will-change: transform;
+    backface-visibility: hidden;  /* Reduce paint operations */
 }
 
 .other-grid img:hover {
@@ -830,7 +832,7 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .cursor-toggle {
     position: fixed;
-    top: 20px;
+    top: 2rem;  /* Match the body padding */
     right: 20px;
     padding: 8px 16px;
     background: transparent;
@@ -840,6 +842,9 @@ h1, h2, h3, h4, p, a, .project-year {
     font-family: 'Space Mono', monospace;
     z-index: 1000;
     transition: all 0.3s ease;
+    height: 40px;  /* Match height with header text */
+    display: flex;
+    align-items: center;
 }
 
 .cursor-toggle:hover {
@@ -901,11 +906,37 @@ h1, h2, h3, h4, p, a, .project-year {
         width: 100%;
         padding-bottom: 56.25%; /* Return to 16:9 ratio on smaller screens */
     }
+
+    .project-desc {
+        max-width: 90vw;  /* More relative width on medium screens */
+    }
 }
 
 @media (max-width: 768px) {
     .project-images img {
         width: 100%;
         aspect-ratio: 1;
+    }
+
+    .project-desc {
+        max-width: 95vw;  /* Almost full width on mobile */
+        font-size: 0.85rem;  /* Slightly smaller text on mobile */
+    }
+} 
+
+/* Add responsive adjustments */
+@media (min-width: 1600px) {
+    .project-desc {
+        max-width: 1400px;  /* Even wider on very large screens */
+    }
+} 
+
+/* Update responsive breakpoints */
+@media (min-width: 1800px) {
+    .project-desc {
+        max-width: 1800px;  /* Even wider on very large screens */
+    }
+    main {
+        max-width: 1800px;
     }
 } 

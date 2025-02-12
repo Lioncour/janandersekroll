@@ -174,6 +174,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load other images
     const otherGrid = document.querySelector('.other-grid');
     if (otherGrid) {
+        // Load images in smaller batches
+        const loadImageBatch = (images, startIndex) => {
+            const batchSize = 8;  // Load 8 images at a time
+            const endIndex = Math.min(startIndex + batchSize, images.length);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const img = new Image();
+                img.src = `content/other/${images[i]}`;
+                img.alt = 'Other Project Image';
+                img.loading = 'lazy';  // Use native lazy loading
+                img.className = 'modal-trigger';
+                
+                img.onload = function() {
+                    otherGrid.appendChild(img);
+                    
+                    // Load next batch when this one is done
+                    if (i === endIndex - 1 && endIndex < images.length) {
+                        setTimeout(() => {
+                            loadImageBatch(images, endIndex);
+                        }, 100);  // Small delay between batches
+                    }
+                };
+            }
+        };
+
         const otherImages = [
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
             '20190501_153758.jpg',
@@ -222,16 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'WP_20160729_22_11_37_Pro.jpg'
         ];
         
-        otherImages.forEach(imageName => {
-            const img = new Image();
-            img.src = `content/other/${imageName}`;
-            img.onload = function() {
-                img.alt = 'Other Project Image';
-                img.loading = 'lazy';
-                img.className = 'modal-trigger';
-                otherGrid.appendChild(img);
-            };
-        });
+        // Start loading the first batch
+        loadImageBatch(otherImages, 0);
     }
 
     // Newsletter form handler
