@@ -233,17 +233,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Newsletter form handler
-    const newsletterForm = document.querySelector('form[name="newsletter"]'); // Select by name
+    const newsletterForm = document.querySelector('form[name="newsletter"]');
 
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent default page reload/redirect
+
             const button = newsletterForm.querySelector('button');
-            // Simple visual feedback
-            button.textContent = 'Subscribed! ✨';
-            setTimeout(() => {
-                button.textContent = 'Subscribe';
-            }, 2000);
-            // IMPORTANT: No e.preventDefault() here, so Netlify can process the submission.
+            const formData = new FormData(newsletterForm);
+            const confirmationDiv = document.getElementById('newsletter-confirmation');
+            const emailInput = newsletterForm.querySelector('input[name="email"]');
+
+            // Change button state while submitting
+            button.textContent = 'Submitting...';
+            button.disabled = true;
+
+            fetch("/", { // Submit to the same path (Netlify requirement for AJAX)
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString(),
+            })
+            .then(() => {
+                // Success!
+                emailInput.style.display = 'none'; // Hide input
+                button.style.display = 'none'; // Hide button
+                confirmationDiv.style.display = 'block'; // Show confirmation message
+
+                // Trigger confetti
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 }
+                });
+
+                // Optional: Reset form/hide confirmation after a delay
+                // setTimeout(() => {
+                //    confirmationDiv.style.display = 'none';
+                //    emailInput.style.display = 'block';
+                //    emailInput.value = ''; // Clear input
+                //    button.style.display = 'block';
+                //    button.textContent = 'Subscribe';
+                //    button.disabled = false;
+                // }, 5000); // Reset after 5 seconds
+
+            }).catch((error) => {
+                // Handle errors
+                console.error('Form submission error:', error);
+                confirmationDiv.textContent = 'Oops! Something went wrong. Please try again.';
+                confirmationDiv.style.display = 'block';
+                confirmationDiv.style.color = 'red'; // Indicate error
+                button.textContent = 'Subscribe'; // Reset button
+                button.disabled = false;
+            });
         });
     }
 
