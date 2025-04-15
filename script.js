@@ -31,7 +31,6 @@ const projectsConfig = {
             'Som er en digital nøkkel som gir deg utvidet og enklere tilgang til flere av byens lokaler og tjenester via en app på din mobiltelefon.\n\n' + 
             'Vært med på hele reisen og fikk gjort så utrolig mye forskjellige sammen med de aller beste folkene.',
         videos: [
-            'https://www.youtube.com/embed/elWT_AbjGoE',
             'https://www.youtube.com/embed/U3mbjSVsb1c'
         ]
     }
@@ -174,31 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load other images
     const otherGrid = document.querySelector('.other-grid');
     if (otherGrid) {
-        // Load images in smaller batches
-        const loadImageBatch = (images, startIndex) => {
-            const batchSize = 8;  // Load 8 images at a time
-            const endIndex = Math.min(startIndex + batchSize, images.length);
-            
-            for (let i = startIndex; i < endIndex; i++) {
-                const img = new Image();
-                img.src = `content/other/${images[i]}`;
-                img.alt = 'Other Project Image';
-                img.loading = 'lazy';  // Use native lazy loading
-                img.className = 'modal-trigger';
-                
-                img.onload = function() {
-                    otherGrid.appendChild(img);
-                    
-                    // Load next batch when this one is done
-                    if (i === endIndex - 1 && endIndex < images.length) {
-                        setTimeout(() => {
-                            loadImageBatch(images, endIndex);
-                        }, 100);  // Small delay between batches
-                    }
-                };
-            }
-        };
-
         const otherImages = [
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
             '20190501_153758.jpg',
@@ -247,21 +221,29 @@ document.addEventListener('DOMContentLoaded', () => {
             'WP_20160729_22_11_37_Pro.jpg'
         ];
         
-        // Start loading the first batch
-        loadImageBatch(otherImages, 0);
+        // Load all images at once but with lazy loading
+        otherImages.forEach(imageName => {
+            const img = new Image();
+            img.src = `content/other/${imageName}`;
+            img.alt = 'Other Project Image';
+            img.loading = 'lazy';
+            img.className = 'modal-trigger';
+            otherGrid.appendChild(img);  // Append immediately to maintain order
+        });
     }
 
     // Newsletter form handler
-    const newsletterForm = document.querySelector('form[name="newsletter"]');
+    const newsletterForm = document.querySelector('form[name="newsletter"]'); // Select by name
+
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', (e) => {
             const button = newsletterForm.querySelector('button');
-            createRandomParticleExplosions();
-            window.createRainbowTrails();
+            // Simple visual feedback
             button.textContent = 'Subscribed! ✨';
             setTimeout(() => {
                 button.textContent = 'Subscribe';
             }, 2000);
+            // IMPORTANT: No e.preventDefault() here, so Netlify can process the submission.
         });
     }
 

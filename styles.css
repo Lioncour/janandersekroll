@@ -810,9 +810,9 @@ h1, h2, h3, h4, p, a, .project-year {
     margin-top: 1rem;
     width: calc(100vw - 4rem - 2rem);
     margin-left: 0;
-    padding-right: 0;
-    will-change: transform;  /* Optimize for animations */
-    contain: content;  /* Improve rendering performance */
+    padding-right: 2rem;  /* Add padding on the right */
+    will-change: transform;
+    contain: content;
 }
 
 .other-grid img {
