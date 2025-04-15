@@ -5,11 +5,6 @@ const projectsConfig = {
         description: 'Did a lot of various projects all revolving around healthcare products of some sort. Super happy to use the whole range of the design landscape, including package design, service design, industrial design and a lot of UX/UI design.',
         folder: 'A bunch of medical projects'
     },
-    'funny-project': {
-        title: 'Funny project',
-        description: 'Experimental design explorations with a twist. A collection of unconventional design experiments that challenge traditional approaches.',
-        folder: 'Funny project'
-    },
     'fylgja': {
         title: 'Fylgja',
         description: 'An app that alerts you when you have coverage in the mountains(and other places) The idea came when we whre out on a snowcave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone very few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.'
@@ -22,7 +17,14 @@ const projectsConfig = {
         title: 'Master Thesis at The Oslo School of Architecture and Design',
         folder: 'Master Thesis',
         images: true,  // Enable dynamic image loading
-        description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics. i was looking at hwo we could expand old games with new mechanics and create new mechanics for new games.'
+        description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics. i was looking at hwo we could expand old games with new mechanics and create new mechanics for new games.',
+        videos: [
+            'https://youtu.be/rBf26crYyzk',
+            'https://youtu.be/hdXjrF_VJCw',
+            'https://youtu.be/yCdMQvk3J3M',
+            'https://youtu.be/4e6rzrU7W-I',
+            'https://youtu.be/Rv6znMOP-Ws'
+        ]
     },
     'Oslonøkkelen': {
         title: 'Oslonøkkelen',

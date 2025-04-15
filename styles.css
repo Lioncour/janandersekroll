@@ -832,7 +832,7 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .cursor-toggle {
     position: fixed;
-    top: 2rem;  /* Match the body padding */
+    top: 2.2rem;  /* Nudge down slightly for better alignment with h1 */
     right: 20px;
     padding: 8px 16px;
     background: transparent;
