@@ -7,7 +7,7 @@ const projectsConfig = {
     },
     'fylgja': {
         title: 'Fylgja',
-        description: 'An app that alerts you when you have coverage in the mountains(and other places) The idea came when we whre out on a snowcave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone very few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.'
+        description: 'An app that alerts you when you have coverage in the mountains (and other places). The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.'
     },
     'lego': {
         title: 'Lego',
@@ -17,7 +17,7 @@ const projectsConfig = {
         title: 'Master Thesis at The Oslo School of Architecture and Design',
         folder: 'Master Thesis',
         images: true,  // Enable dynamic image loading
-        description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics. i was looking at hwo we could expand old games with new mechanics and create new mechanics for new games.',
+        description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics." I was looking at how we could expand old games with new mechanics and create new mechanics for new games.',
         videos: [
             'https://youtu.be/rBf26crYyzk',
             'https://youtu.be/hdXjrF_VJCw',
@@ -33,7 +33,7 @@ const projectsConfig = {
             'Som er en digital nøkkel som gir deg utvidet og enklere tilgang til flere av byens lokaler og tjenester via en app på din mobiltelefon.\n\n' + 
             'Vært med på hele reisen og fikk gjort så utrolig mye forskjellige sammen med de aller beste folkene.',
         videos: [
-            'https://www.youtube.com/embed/U3mbjSVsb1c'
+            'content/projects/Oslonøkkelen/images/Ny_n_kkel_animation_1.gif'
         ]
     }
 };
@@ -192,9 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleProjectOpen(projectId) {
             
-        const projectDetails = document.getElementById(projectId);
-        const projectConfig = projectsConfig[projectId];
-        
+            const projectDetails = document.getElementById(projectId);
+            const projectConfig = projectsConfig[projectId];
+            
         if (!projectDetails) {
             console.error('Project details element not found:', projectId);
             return;
@@ -208,100 +208,128 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Found project details and config for:', projectId);
         
         // Toggle project details
-        if (projectDetails.classList.contains('active')) {
-            projectDetails.classList.remove('active');
-        } else {
+            if (projectDetails.classList.contains('active')) {
+                projectDetails.classList.remove('active');
+            } else {
             // Close all other projects
-            document.querySelectorAll('.project-details').forEach(d => {
-                d.classList.remove('active');
-            });
+                document.querySelectorAll('.project-details').forEach(d => {
+                    d.classList.remove('active');
+                });
             
             // Open this project
-            projectDetails.classList.add('active');
-            
+                projectDetails.classList.add('active');
+                
             // Update description
-            const descElement = projectDetails.querySelector('.project-desc');
+                const descElement = projectDetails.querySelector('.project-desc');
             if (descElement) {
-                descElement.textContent = projectConfig.description;
-            }
-            
+                    descElement.textContent = projectConfig.description;
+                }
+
             // Load images for projects that need it
-            if (projectId === 'medical-projects' || projectId === 'fylgja' || projectId === 'Oslonøkkelen' || projectId === 'master-thesis') {
-                const imagesContainer = projectDetails.querySelector('.project-images');
-                if (imagesContainer && imagesContainer.children.length === 0) {
-                    // Add videos
-                    if (projectConfig.videos && projectConfig.videos.length > 0) {
-                        projectConfig.videos.forEach(videoUrl => {
-                            let videoId = null;
-                            let embedUrl = null;
+                if (projectId === 'medical-projects' || projectId === 'fylgja' || projectId === 'Oslonøkkelen' || projectId === 'master-thesis') {
+                    const imagesContainer = projectDetails.querySelector('.project-images');
+                    if (imagesContainer && imagesContainer.children.length === 0) {
+                    // Add videos and images/GIFs
+                        if (projectConfig.videos && projectConfig.videos.length > 0) {
+                        projectConfig.videos.forEach((mediaUrl, index) => {
+                            // Check if it's an image/GIF file (not a YouTube URL)
+                            const isImage = mediaUrl.match(/\.(gif|jpg|jpeg|png|webp)$/i) || 
+                                          (!mediaUrl.includes('youtube.com') && !mediaUrl.includes('youtu.be'));
                             
-                            // Extract video ID from various YouTube URL formats
-                            if (videoUrl.includes('youtu.be/')) {
-                                // Short URL: https://youtu.be/VIDEO_ID
-                                videoId = videoUrl.split('youtu.be/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
-                            } else if (videoUrl.includes('youtube.com/watch?v=')) {
-                                // Standard URL: https://youtube.com/watch?v=VIDEO_ID
-                                videoId = videoUrl.split('v=')[1].split('&')[0].split('#')[0].trim();
-                            } else if (videoUrl.includes('youtube.com/embed/')) {
-                                // Already embed URL: extract ID
-                                videoId = videoUrl.split('embed/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
-                            } else if (videoUrl.includes('youtube.com/v/')) {
-                                // Old format: https://youtube.com/v/VIDEO_ID
-                                videoId = videoUrl.split('v/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
+                            if (isImage) {
+                                // Create image container for GIF/image
+                                const imageContainer = document.createElement('div');
+                                imageContainer.className = 'video-container';
+                                
+                                const img = document.createElement('img');
+                                img.src = mediaUrl;
+                                img.alt = `${projectConfig.title} Animation ${index + 1}`;
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.style.objectFit = 'contain';
+                                img.loading = 'lazy';
+                                
+                                imageContainer.appendChild(img);
+                                imagesContainer.insertBefore(imageContainer, imagesContainer.firstChild);
+                            } else {
+                                // It's a YouTube video
+                                let videoId = null;
+                                let embedUrl = null;
+                                
+                                // Extract video ID from various YouTube URL formats
+                                if (mediaUrl.includes('youtu.be/')) {
+                                    // Short URL: https://youtu.be/VIDEO_ID
+                                    videoId = mediaUrl.split('youtu.be/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
+                                } else if (mediaUrl.includes('youtube.com/watch?v=')) {
+                                    // Standard URL: https://youtube.com/watch?v=VIDEO_ID
+                                    videoId = mediaUrl.split('v=')[1].split('&')[0].split('#')[0].trim();
+                                } else if (mediaUrl.includes('youtube.com/embed/')) {
+                                    // Already embed URL: extract ID
+                                    videoId = mediaUrl.split('embed/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
+                                } else if (mediaUrl.includes('youtube.com/v/')) {
+                                    // Old format: https://youtube.com/v/VIDEO_ID
+                                    videoId = mediaUrl.split('v/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
+                                }
+                                
+                                // Validate video ID (YouTube IDs are typically 11 characters)
+                                if (!videoId || videoId.length !== 11) {
+                                    console.error('Invalid YouTube video ID from URL:', mediaUrl, 'Extracted ID:', videoId);
+                                    // Still try to embed, might work
+                                }
+                                
+                                // Build proper embed URL
+                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                                
+                                console.log('Embedding video:', embedUrl, 'from original URL:', mediaUrl, 'Video ID:', videoId);
+
+                                const videoContainer = document.createElement('div');
+                                videoContainer.className = 'video-container';
+                                
+                                // Create iframe element directly
+                                const iframe = document.createElement('iframe');
+                                iframe.setAttribute('src', embedUrl);
+                                iframe.setAttribute('width', '560');
+                                iframe.setAttribute('height', '315');
+                                iframe.setAttribute('title', 'YouTube video player');
+                                iframe.setAttribute('frameborder', '0');
+                                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+                                iframe.setAttribute('allowfullscreen', '');
+                                iframe.setAttribute('loading', 'lazy');
+                                
+                                // Add error handling
+                                iframe.onerror = () => {
+                                    console.error('Failed to load iframe for video:', embedUrl);
+                                    videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" style="color: #FF69B4;">Watch on YouTube</a></p>`;
+                                };
+                                
+                                videoContainer.appendChild(iframe);
+                                imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
                             }
-                            
-                            // Validate video ID
-                            if (!videoId || videoId.length < 11) {
-                                console.error('Invalid YouTube video ID from URL:', videoUrl);
-                                return;
-                            }
-                            
-                            // Build proper embed URL with no additional parameters that might cause issues
-                            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                            
-                            console.log('Embedding video:', embedUrl, 'from original URL:', videoUrl);
-                            
-                            const videoContainer = document.createElement('div');
-                            videoContainer.className = 'video-container';
-                            
-                            // Create iframe element directly
-                            const iframe = document.createElement('iframe');
-                            iframe.src = embedUrl;
-                            iframe.width = '560';
-                            iframe.height = '315';
-                            iframe.title = 'YouTube video player';
-                            iframe.frameBorder = '0';
-                            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-                            iframe.allowFullscreen = true;
-                            iframe.loading = 'lazy';
-                            
-                            videoContainer.appendChild(iframe);
-                            imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
-                        });
-                    }
-                    
+                            });
+                        }
+
                     // Load images
-                    const projectFolder = projectId === 'medical-projects' 
-                        ? 'A bunch of medical projects'
+                        const projectFolder = projectId === 'medical-projects' 
+                            ? 'A bunch of medical projects'
                         : projectId === 'fylgja' ? 'Fylgja'
                         : projectId === 'Oslonøkkelen' ? 'Oslonøkkelen'
-                        : 'Master Thesis';
-                    
-                    for(let i = 1; i <= 99; i++) {
-                        const paddedIndex = String(i).padStart(2, '0');
+                                    : 'Master Thesis';
+                        
+                        for(let i = 1; i <= 99; i++) {
+                            const paddedIndex = String(i).padStart(2, '0');
                         ['png', 'jpg', 'jpeg', 'gif'].forEach(ext => {
-                            const img = new Image();
-                            img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
-                            img.onload = function() {
-                                img.alt = `${projectConfig.title} Image ${i}`;
-                                img.loading = 'lazy';
-                                img.className = 'modal-trigger';
-                                imagesContainer.appendChild(img);
-                            };
-                        });
+                                const img = new Image();
+                                img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
+                                img.onload = function() {
+                                    img.alt = `${projectConfig.title} Image ${i}`;
+                                    img.loading = 'lazy';
+                                    img.className = 'modal-trigger';
+                                    imagesContainer.appendChild(img);
+                                };
+                            });
+                        }
                     }
                 }
-            }
             
             // Scroll into view
             setTimeout(() => {
@@ -639,23 +667,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Modal functionality
-    const modal = document.querySelector('.modal');
+const modal = document.querySelector('.modal');
     const modalImg = modal ? modal.querySelector('img') : null;
     const modalClose = modal ? modal.querySelector('.modal-close') : null;
 
     if (modal && modalClose && modalImg) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal || e.target === modalClose) {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
+modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target === modalClose) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
                 modal.setAttribute('aria-hidden', 'true');
-            }
-        });
+    }
+});
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
                 modal.setAttribute('aria-hidden', 'true');
             }
         });

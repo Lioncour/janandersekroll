@@ -1053,17 +1053,25 @@ h1, h2, h3, h4, p, a, .project-year {
 }
 
 /* YouTube channel styles */
+.youtube-channel-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .youtube-channel {
     border: 1px solid var(--text-color-muted);
     padding: 2rem;
     margin-bottom: 2rem;
     transition: transform 0.3s ease;
     background: rgba(255, 192, 203, 0.02);
+    cursor: pointer;
 }
 
-.youtube-channel:hover {
+.youtube-channel-link:hover .youtube-channel {
     transform: translateX(10px);
     background: rgba(255, 192, 203, 0.04);
+    border-color: #FF69B4;
 }
 
 .channel-header {
