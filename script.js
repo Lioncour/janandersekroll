@@ -852,19 +852,49 @@ document.addEventListener('DOMContentLoaded', () => {
             // Goodreads RSS feed URL
             const rssUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=read&per_page=200`;
             
-            // Use CORS proxy to bypass CORS restrictions
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+            // Try multiple CORS proxy services as fallback
+            const proxies = [
+                `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
+                `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+            ];
             
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
+            let response = null;
+            let data = null;
+            let xmlContent = null;
             
-            if (!data.contents) {
-                throw new Error('No data received');
+            // Try each proxy until one works
+            for (const proxyUrl of proxies) {
+                try {
+                    response = await fetch(proxyUrl);
+                    if (!response.ok) continue;
+                    
+                    data = await response.json();
+                    
+                    // Handle different proxy response formats
+                    if (data.contents) {
+                        xmlContent = data.contents;
+                    } else if (data.content) {
+                        xmlContent = data.content;
+                    } else if (typeof data === 'string') {
+                        xmlContent = data;
+                    } else {
+                        continue;
+                    }
+                    break;
+                } catch (err) {
+                    console.log('Proxy failed, trying next...', err);
+                    continue;
+                }
+            }
+            
+            if (!xmlContent) {
+                throw new Error('All proxy services failed. Please try again later.');
             }
             
             // Parse XML/RSS
             const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+            const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
             
             // Check for errors
             const parseError = xmlDoc.querySelector('parsererror');
@@ -915,7 +945,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } catch (error) {
             console.error('Error fetching Goodreads books:', error);
-            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${error.message}. Please check your user ID and make sure your "read" shelf is public on Goodreads.</p>`;
+            let errorMessage = error.message || 'Unknown error';
+            
+            // Provide more helpful error messages
+            if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+                errorMessage = 'Network error. This might be a CORS issue. Try refreshing the page or check if your "read" shelf is public on Goodreads.';
+            } else if (errorMessage.includes('proxy')) {
+                errorMessage = 'Proxy service unavailable. Please try again in a few moments.';
+            }
+            
+            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${errorMessage}<br><br>Make sure:<br>1. Your Goodreads user ID is correct (120322204)<br>2. Your "read" shelf is set to <strong>public</strong> in Goodreads settings<br>3. You have books marked as "read" on Goodreads</p>`;
             if (loadGoodreadsButton) {
                 loadGoodreadsButton.textContent = 'Load Books';
                 loadGoodreadsButton.disabled = false;
