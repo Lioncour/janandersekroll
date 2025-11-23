@@ -70,6 +70,261 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 300;
+    outline: none;
+}
+
+.subscribe-text {
+    color: rgba(255, 105, 180, 0.6);
+    font-size: 0.9rem;
+    font-weight: 300;
+    margin-left: 0.5rem;
+    animation: subtlePulse 3s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes subtlePulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+/* Books section styles */
+.books-content {
+    padding: 2rem 0;
+    max-width: 1200px;
+}
+
+.books-read-section {
+    margin-bottom: 3rem;
+}
+
+.books-read-section h3,
+.book-recommendations-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    font-weight: 400;
+}
+
+.books-read-section h4,
+.book-recommendations-section h4 {
+    font-size: 1.1rem;
+    margin: 2rem 0 1rem;
+    color: var(--text-color);
+    font-weight: 400;
+}
+
+.books-note,
+.recommendations-note {
+    color: var(--text-color-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.books-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.book-item {
+    border: 1px solid var(--text-color-muted);
+    padding: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 192, 203, 0.02);
+}
+
+.book-item:hover {
+    border-color: #FF69B4;
+    background: rgba(255, 192, 203, 0.05);
+    transform: translateY(-2px);
+}
+
+.book-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    background: var(--bg-color);
+}
+
+.book-title {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-color);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+
+.book-author {
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+}
+
+.book-recommendation-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    max-width: 600px;
+}
+
+.book-recommendation-form input {
+    flex: 1;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.book-recommendation-form input:focus {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
+    border-color: #FF69B4;
+}
+
+.book-recommendation-form button {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.book-recommendation-form button:hover {
+    background: #FF69B4;
+    border-color: #FF69B4;
+    color: var(--bg-color);
+    transform: translateY(-2px);
+}
+
+.recommendation-status {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    min-height: 1.5rem;
+}
+
+.recommendation-status.success {
+    color: #FF69B4;
+}
+
+.recommendation-status.error {
+    color: #ff4444;
+}
+
+.recommended-books-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.recommended-book-item {
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    padding: 1rem;
+    background: rgba(255, 192, 203, 0.05);
+    position: relative;
+}
+
+.recommended-book-item::before {
+    content: 'Recommended';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.7rem;
+    color: #FF69B4;
+    background: rgba(255, 105, 180, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+}
+
+.book-rating {
+    font-size: 0.8rem;
+    color: #FF69B4;
+    margin-top: 0.3rem;
+    letter-spacing: 2px;
+}
+
+.goodreads-config {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--text-color-muted);
+    background: rgba(255, 192, 203, 0.02);
+}
+
+.goodreads-input-group {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    max-width: 600px;
+}
+
+.goodreads-input-group input {
+    flex: 1;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.goodreads-input-group input:focus {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
+    border-color: #FF69B4;
+}
+
+.goodreads-input-group button {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid var(--text-color-muted);
+    color: var(--text-color);
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.goodreads-input-group button:hover:not(:disabled) {
+    background: #FF69B4;
+    border-color: #FF69B4;
+    color: var(--bg-color);
+    transform: translateY(-2px);
+}
+
+.goodreads-input-group button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.books-help-text {
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.category h2:focus:not(:active) {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
+}
+
+.category h2:active,
+.category h2:focus:active {
+    outline: none;
 }
 
 .category h2:hover {
@@ -84,6 +339,22 @@ h1 {
     transition: color 0.3s ease;
     color: var(--text-color);
     font-weight: 300;
+    outline: none;
+}
+
+.subcategory h3:focus:not(:active) {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
+}
+
+.subcategory h3:active,
+.subcategory h3:focus:active {
+    outline: none !important;
+}
+
+.subcategory h3:focus-visible:not(:focus-within) {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
 }
 
 .subcategory h3:hover {
@@ -223,12 +494,7 @@ svg line {
     border-left-color: #FF69B4;
 }
 
-/* Add some responsive design */
-@media (min-width: 768px) {
-    .project-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-} 
+/* Responsive design - consolidated in media queries below */ 
 
 /* Project list styles */
 .project-list {
@@ -243,6 +509,19 @@ svg line {
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+    outline: none;
+}
+
+.project-title:focus {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
+}
+
+.project-title:active,
+.project-title:focus:active {
+    outline: none;
 }
 
 .project-preview {
@@ -352,33 +631,11 @@ svg line {
     color: var(--text-color-muted);
 } 
 
-/* Update hover effects for all text elements */
-.category h2:hover {
-    color: #FF69B4;
-}
+/* Update hover effects for all text elements - removed duplicate */
 
-.subcategory h3:hover {
-    color: #FF69B4;
-}
+/* Project title hover effects - consolidated above */
 
-.project-title:hover h3 {
-    color: #FF69B4;
-    transform: translateX(10px);
-}
-
-.project-title:hover .project-year {
-    color: rgba(255, 105, 180, 0.6); /* Lighter pink for secondary text */
-}
-
-/* Update project card hover effects */
-.project-card:hover .project-info h3 {
-    color: #FF69B4;
-    transform: translateX(5px);
-}
-
-.project-card:hover .project-desc {
-    border-left-color: #FF69B4;
-}
+/* Project card hover effects - consolidated above */
 
 /* Update webpage hover effects */
 .webpage-title:hover h3 {
@@ -460,14 +717,32 @@ h1, h2, h3, h4, p, a, .project-year {
 
 /* Add this at the end of your styles.css */
 @media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
     main {
-        margin-left: 1rem;
+        margin-left: 0;
         max-width: 100%;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .ingress {
+        font-size: 1rem;
     }
 
     .about-content {
         flex-direction: column;
         align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-image-container {
+        width: 150px;
+        padding-bottom: 150px;
     }
 
     .newsletter-signup {
@@ -475,10 +750,15 @@ h1, h2, h3, h4, p, a, .project-year {
         left: 0;
         width: 100%;
         margin-top: 2rem;
+        min-width: auto;
+        padding: 2rem;
     }
 
     .blog-content {
         margin-right: 0;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem;
     }
 
     .project-images img {
@@ -487,8 +767,33 @@ h1, h2, h3, h4, p, a, .project-year {
     }
 
     .project-desc {
-        max-width: 95vw;  /* Almost full width on mobile */
-        font-size: 0.85rem;  /* Slightly smaller text on mobile */
+        max-width: 100%;
+        font-size: 0.85rem;
+    }
+
+    .project-details.active {
+        width: calc(100vw - 2rem);
+        margin-left: -1rem;
+        padding: 1rem;
+    }
+
+    .other-grid {
+        width: 100%;
+        margin-left: 0;
+        padding-right: 0;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .cursor-toggle {
+        top: 1rem;
+        right: 1rem;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .category h2 {
+        font-size: 1.2rem;
+        max-width: calc(100vw - 4rem);
     }
 } 
 
@@ -650,7 +955,8 @@ h1, h2, h3, h4, p, a, .project-year {
 }
 
 .signup-form input:focus {
-    outline: none;
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
     border-color: #FF69B4;
 }
 
@@ -673,6 +979,11 @@ h1, h2, h3, h4, p, a, .project-year {
     color: var(--bg-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+}
+
+.signup-form button:focus {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
 }
 
 /* YouTube channel styles */
@@ -850,6 +1161,12 @@ h1, h2, h3, h4, p, a, .project-year {
 .cursor-toggle:hover {
     background: var(--text-color-muted);
     color: var(--bg-color);
+}
+
+
+.cursor-toggle:focus {
+    outline: 2px solid #FF69B4;
+    outline-offset: 2px;
 } 
 
 .cursor-trail {
@@ -904,37 +1221,30 @@ h1, h2, h3, h4, p, a, .project-year {
 
     .video-container {
         width: 100%;
-        padding-bottom: 56.25%; /* Return to 16:9 ratio on smaller screens */
+        padding-bottom: 56.25%;
     }
 
     .project-desc {
-        max-width: 90vw;  /* More relative width on medium screens */
+        max-width: 90vw;
+    }
+
+    .blog-content {
+        gap: 3rem;
     }
 }
 
-@media (max-width: 768px) {
-    .project-images img {
-        width: 100%;
-        aspect-ratio: 1;
-    }
+/* Mobile styles consolidated above */ 
 
-    .project-desc {
-        max-width: 95vw;  /* Almost full width on mobile */
-        font-size: 0.85rem;  /* Slightly smaller text on mobile */
-    }
-} 
-
-/* Add responsive adjustments */
+/* Large screen adjustments */
 @media (min-width: 1600px) {
     .project-desc {
-        max-width: 1400px;  /* Even wider on very large screens */
+        max-width: 1400px;
     }
 } 
 
-/* Update responsive breakpoints */
 @media (min-width: 1800px) {
     .project-desc {
-        max-width: 1800px;  /* Even wider on very large screens */
+        max-width: 1800px;
     }
     main {
         max-width: 1800px;

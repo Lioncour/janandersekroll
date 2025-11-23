@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     tempImg.onload = () => {
                         previewImg.src = tempImg.src;
                     };
+                    tempImg.onerror = () => {
+                        // Silently fail - image doesn't exist
+                    };
                     tempImg.src = `content/projects/${config.folder}/images/01.${ext}`;
                 };
                 
@@ -62,118 +65,269 @@ document.addEventListener('DOMContentLoaded', () => {
     // Category click handlers
     const categories = document.querySelectorAll('.category h2');
     categories.forEach(category => {
-        category.addEventListener('click', () => {
+        const toggleCategory = () => {
             const content = category.nextElementSibling;
-            content.classList.toggle('active');
+            const isActive = content.classList.toggle('active');
+            category.setAttribute('aria-expanded', isActive);
+            // Remove focus outline after click
+            category.blur();
+        };
+        
+        category.addEventListener('click', toggleCategory);
+        category.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleCategory();
+            }
         });
     });
 
     // Subcategory click handlers
     const subcategories = document.querySelectorAll('.subcategory h3');
     subcategories.forEach(subcategory => {
-        subcategory.addEventListener('click', () => {
+        subcategory.setAttribute('role', 'button');
+        subcategory.setAttribute('tabindex', '0');
+        subcategory.setAttribute('aria-expanded', 'false');
+        
+        const toggleSubcategory = () => {
             const content = subcategory.nextElementSibling;
-            content.classList.toggle('active');
-        });
-    });
-
-    // Project title click handlers
-    const projectTitles = document.querySelectorAll('.project-title');
-    projectTitles.forEach(title => {
-        title.addEventListener('click', () => {
-            const projectId = title.getAttribute('data-project');
-            const projectDetails = document.getElementById(projectId);
-            const projectConfig = projectsConfig[projectId];
-            
-            if (projectDetails.classList.contains('active')) {
-                projectDetails.classList.remove('active');
-            } else {
-                document.querySelectorAll('.project-details').forEach(d => {
-                    d.classList.remove('active');
-                });
-                projectDetails.classList.add('active');
-                
-                // Update project description
-                const descElement = projectDetails.querySelector('.project-desc');
-                if (descElement && projectConfig) {
-                    descElement.textContent = projectConfig.description;
-                }
-
-                // Load images dynamically for specific projects
-                if (projectId === 'medical-projects' || projectId === 'fylgja' || projectId === 'Oslonøkkelen' || projectId === 'master-thesis') {
-                    const imagesContainer = projectDetails.querySelector('.project-images');
-                    if (imagesContainer && imagesContainer.children.length === 0) {
-                        // Add videos if they exist
-                        if (projectConfig.videos && projectConfig.videos.length > 0) {
-                            projectConfig.videos.forEach(videoUrl => {
-                                // Convert YouTube URLs to embed format if needed
-                                const embedUrl = videoUrl.includes('embed') 
-                                    ? videoUrl 
-                                    : videoUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-
-                                const videoContainer = document.createElement('div');
-                                videoContainer.className = 'video-container';
-                                videoContainer.innerHTML = `
-                                    <iframe 
-                                        width="560" 
-                                        height="315" 
-                                        src="${embedUrl}"
-                                        title="YouTube video player" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                        allowfullscreen>
-                                    </iframe>
-                                `;
-                                imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
-                            });
-                        }
-
-                        const projectFolder = projectId === 'medical-projects' 
-                            ? 'A bunch of medical projects'
-                            : projectId === 'fylgja'
-                                ? 'Fylgja'
-                                : projectId === 'Oslonøkkelen'
-                                    ? 'Oslonøkkelen'
-                                    : 'Master Thesis';
-                        
-                        for(let i = 1; i <= 99; i++) {
-                            const paddedIndex = String(i).padStart(2, '0');
-                            const extensions = ['png', 'jpg', 'jpeg', 'gif'];  // Add GIF support
-                            
-                            extensions.forEach(ext => {
-                                const img = new Image();
-                                img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
-                                console.log('Trying to load:', img.src); // Debug loading
-                                img.onload = function() {
-                                    console.log('Successfully loaded:', img.src); // Debug success
-                                    img.alt = `${projectConfig.title} Image ${i}`;
-                                    img.loading = 'lazy';
-                                    img.className = 'modal-trigger';
-                                    imagesContainer.appendChild(img);
-                                };
-                                img.onerror = function() {
-                                    console.log('Failed to load:', img.src); // Debug failures
-                                };
-                            });
-                        }
-                    }
-                }
+            const isActive = content.classList.toggle('active');
+            subcategory.setAttribute('aria-expanded', isActive);
+            // Remove focus outline after click
+            subcategory.blur();
+        };
+        
+        subcategory.addEventListener('click', toggleSubcategory);
+        subcategory.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSubcategory();
             }
         });
     });
 
-    // Image click handler - combine both project and other images
-    document.addEventListener('click', (e) => {
-        if (e.target.matches('.project-images img, .other-grid img')) {
-            const img = e.target;
-            modalImg.src = img.src;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+    // Project click handler - simple and reliable
+    function handleProjectClick(e) {
+        // Don't handle if clicking on category headers
+        if (e.target.tagName === 'H2' || e.target.closest('h2')) {
+            return;
+        }
+        
+        // First, try to find project-title using elementFromPoint (works even if hidden)
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        // Temporarily make all content visible to check
+        const allProjectTitles = document.querySelectorAll('.project-title');
+        let projectTitle = null;
+        let projectId = null;
+        
+        // Check each project title to see if click is within its bounds
+        allProjectTitles.forEach(title => {
+            const rect = title.getBoundingClientRect();
+            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                projectTitle = title;
+                projectId = title.getAttribute('data-project');
+            }
+        });
+        
+        // Fallback: walk up DOM tree
+        if (!projectTitle) {
+            let clickedEl = e.target;
+            while (clickedEl && clickedEl !== document.body) {
+                if (clickedEl.tagName === 'H2' || (clickedEl.classList && clickedEl.classList.contains('category'))) {
+                    break;
+                }
+                if (clickedEl.classList && clickedEl.classList.contains('project-title')) {
+                    projectTitle = clickedEl;
+                    projectId = clickedEl.getAttribute('data-project');
+                    break;
+                }
+                if (clickedEl.hasAttribute && clickedEl.hasAttribute('data-project')) {
+                    projectTitle = clickedEl;
+                    projectId = clickedEl.getAttribute('data-project');
+                    break;
+                }
+                if (clickedEl.classList && clickedEl.classList.contains('project-item')) {
+                    projectTitle = clickedEl.querySelector('.project-title');
+                    if (projectTitle) {
+                        projectId = projectTitle.getAttribute('data-project');
+                        break;
+                    }
+                }
+                clickedEl = clickedEl.parentElement;
+            }
+        }
+        
+        // If we found a project, handle it
+        if (projectTitle && projectId) {
+            console.log('Opening project:', projectId);
+            e.stopPropagation();
+            
+            // Remove focus outline after click
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            projectTitle.blur();
+            
+            // Open Projects category if closed - do this FIRST
+            const projectsCategory = document.querySelector('.category:first-of-type');
+            if (projectsCategory) {
+                const content = projectsCategory.querySelector('.content');
+                const h2 = projectsCategory.querySelector('h2');
+                if (content && !content.classList.contains('active')) {
+                    console.log('Opening Projects category');
+                    content.classList.add('active');
+                    if (h2) h2.setAttribute('aria-expanded', 'true');
+                    // Wait a moment for display to update
+                    setTimeout(() => handleProjectOpen(projectId), 10);
+                    return;
+                }
+            }
+            
+            // Category is open, proceed immediately
+            handleProjectOpen(projectId);
+        }
+    }
+    
+    function handleProjectOpen(projectId) {
+            
+        const projectDetails = document.getElementById(projectId);
+        const projectConfig = projectsConfig[projectId];
+        
+        if (!projectDetails) {
+            console.error('Project details element not found:', projectId);
+            return;
+        }
+        
+        if (!projectConfig) {
+            console.error('Project config not found:', projectId);
+            return;
+        }
+        
+        console.log('Found project details and config for:', projectId);
+        
+        // Toggle project details
+        if (projectDetails.classList.contains('active')) {
+            projectDetails.classList.remove('active');
+        } else {
+            // Close all other projects
+            document.querySelectorAll('.project-details').forEach(d => {
+                d.classList.remove('active');
+            });
+            
+            // Open this project
+            projectDetails.classList.add('active');
+            
+            // Update description
+            const descElement = projectDetails.querySelector('.project-desc');
+            if (descElement) {
+                descElement.textContent = projectConfig.description;
+            }
+            
+            // Load images for projects that need it
+            if (projectId === 'medical-projects' || projectId === 'fylgja' || projectId === 'Oslonøkkelen' || projectId === 'master-thesis') {
+                const imagesContainer = projectDetails.querySelector('.project-images');
+                if (imagesContainer && imagesContainer.children.length === 0) {
+                    // Add videos
+                    if (projectConfig.videos && projectConfig.videos.length > 0) {
+                        projectConfig.videos.forEach(videoUrl => {
+                            let embedUrl = videoUrl;
+                            if (videoUrl.includes('youtu.be/')) {
+                                const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                            } else if (videoUrl.includes('youtube.com/watch?v=')) {
+                                const videoId = videoUrl.split('v=')[1].split('&')[0];
+                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                            } else if (!videoUrl.includes('embed')) {
+                                embedUrl = videoUrl.replace('youtube.com/', 'youtube.com/embed/');
+                            }
+                            
+                            const videoContainer = document.createElement('div');
+                            videoContainer.className = 'video-container';
+                            videoContainer.innerHTML = `<iframe width="560" height="315" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+                            imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
+                        });
+                    }
+                    
+                    // Load images
+                    const projectFolder = projectId === 'medical-projects' 
+                        ? 'A bunch of medical projects'
+                        : projectId === 'fylgja' ? 'Fylgja'
+                        : projectId === 'Oslonøkkelen' ? 'Oslonøkkelen'
+                        : 'Master Thesis';
+                    
+                    for(let i = 1; i <= 99; i++) {
+                        const paddedIndex = String(i).padStart(2, '0');
+                        ['png', 'jpg', 'jpeg', 'gif'].forEach(ext => {
+                            const img = new Image();
+                            img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
+                            img.onload = function() {
+                                img.alt = `${projectConfig.title} Image ${i}`;
+                                img.loading = 'lazy';
+                                img.className = 'modal-trigger';
+                                imagesContainer.appendChild(img);
+                            };
+                        });
+                    }
+                }
+            }
+            
+            // Scroll into view
+            setTimeout(() => {
+                projectDetails.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    }
+    
+    // Attach click handler to document
+    document.addEventListener('click', handleProjectClick);
+
+    // Load very nice pictures
+    const veryNicePicturesConfig = {
+        'my-bikes': {
+            folder: 'very-nice-pictures/my-bikes',
+            images: [
+                // Add image filenames here, e.g.:
+                // 'bike1.jpg',
+                // 'bike2.png',
+            ]
+        },
+        'my-desk': {
+            folder: 'very-nice-pictures/my-desk',
+            images: [
+                // Add image filenames here
+            ]
+        },
+        'my-laptops': {
+            folder: 'very-nice-pictures/my-laptops',
+            images: [
+                // Add image filenames here
+            ]
+        }
+    };
+
+    Object.entries(veryNicePicturesConfig).forEach(([subcategoryId, config]) => {
+        const grid = document.querySelector(`.very-nice-pictures-grid[data-subcategory="${subcategoryId}"]`);
+        if (grid && config.images.length > 0) {
+            config.images.forEach(imageName => {
+                const img = new Image();
+                img.onerror = () => {
+                    if (img.parentNode) {
+                        img.parentNode.removeChild(img);
+                    }
+                };
+                img.src = `content/${config.folder}/${imageName}`;
+                img.alt = `Very nice picture - ${subcategoryId}`;
+                img.loading = 'lazy';
+                img.className = 'modal-trigger';
+                grid.appendChild(img);
+            });
         }
     });
 
     // Load other images
-    const otherGrid = document.querySelector('.other-grid');
+    const otherGrid = document.querySelector('.other-grid:not(.very-nice-pictures-grid)');
     if (otherGrid) {
         const otherImages = [
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
@@ -204,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'DSC08029.jpg',
             'DSC09074.jpg',
             'folding_1.gif',
-            'folding.gif',
             'gutta.png',
             'IMG_4220.JPG',
             'IMG_4808.JPG',
@@ -226,6 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load all images at once but with lazy loading
         otherImages.forEach(imageName => {
             const img = new Image();
+            img.onerror = () => {
+                // Silently fail - image doesn't exist, remove from DOM
+                if (img.parentNode) {
+                    img.parentNode.removeChild(img);
+                }
+            };
             img.src = `content/other/${imageName}`;
             img.alt = 'Other Project Image';
             img.loading = 'lazy';
@@ -267,16 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     spread: 90,
                     origin: { y: 0.6 }
                 });
-
-                // Optional: Reset form/hide confirmation after a delay
-                // setTimeout(() => {
-                //    confirmationDiv.style.display = 'none';
-                //    emailInput.style.display = 'block';
-                //    emailInput.value = ''; // Clear input
-                //    button.style.display = 'block';
-                //    button.textContent = 'Subscribe';
-                //    button.disabled = false;
-                // }, 5000); // Reset after 5 seconds
 
             }).catch((error) => {
                 // Handle errors
@@ -458,25 +607,344 @@ document.addEventListener('DOMContentLoaded', () => {
             createFireworks(rect.left + rect.width / 2, rect.top + rect.height / 2);
         });
     }
-});
 
-// Modal functionality - move outside DOMContentLoaded
-const modal = document.querySelector('.modal');
-const modalImg = modal.querySelector('img');
-const modalClose = modal.querySelector('.modal-close');
+    // Modal functionality
+    const modal = document.querySelector('.modal');
+    const modalImg = modal ? modal.querySelector('img') : null;
+    const modalClose = modal ? modal.querySelector('.modal-close') : null;
 
-modal.addEventListener('click', (e) => {
-    if (e.target === modal || e.target === modalClose) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
+    if (modal && modalClose && modalImg) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === modalClose) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        // Image click handler - combine both project and other images
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.project-images img, .other-grid img')) {
+                const img = e.target;
+                modalImg.src = img.src;
+                modalImg.alt = img.alt || 'Enlarged image view';
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+        });
     }
-});
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'block') {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
+    // Books section - ISBN recommendation handler
+    const bookRecommendationForm = document.getElementById('book-recommendation-form');
+    const isbnInput = document.getElementById('isbn-input');
+    const recommendationStatus = document.getElementById('recommendation-status');
+    const recommendedBooksList = document.getElementById('recommended-books-list');
+    
+    // Load recommended books from localStorage
+    function loadRecommendedBooks() {
+        const recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+        recommendedBooksList.innerHTML = '';
+        
+        if (recommended.length === 0) {
+            recommendedBooksList.innerHTML = '<p style="color: var(--text-color-muted); font-size: 0.9rem;">No recommendations yet. Be the first!</p>';
+            return;
+        }
+        
+        recommended.forEach(book => {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'recommended-book-item';
+            bookItem.innerHTML = `
+                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">` : ''}
+                <div class="book-title">${book.title || 'Unknown Title'}</div>
+                <div class="book-author">${book.author || 'Unknown Author'}</div>
+                <div style="font-size: 0.7rem; color: var(--text-color-muted); margin-top: 0.5rem;">ISBN: ${book.isbn}</div>
+            `;
+            recommendedBooksList.appendChild(bookItem);
+        });
     }
-});
-
-// Keep your existing projectsConfig and other functions below 
+    
+    // Validate and clean ISBN
+    function validateISBN(isbn) {
+        // Remove hyphens and spaces
+        const cleaned = isbn.replace(/[-\s]/g, '');
+        
+        // Check if it's ISBN-10 or ISBN-13
+        if (cleaned.length === 10) {
+            return { valid: true, isbn: cleaned, type: 'ISBN-10' };
+        } else if (cleaned.length === 13) {
+            return { valid: true, isbn: cleaned, type: 'ISBN-13' };
+        }
+        return { valid: false, error: 'ISBN must be 10 or 13 digits' };
+    }
+    
+    // Fetch book data from Open Library API
+    async function fetchBookData(isbn) {
+        try {
+            const response = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+            const data = await response.json();
+            const bookKey = `ISBN:${isbn}`;
+            
+            if (data[bookKey]) {
+                const book = data[bookKey];
+                return {
+                    title: book.title || 'Unknown Title',
+                    author: book.authors?.[0]?.name || 'Unknown Author',
+                    cover: book.cover?.large || book.cover?.medium || null,
+                    isbn: isbn
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching book data:', error);
+            return null;
+        }
+    }
+    
+    if (bookRecommendationForm) {
+        bookRecommendationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const isbnValue = isbnInput.value.trim();
+            const validation = validateISBN(isbnValue);
+            
+            if (!validation.valid) {
+                recommendationStatus.textContent = validation.error;
+                recommendationStatus.className = 'recommendation-status error';
+                return;
+            }
+            
+            recommendationStatus.textContent = 'Looking up book...';
+            recommendationStatus.className = 'recommendation-status';
+            
+            // Fetch book data
+            const bookData = await fetchBookData(validation.isbn);
+            
+            if (!bookData) {
+                recommendationStatus.textContent = 'Book not found. Please check the ISBN and try again.';
+                recommendationStatus.className = 'recommendation-status error';
+                return;
+            }
+            
+            // Save to localStorage
+            const recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+            
+            // Check if already recommended
+            if (recommended.some(b => b.isbn === validation.isbn)) {
+                recommendationStatus.textContent = 'This book has already been recommended!';
+                recommendationStatus.className = 'recommendation-status error';
+                return;
+            }
+            
+            recommended.push(bookData);
+            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
+            
+            // Update display
+            loadRecommendedBooks();
+            
+            // Success message
+            recommendationStatus.textContent = `Thank you! "${bookData.title}" has been added to recommendations.`;
+            recommendationStatus.className = 'recommendation-status success';
+            
+            // Clear input
+            isbnInput.value = '';
+            
+            // Clear status after 5 seconds
+            setTimeout(() => {
+                recommendationStatus.textContent = '';
+                recommendationStatus.className = 'recommendation-status';
+            }, 5000);
+        });
+        
+        // Load recommended books on page load
+        loadRecommendedBooks();
+    }
+    
+    // Goodreads integration
+    const goodreadsUserIdInput = document.getElementById('goodreads-user-id');
+    const loadGoodreadsButton = document.getElementById('load-goodreads-books');
+    const booksList = document.getElementById('books-list');
+    
+    // Extract user ID from URL or use saved value
+    function extractUserId(input) {
+        if (!input) return '';
+        // If it's a full URL, extract the ID
+        const urlMatch = input.match(/user\/show\/(\d+)/);
+        if (urlMatch) {
+            return urlMatch[1];
+        }
+        // If it's just the ID with name (e.g., "120322204-jan-anders"), extract just the number
+        const idMatch = input.match(/^(\d+)/);
+        if (idMatch) {
+            return idMatch[1];
+        }
+        // Otherwise return as-is
+        return input.trim();
+    }
+    
+    // Load saved user ID from localStorage, or use default
+    const savedUserId = localStorage.getItem('goodreadsUserId') || '120322204';
+    if (goodreadsUserIdInput) {
+        goodreadsUserIdInput.value = savedUserId;
+        // Auto-load books if user ID is available
+        if (savedUserId) {
+            setTimeout(() => {
+                fetchGoodreadsBooks(savedUserId);
+            }, 500);
+        }
+    }
+    
+    // Load books from localStorage on page load
+    function loadBooksFromStorage() {
+        const savedBooks = localStorage.getItem('goodreadsBooks');
+        if (savedBooks && booksList) {
+            const books = JSON.parse(savedBooks);
+            displayBooks(books);
+        }
+    }
+    
+    loadBooksFromStorage();
+    
+    function displayBooks(books) {
+        if (!booksList) return;
+        
+        if (books.length === 0) {
+            booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Enter your Goodreads user ID above to load your books.</p>';
+            return;
+        }
+        
+        booksList.innerHTML = '';
+        books.forEach(book => {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'book-item';
+            bookItem.innerHTML = `
+                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">` : '<div class="book-cover" style="background: var(--bg-color); display: flex; align-items: center; justify-content: center; color: var(--text-color-muted); font-size: 0.8rem;">No Cover</div>'}
+                <div class="book-title">${book.title}</div>
+                <div class="book-author">${book.author}</div>
+                ${book.rating ? `<div class="book-rating">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+            `;
+            booksList.appendChild(bookItem);
+        });
+    }
+    
+    async function fetchGoodreadsBooks(userId) {
+        if (!userId) {
+            booksList.innerHTML = '<p style="color: var(--text-color-muted);">Please enter your Goodreads user ID.</p>';
+            return;
+        }
+        
+        // Show loading state
+        booksList.innerHTML = '<p style="color: var(--text-color-muted);">Loading books from Goodreads...</p>';
+        if (loadGoodreadsButton) {
+            loadGoodreadsButton.textContent = 'Loading...';
+            loadGoodreadsButton.disabled = true;
+        }
+        
+        try {
+            // Goodreads RSS feed URL
+            const rssUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=read&per_page=200`;
+            
+            // Use CORS proxy to bypass CORS restrictions
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+            
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+            
+            if (!data.contents) {
+                throw new Error('No data received');
+            }
+            
+            // Parse XML/RSS
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+            
+            // Check for errors
+            const parseError = xmlDoc.querySelector('parsererror');
+            if (parseError) {
+                throw new Error('Failed to parse RSS feed. Please check your user ID.');
+            }
+            
+            // Extract books from RSS
+            const items = xmlDoc.querySelectorAll('item');
+            const books = [];
+            
+            items.forEach(item => {
+                const title = item.querySelector('title')?.textContent || 'Unknown Title';
+                const author = item.querySelector('author_name')?.textContent || item.querySelector('author')?.textContent || 'Unknown Author';
+                const cover = item.querySelector('book_large_image_url')?.textContent || item.querySelector('book_medium_image_url')?.textContent || null;
+                const rating = item.querySelector('user_rating')?.textContent || null;
+                const isbn = item.querySelector('isbn')?.textContent || null;
+                
+                books.push({
+                    title: title.replace(/^.*: /, ''), // Remove "Book Title: " prefix if present
+                    author: author,
+                    cover: cover,
+                    rating: rating ? parseFloat(rating) : null,
+                    isbn: isbn
+                });
+            });
+            
+            if (books.length === 0) {
+                booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Make sure your "read" shelf is public on Goodreads.</p>';
+                if (loadGoodreadsButton) {
+                    loadGoodreadsButton.textContent = 'Load Books';
+                    loadGoodreadsButton.disabled = false;
+                }
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('goodreadsBooks', JSON.stringify(books));
+            localStorage.setItem('goodreadsUserId', userId);
+            
+            // Display books
+            displayBooks(books);
+            
+            if (loadGoodreadsButton) {
+                loadGoodreadsButton.textContent = 'Load Books';
+                loadGoodreadsButton.disabled = false;
+            }
+            
+        } catch (error) {
+            console.error('Error fetching Goodreads books:', error);
+            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${error.message}. Please check your user ID and make sure your "read" shelf is public on Goodreads.</p>`;
+            if (loadGoodreadsButton) {
+                loadGoodreadsButton.textContent = 'Load Books';
+                loadGoodreadsButton.disabled = false;
+            }
+        }
+    }
+    
+    if (loadGoodreadsButton && goodreadsUserIdInput) {
+        loadGoodreadsButton.addEventListener('click', () => {
+            const inputValue = goodreadsUserIdInput.value.trim();
+            const userId = extractUserId(inputValue);
+            if (userId) {
+                fetchGoodreadsBooks(userId);
+            } else {
+                booksList.innerHTML = '<p style="color: #ff4444;">Please enter a valid Goodreads user ID or profile URL.</p>';
+            }
+        });
+        
+        // Also allow Enter key
+        goodreadsUserIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const inputValue = goodreadsUserIdInput.value.trim();
+                const userId = extractUserId(inputValue);
+                if (userId) {
+                    fetchGoodreadsBooks(userId);
+                } else {
+                    booksList.innerHTML = '<p style="color: #ff4444;">Please enter a valid Goodreads user ID or profile URL.</p>';
+                }
+            }
+        });
+    }
+}); 
