@@ -232,20 +232,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Add videos
                     if (projectConfig.videos && projectConfig.videos.length > 0) {
                         projectConfig.videos.forEach(videoUrl => {
-                            let embedUrl = videoUrl;
+                            let videoId = null;
+                            let embedUrl = null;
+                            
+                            // Extract video ID from various YouTube URL formats
                             if (videoUrl.includes('youtu.be/')) {
-                                const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
-                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                                // Short URL: https://youtu.be/VIDEO_ID
+                                videoId = videoUrl.split('youtu.be/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
                             } else if (videoUrl.includes('youtube.com/watch?v=')) {
-                                const videoId = videoUrl.split('v=')[1].split('&')[0];
-                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                            } else if (!videoUrl.includes('embed')) {
-                                embedUrl = videoUrl.replace('youtube.com/', 'youtube.com/embed/');
+                                // Standard URL: https://youtube.com/watch?v=VIDEO_ID
+                                videoId = videoUrl.split('v=')[1].split('&')[0].split('#')[0].trim();
+                            } else if (videoUrl.includes('youtube.com/embed/')) {
+                                // Already embed URL: extract ID
+                                videoId = videoUrl.split('embed/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
+                            } else if (videoUrl.includes('youtube.com/v/')) {
+                                // Old format: https://youtube.com/v/VIDEO_ID
+                                videoId = videoUrl.split('v/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
                             }
+                            
+                            // Validate video ID
+                            if (!videoId || videoId.length < 11) {
+                                console.error('Invalid YouTube video ID from URL:', videoUrl);
+                                return;
+                            }
+                            
+                            // Build proper embed URL with no additional parameters that might cause issues
+                            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                            
+                            console.log('Embedding video:', embedUrl, 'from original URL:', videoUrl);
                             
                             const videoContainer = document.createElement('div');
                             videoContainer.className = 'video-container';
-                            videoContainer.innerHTML = `<iframe width="560" height="315" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+                            
+                            // Create iframe element directly
+                            const iframe = document.createElement('iframe');
+                            iframe.src = embedUrl;
+                            iframe.width = '560';
+                            iframe.height = '315';
+                            iframe.title = 'YouTube video player';
+                            iframe.frameBorder = '0';
+                            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+                            iframe.allowFullscreen = true;
+                            iframe.loading = 'lazy';
+                            
+                            videoContainer.appendChild(iframe);
                             imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
                         });
                     }
@@ -853,12 +883,21 @@ document.addEventListener('DOMContentLoaded', () => {
         books.forEach(book => {
             const bookItem = document.createElement('div');
             bookItem.className = 'book-item';
+            
+            // Create cover image (hidden, shown on hover) - positioned at cursor
+            const coverHtml = book.cover 
+                ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">`
+                : '<div class="book-cover-placeholder">No Cover</div>';
+            
             bookItem.innerHTML = `
-                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">` : '<div class="book-cover" style="background: var(--bg-color); display: flex; align-items: center; justify-content: center; color: var(--text-color-muted); font-size: 0.8rem;">No Cover</div>'}
-                <div class="book-title">${book.title}</div>
-                <div class="book-author">${book.author}</div>
-                ${book.rating ? `<div class="book-rating">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+                <div class="book-item-content">
+                    ${coverHtml}
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author}</div>
+                    ${book.rating ? `<div class="book-rating">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+                </div>
             `;
+            
             booksList.appendChild(bookItem);
         });
     }
