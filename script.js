@@ -768,56 +768,84 @@ document.addEventListener('DOMContentLoaded', () => {
         loadRecommendedBooks();
     }
     
-    // Goodreads integration
-    const goodreadsUserIdInput = document.getElementById('goodreads-user-id');
-    const loadGoodreadsButton = document.getElementById('load-goodreads-books');
+    // Goodreads integration - locked to your account only
     const booksList = document.getElementById('books-list');
+    const GOODREADS_USER_ID = '120322204'; // Your Goodreads user ID
     
-    // Extract user ID from URL or use saved value
-    function extractUserId(input) {
-        if (!input) return '';
-        // If it's a full URL, extract the ID
-        const urlMatch = input.match(/user\/show\/(\d+)/);
-        if (urlMatch) {
-            return urlMatch[1];
+    // Auto-load books on page load
+    function autoLoadBooks() {
+        if (!booksList) {
+            console.error('Books list element not found');
+            return;
         }
-        // If it's just the ID with name (e.g., "120322204-jan-anders"), extract just the number
-        const idMatch = input.match(/^(\d+)/);
-        if (idMatch) {
-            return idMatch[1];
-        }
-        // Otherwise return as-is
-        return input.trim();
+        
+        // First try to load from localStorage (faster)
+        const hasCachedBooks = loadBooksFromStorage();
+        
+        // Always fetch fresh data (will update if cached books exist)
+        fetchGoodreadsBooks(GOODREADS_USER_ID);
     }
     
-    // Load saved user ID from localStorage, or use default
-    const savedUserId = localStorage.getItem('goodreadsUserId') || '120322204';
-    if (goodreadsUserIdInput) {
-        goodreadsUserIdInput.value = savedUserId;
-        // Auto-load books if user ID is available
-        if (savedUserId) {
-            setTimeout(() => {
-                fetchGoodreadsBooks(savedUserId);
-            }, 500);
-        }
+    // Auto-load when books section is opened
+    let booksLoaded = false;
+    
+    function setupBooksAutoLoad() {
+        const categories = document.querySelectorAll('.category');
+        categories.forEach(category => {
+            const h2 = category.querySelector('h2');
+            if (h2 && h2.textContent.includes('I love books')) {
+                const booksContent = category.querySelector('.content');
+                if (booksContent) {
+                    // Watch for when the category is opened
+                    const observer = new MutationObserver((mutations) => {
+                        if (booksContent.classList.contains('active') && !booksLoaded) {
+                            booksLoaded = true;
+                            autoLoadBooks();
+                        }
+                    });
+                    observer.observe(booksContent, { attributes: true, attributeFilter: ['class'] });
+                    
+                    // Also listen for clicks on the category header
+                    h2.addEventListener('click', () => {
+                        setTimeout(() => {
+                            if (booksContent.classList.contains('active') && !booksLoaded) {
+                                booksLoaded = true;
+                                autoLoadBooks();
+                            }
+                        }, 100);
+                    });
+                    
+                    // Try to load immediately if category is already open
+                    if (booksContent.classList.contains('active')) {
+                        autoLoadBooks();
+                    }
+                }
+            }
+        });
     }
     
-    // Load books from localStorage on page load
+    setupBooksAutoLoad();
+    
+    // Load books from localStorage on page load (if available)
     function loadBooksFromStorage() {
         const savedBooks = localStorage.getItem('goodreadsBooks');
-        if (savedBooks && booksList) {
+        const savedUserId = localStorage.getItem('goodreadsUserId');
+        if (savedBooks && savedUserId === GOODREADS_USER_ID && booksList) {
             const books = JSON.parse(savedBooks);
             displayBooks(books);
+            return true;
         }
+        return false;
     }
     
-    loadBooksFromStorage();
-    
     function displayBooks(books) {
-        if (!booksList) return;
+        if (!booksList) {
+            console.error('Books list element not found');
+            return;
+        }
         
-        if (books.length === 0) {
-            booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Enter your Goodreads user ID above to load your books.</p>';
+        if (!books || books.length === 0) {
+            booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Make sure your "read" shelf is public on Goodreads.</p>';
             return;
         }
         
@@ -836,17 +864,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function fetchGoodreadsBooks(userId) {
-        if (!userId) {
-            booksList.innerHTML = '<p style="color: var(--text-color-muted);">Please enter your Goodreads user ID.</p>';
+        if (!booksList) {
+            console.error('Books list element not found');
+            return;
+        }
+        
+        if (!userId || userId !== GOODREADS_USER_ID) {
+            booksList.innerHTML = '<p style="color: #ff4444;">Invalid user ID.</p>';
             return;
         }
         
         // Show loading state
         booksList.innerHTML = '<p style="color: var(--text-color-muted);">Loading books from Goodreads...</p>';
-        if (loadGoodreadsButton) {
-            loadGoodreadsButton.textContent = 'Loading...';
-            loadGoodreadsButton.disabled = true;
-        }
         
         try {
             // Goodreads RSS feed URL
@@ -856,7 +885,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const proxies = [
                 `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
                 `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
+                `https://cors-anywhere.herokuapp.com/${rssUrl}`,
+                `https://thingproxy.freeboard.io/fetch/${rssUrl}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`
             ];
             
             let response = null;
@@ -864,32 +896,68 @@ document.addEventListener('DOMContentLoaded', () => {
             let xmlContent = null;
             
             // Try each proxy until one works
+            let lastError = null;
             for (const proxyUrl of proxies) {
                 try {
-                    response = await fetch(proxyUrl);
-                    if (!response.ok) continue;
+                    response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/xml, text/xml, */*'
+                        }
+                    });
                     
-                    data = await response.json();
-                    
-                    // Handle different proxy response formats
-                    if (data.contents) {
-                        xmlContent = data.contents;
-                    } else if (data.content) {
-                        xmlContent = data.content;
-                    } else if (typeof data === 'string') {
-                        xmlContent = data;
-                    } else {
+                    if (!response.ok) {
+                        lastError = `HTTP ${response.status}`;
                         continue;
                     }
-                    break;
+                    
+                    // Try to get as text first (some proxies return XML directly)
+                    const contentType = response.headers.get('content-type') || '';
+                    if (contentType.includes('xml') || contentType.includes('text')) {
+                        xmlContent = await response.text();
+                        if (xmlContent && xmlContent.trim().startsWith('<?xml') || xmlContent.trim().startsWith('<rss')) {
+                            break;
+                        }
+                    }
+                    
+                    // Otherwise try JSON
+                    try {
+                        data = await response.json();
+                        
+                        // Handle different proxy response formats
+                        if (data.contents) {
+                            xmlContent = data.contents;
+                        } else if (data.content) {
+                            xmlContent = data.content;
+                        } else if (data.data) {
+                            xmlContent = data.data;
+                        } else if (typeof data === 'string') {
+                            xmlContent = data;
+                        } else {
+                            lastError = 'Unexpected response format';
+                            continue;
+                        }
+                        
+                        if (xmlContent && (xmlContent.trim().startsWith('<?xml') || xmlContent.trim().startsWith('<rss'))) {
+                            break;
+                        }
+                    } catch (jsonErr) {
+                        // If JSON parsing fails, we already have xmlContent from text
+                        if (xmlContent) break;
+                        lastError = jsonErr.message;
+                        continue;
+                    }
                 } catch (err) {
-                    console.log('Proxy failed, trying next...', err);
+                    lastError = err.message;
+                    console.log('Proxy failed, trying next...', proxyUrl, err);
                     continue;
                 }
             }
             
             if (!xmlContent) {
-                throw new Error('All proxy services failed. Please try again later.');
+                // Test if RSS feed is accessible directly (for debugging)
+                const testUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=read&per_page=5`;
+                throw new Error(`All proxy services failed. Last error: ${lastError || 'Unknown'}. The RSS feed URL should be: ${testUrl}. Please verify your "read" shelf is public by visiting this URL in your browser.`);
             }
             
             // Parse XML/RSS
@@ -899,7 +967,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Check for errors
             const parseError = xmlDoc.querySelector('parsererror');
             if (parseError) {
-                throw new Error('Failed to parse RSS feed. Please check your user ID.');
+                throw new Error('Failed to parse RSS feed. Make sure your "read" shelf is set to PUBLIC in Goodreads privacy settings.');
+            }
+            
+            // Check if feed is empty or blocked
+            const channel = xmlDoc.querySelector('channel');
+            if (!channel) {
+                throw new Error('RSS feed appears to be empty or inaccessible. Make sure your "read" shelf is PUBLIC in Goodreads settings.');
             }
             
             // Extract books from RSS
@@ -924,10 +998,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (books.length === 0) {
                 booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Make sure your "read" shelf is public on Goodreads.</p>';
-                if (loadGoodreadsButton) {
-                    loadGoodreadsButton.textContent = 'Load Books';
-                    loadGoodreadsButton.disabled = false;
-                }
                 return;
             }
             
@@ -937,11 +1007,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Display books
             displayBooks(books);
-            
-            if (loadGoodreadsButton) {
-                loadGoodreadsButton.textContent = 'Load Books';
-                loadGoodreadsButton.disabled = false;
-            }
             
         } catch (error) {
             console.error('Error fetching Goodreads books:', error);
@@ -954,36 +1019,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 errorMessage = 'Proxy service unavailable. Please try again in a few moments.';
             }
             
-            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${errorMessage}<br><br>Make sure:<br>1. Your Goodreads user ID is correct (120322204)<br>2. Your "read" shelf is set to <strong>public</strong> in Goodreads settings<br>3. You have books marked as "read" on Goodreads</p>`;
-            if (loadGoodreadsButton) {
-                loadGoodreadsButton.textContent = 'Load Books';
-                loadGoodreadsButton.disabled = false;
-            }
+            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${errorMessage}<br><br>Make sure:<br>1. Your "read" shelf is set to <strong>public</strong> in Goodreads settings<br>2. You have books marked as "read" on Goodreads</p>`;
         }
     }
     
-    if (loadGoodreadsButton && goodreadsUserIdInput) {
-        loadGoodreadsButton.addEventListener('click', () => {
-            const inputValue = goodreadsUserIdInput.value.trim();
-            const userId = extractUserId(inputValue);
-            if (userId) {
-                fetchGoodreadsBooks(userId);
-            } else {
-                booksList.innerHTML = '<p style="color: #ff4444;">Please enter a valid Goodreads user ID or profile URL.</p>';
-            }
-        });
-        
-        // Also allow Enter key
-        goodreadsUserIdInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const inputValue = goodreadsUserIdInput.value.trim();
-                const userId = extractUserId(inputValue);
-                if (userId) {
-                    fetchGoodreadsBooks(userId);
-                } else {
-                    booksList.innerHTML = '<p style="color: #ff4444;">Please enter a valid Goodreads user ID or profile URL.</p>';
-                }
-            }
-        });
-    }
 }); 

@@ -266,24 +266,14 @@
             </div>
 
             <div class="category">
-                <h2 role="button" tabindex="0" aria-expanded="false">i love books</h2>
+                <h2 role="button" tabindex="0" aria-expanded="false">I love books</h2>
                 <div class="content">
                     <div class="books-content">
                         <div class="books-read-section">
                             <h3>Books I've Read</h3>
-                            <div class="goodreads-config">
-                                <p class="books-note">Enter your Goodreads user ID to load your books:</p>
-                                <div class="goodreads-input-group">
-                                    <input 
-                                        type="text" 
-                                        id="goodreads-user-id" 
-                                        placeholder="Goodreads User ID (find it in your profile URL)"
-                                        value=""
-                                    >
-                                    <button id="load-goodreads-books" type="button">Load Books</button>
-                                </div>
-                                <p class="books-help-text">Your user ID is the number in your Goodreads profile URL: goodreads.com/user/show/[USER_ID]</p>
-                            </div>
+                            <p class="books-note" style="margin-bottom: 1rem; color: var(--text-color-muted); font-size: 0.9rem;">
+                                <a href="https://www.goodreads.com/review/list_rss/120322204?shelf=read" target="_blank" style="color: #FF69B4; text-decoration: underline;">Test RSS Feed</a> - Click to verify your shelf is public
+                            </p>
                             <div id="books-list" class="books-list">
                                 <!-- Books will be loaded dynamically -->
                             </div>
