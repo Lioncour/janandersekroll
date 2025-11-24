@@ -1090,4 +1090,29 @@ document.addEventListener('keydown', (e) => {
         }
     }
     
+    // Handle missing YouTube channel logos - show placeholders
+    const channelLogos = document.querySelectorAll('.channel-logo[src*="flokroll_dev"], .channel-logo[src*="flokroll-div"]');
+    channelLogos.forEach(img => {
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+            const placeholder = this.nextElementSibling;
+            if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
+                placeholder.style.display = 'flex';
+            }
+        });
+        // Pre-check if image exists
+        const testImg = new Image();
+        testImg.onerror = () => {
+            img.style.display = 'none';
+            const placeholder = img.nextElementSibling;
+            if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
+                placeholder.style.display = 'flex';
+            }
+        };
+        testImg.onload = () => {
+            // Image exists, keep it visible
+        };
+        testImg.src = img.src;
+    });
+    
 }); 
