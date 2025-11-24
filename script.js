@@ -346,21 +346,24 @@ document.addEventListener('DOMContentLoaded', () => {
         'my-bikes': {
             folder: 'very-nice-pictures/my-bikes',
             images: [
-                // Add image filenames here, e.g.:
-                // 'bike1.jpg',
-                // 'bike2.png',
+                // Bike images (add more filenames here when available)
             ]
         },
         'my-desk': {
             folder: 'very-nice-pictures/my-desk',
             images: [
-                // Add image filenames here
+                'DSC01097.JPG',
+                'DSC08601.jpg',
+                'WP_20130926_027.JPG',
+                'WP_20131006_003.jpg',
+                'WP_20150302_002.jpg',
+                'WP_20151224_16_11_12_Rich_LI.jpg'
             ]
         },
         'my-laptops': {
             folder: 'very-nice-pictures/my-laptops',
             images: [
-                // Add image filenames here
+                'IMG_2004.JPG'
             ]
         }
     };
