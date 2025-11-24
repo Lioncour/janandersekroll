@@ -993,8 +993,8 @@ document.addEventListener('keydown', (e) => {
                 <div class="book-item-content">
                     ${coverHtml}
                     <div class="book-title">${book.title}</div>
-                    <div class="book-author">${book.author}</div>
-                    ${book.rating ? `<div class="book-rating">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+                    <div class="book-author book-info-hidden">${book.author}</div>
+                    ${book.rating ? `<div class="book-rating book-info-hidden">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
                 </div>
             `;
             
