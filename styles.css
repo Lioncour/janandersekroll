@@ -291,9 +291,10 @@ h1 {
 
 .recommended-books-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 1.5rem;
     margin-top: 1rem;
+    align-items: start;
 }
 
 .recommended-book-item {
@@ -301,6 +302,19 @@ h1 {
     padding: 1rem;
     background: rgba(255, 192, 203, 0.05);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.recommended-book-item .book-cover {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    align-self: flex-start;
 }
 
 .recommended-book-item::before {
@@ -1139,6 +1153,29 @@ h1, h2, h3, h4, p, a, .project-year {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--text-color-muted);
+}
+
+.webpage-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.webpage-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.webpage-title-text h3 {
+    margin: 0;
+}
+
+.webpage-title-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
 }
 
 .webpage-link {
