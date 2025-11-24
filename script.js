@@ -710,9 +710,39 @@ document.addEventListener('keydown', (e) => {
     const recommendationStatus = document.getElementById('recommendation-status');
     const recommendedBooksList = document.getElementById('recommended-books-list');
     
-    // Load recommended books from localStorage
-    function loadRecommendedBooks() {
-        const recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+    // JSONStore.io configuration - A free service for storing JSON without a backend
+    // The store ID below is a unique identifier for your recommendations
+    // You can change it to any unique string if you want a fresh store
+    const JSONSTORE_ID = 'janandersekroll-book-recommendations';
+    const JSONSTORE_URL = `https://www.jsonstore.io/${JSONSTORE_ID}`;
+    
+    // Load recommended books from JSONStore.io (or localStorage as fallback)
+    async function loadRecommendedBooks() {
+        recommendedBooksList.innerHTML = '<p style="color: var(--text-color-muted); font-size: 0.9rem;">Loading recommendations...</p>';
+        
+        let recommended = [];
+        
+        try {
+            const response = await fetch(JSONSTORE_URL);
+            
+            if (response.ok) {
+                const data = await response.json();
+                recommended = data.books || data || [];
+                
+                // If we got data from JSONStore, also update localStorage as backup
+                if (recommended.length > 0) {
+                    localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
+                }
+            } else {
+                // Fallback to localStorage if fetch fails
+                recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+            }
+        } catch (error) {
+            console.error('Error loading from JSONStore:', error);
+            // Fallback to localStorage
+            recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+        }
+        
         recommendedBooksList.innerHTML = '';
         
         if (recommended.length === 0) {
@@ -731,6 +761,30 @@ document.addEventListener('keydown', (e) => {
             `;
             recommendedBooksList.appendChild(bookItem);
         });
+    }
+    
+    // Save recommended books to JSONStore.io (or localStorage as fallback)
+    async function saveRecommendedBooks(recommended) {
+        try {
+            const response = await fetch(JSONSTORE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ books: recommended })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save to JSONStore');
+            }
+            
+            // Also save to localStorage as backup
+            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
+        } catch (error) {
+            console.error('Error saving to JSONStore:', error);
+            // Fallback to localStorage
+            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
+        }
     }
     
     // Validate and clean ISBN
@@ -795,8 +849,19 @@ document.addEventListener('keydown', (e) => {
                 return;
             }
             
-            // Save to localStorage
-            const recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+            // Load existing recommendations
+            let recommended = [];
+            try {
+                const response = await fetch(JSONSTORE_URL);
+                if (response.ok) {
+                    const data = await response.json();
+                    recommended = data.books || data || [];
+                } else {
+                    recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+                }
+            } catch (error) {
+                recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
+            }
             
             // Check if already recommended
             if (recommended.some(b => b.isbn === validation.isbn)) {
@@ -806,10 +871,12 @@ document.addEventListener('keydown', (e) => {
             }
             
             recommended.push(bookData);
-            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
+            
+            // Save to JSONBin.io (or localStorage)
+            await saveRecommendedBooks(recommended);
             
             // Update display
-            loadRecommendedBooks();
+            await loadRecommendedBooks();
             
             // Success message
             recommendationStatus.textContent = `Thank you! "${bookData.title}" has been added to recommendations.`;
@@ -826,7 +893,9 @@ document.addEventListener('keydown', (e) => {
         });
         
         // Load recommended books on page load
-        loadRecommendedBooks();
+        loadRecommendedBooks().catch(error => {
+            console.error('Error loading recommended books:', error);
+        });
     }
     
     // Goodreads integration - locked to your account only
