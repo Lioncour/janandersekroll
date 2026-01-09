@@ -555,7 +555,10 @@ document.addEventListener('DOMContentLoaded', () => {
             img.style.height = '100%';
             img.style.objectFit = 'cover';
             img.style.display = 'none'; // Hide until loaded
+            img.alt = 'Other Project Image';
+            img.className = 'modal-trigger';
             
+            // Set up event handlers BEFORE setting src to avoid race conditions
             img.onerror = () => {
                 // Show error message instead of removing
                 loadingPlaceholder.textContent = 'Failed to load';
@@ -569,13 +572,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.style.display = 'block';
             };
             
-            img.src = `content/other/${imageName}`;
-            img.alt = 'Other Project Image';
-            // Don't use lazy loading for GIFs to ensure they play
+            // Append image to container first
+            container.appendChild(img);
+            
+            // Set loading attribute before src
             if (!isGif) {
                 img.loading = 'lazy';
             }
-            img.className = 'modal-trigger';
+            
+            // Set src last - this triggers the load
+            img.src = `content/other/${imageName}`;
+            
+            // Check if image is already loaded (cached images)
+            if (img.complete && img.naturalWidth > 0) {
+                // Image was already loaded (cached), trigger onload manually
+                loadingPlaceholder.style.display = 'none';
+                img.style.display = 'block';
+            }
             
             // Ensure GIFs loop continuously
             if (isGif) {
@@ -610,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, { once: true });
             }
             
-            container.appendChild(img);
+            // Container already has img appended, now append to grid
             otherGrid.appendChild(container);  // Append immediately to maintain order
         });
     }
