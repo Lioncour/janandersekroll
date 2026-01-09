@@ -1520,31 +1520,39 @@ document.addEventListener('DOMContentLoaded', () => {
         // Explicitly set loading to eager for immediate load (favicons are small)
         img.loading = 'eager';
         
-        // Try multiple favicon sources
+        // Try multiple favicon sources - Google's service is most reliable
         const sources = [
-            `https://${domain}/favicon.ico`,
+            `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
             `https://icon.horse/icon/${domain}`,
-            `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+            `https://${domain}/favicon.ico`
         ];
         
         let currentIndex = 0;
         
         function tryNext() {
             if (currentIndex >= sources.length) {
-                // All sources failed, use a default
-                img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+                // All sources failed, show a default placeholder or hide
+                img.style.display = 'none';
                 return;
             }
             
-            const testImg = new Image();
-            testImg.onload = () => {
-                img.src = sources[currentIndex];
-            };
-            testImg.onerror = () => {
+            // Set src directly and handle errors
+            img.onerror = () => {
                 currentIndex++;
-                tryNext();
+                if (currentIndex < sources.length) {
+                    tryNext();
+                } else {
+                    img.style.display = 'none';
+                }
             };
-            testImg.src = sources[currentIndex];
+            
+            img.onload = () => {
+                // Successfully loaded, remove error handler
+                img.onerror = null;
+            };
+            
+            // Try the current source
+            img.src = sources[currentIndex];
         }
         
         tryNext();

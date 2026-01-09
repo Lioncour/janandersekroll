@@ -1233,6 +1233,9 @@ h1, h2, h3, h4, p, a, .project-year {
     height: 36px;
     border-radius: 8px;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
 }
 
 .webpage-title-text h3 {
