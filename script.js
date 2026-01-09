@@ -29,9 +29,9 @@ const projectsConfig = {
     'Oslonøkkelen': {
         title: 'Oslonøkkelen',
         folder: 'Oslonøkkelen',
-        description: 'Vært så heldig å jobbe med Oslonøkkelen i en haug med år.\n\n' + 
-            'Som er en digital nøkkel som gir deg utvidet og enklere tilgang til flere av byens lokaler og tjenester via en app på din mobiltelefon.\n\n' + 
-            'Vært med på hele reisen og fikk gjort så utrolig mye forskjellige sammen med de aller beste folkene.',
+        description: 'Have been so lucky to work with Oslonøkkelen for many years.\n\n' + 
+            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone.\n\n' + 
+            'Have been part of the entire journey and got to do so incredibly many different things together with the very best people.',
         videos: [
             'content/projects/Oslonøkkelen/images/Ny_n_kkel_animation_1.gif'
         ]
