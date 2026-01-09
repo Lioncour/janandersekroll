@@ -679,33 +679,93 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Modal functionality
-const modal = document.querySelector('.modal');
+    const modal = document.querySelector('.modal');
     const modalImg = modal ? modal.querySelector('img') : null;
     const modalClose = modal ? modal.querySelector('.modal-close') : null;
+    
+    // Track current image and all available images
+    let currentImageIndex = 0;
+    let allImages = [];
 
     if (modal && modalClose && modalImg) {
-modal.addEventListener('click', (e) => {
-    if (e.target === modal || e.target === modalClose) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-                modal.setAttribute('aria-hidden', 'true');
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.style.display === 'block') {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target === modalClose) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
                 modal.setAttribute('aria-hidden', 'true');
             }
         });
 
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display === 'block') {
+                if (e.key === 'Escape') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    modal.setAttribute('aria-hidden', 'true');
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigateImage(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigateImage(1);
+                }
+            }
+        });
+
+        // Function to navigate to next/previous image
+        function navigateImage(direction) {
+            if (allImages.length === 0) return;
+            
+            currentImageIndex += direction;
+            
+            // Wrap around
+            if (currentImageIndex < 0) {
+                currentImageIndex = allImages.length - 1;
+            } else if (currentImageIndex >= allImages.length) {
+                currentImageIndex = 0;
+            }
+            
+            const nextImg = allImages[currentImageIndex];
+            if (nextImg) {
+                modalImg.src = nextImg.src;
+                modalImg.alt = nextImg.alt || 'Enlarged image view';
+            }
+        }
+
         // Image click handler - combine both project and other images
         document.addEventListener('click', (e) => {
             if (e.target.matches('.project-images img, .other-grid img')) {
-                const img = e.target;
-                modalImg.src = img.src;
-                modalImg.alt = img.alt || 'Enlarged image view';
+                const clickedImg = e.target;
+                
+                // Collect all images from the same container
+                const container = clickedImg.closest('.project-images, .other-grid');
+                if (container) {
+                    allImages = Array.from(container.querySelectorAll('img'));
+                    currentImageIndex = allImages.indexOf(clickedImg);
+                    
+                    // If image not found, try to find it in all images on page
+                    if (currentImageIndex === -1) {
+                        // Fallback: collect all images from all containers
+                        const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
+                        const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
+                        allImages = [...allProjectImages, ...allOtherImages];
+                        currentImageIndex = allImages.indexOf(clickedImg);
+                    }
+                } else {
+                    // Fallback: collect all images from all containers
+                    const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
+                    const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
+                    allImages = [...allProjectImages, ...allOtherImages];
+                    currentImageIndex = allImages.indexOf(clickedImg);
+                }
+                
+                if (currentImageIndex === -1) {
+                    currentImageIndex = 0;
+                }
+                
+                modalImg.src = clickedImg.src;
+                modalImg.alt = clickedImg.alt || 'Enlarged image view';
                 modal.style.display = 'block';
                 modal.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
