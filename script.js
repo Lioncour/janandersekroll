@@ -447,17 +447,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.querySelector(`.very-nice-pictures-grid[data-subcategory="${subcategoryId}"]`);
         if (grid && config.images.length > 0) {
             config.images.forEach(imageName => {
+                // Create container like other images
+                const container = document.createElement('div');
+                container.className = 'image-container';
+                
                 const img = new Image();
-                img.onerror = () => {
-                    if (img.parentNode) {
-                        img.parentNode.removeChild(img);
-                    }
-                };
-                img.src = `content/${config.folder}/${imageName}`;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
                 img.alt = `Very nice picture - ${subcategoryId}`;
                 img.loading = 'lazy';
                 img.className = 'modal-trigger';
-                grid.appendChild(img);
+                
+                img.onerror = () => {
+                    if (container.parentNode) {
+                        container.parentNode.removeChild(container);
+                    }
+                };
+                
+                img.onload = () => {
+                    // Image loaded successfully
+                };
+                
+                container.appendChild(img);
+                grid.appendChild(container);
+                
+                // Set src after appending to container
+                img.src = `content/${config.folder}/${imageName}`;
             });
         }
     });
@@ -558,6 +574,12 @@ document.addEventListener('DOMContentLoaded', () => {
             img.alt = 'Other Project Image';
             img.className = 'modal-trigger';
             
+            // Function to show the image
+            const showImage = () => {
+                loadingPlaceholder.style.display = 'none';
+                img.style.display = 'block';
+            };
+            
             // Set up event handlers BEFORE setting src to avoid race conditions
             img.onerror = () => {
                 // Show error message instead of removing
@@ -566,28 +588,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Don't remove - keep the placeholder visible
             };
             
-            img.onload = () => {
-                // Hide loading placeholder and show image
-                loadingPlaceholder.style.display = 'none';
-                img.style.display = 'block';
-            };
+            img.onload = showImage;
             
-            // Append image to container first
-            container.appendChild(img);
+            // Also use addEventListener as a backup
+            img.addEventListener('load', showImage);
+            img.addEventListener('error', () => {
+                loadingPlaceholder.textContent = 'Failed to load';
+                loadingPlaceholder.style.color = 'var(--text-color-muted)';
+            });
             
-            // Set loading attribute before src
+            // Set loading attribute BEFORE setting src (for lazy loading non-GIFs)
             if (!isGif) {
                 img.loading = 'lazy';
             }
             
-            // Set src last - this triggers the load
+            // Append image to container first
+            container.appendChild(img);
+            
+            // Set src to trigger loading
             img.src = `content/other/${imageName}`;
             
-            // Check if image is already loaded (cached images)
-            if (img.complete && img.naturalWidth > 0) {
-                // Image was already loaded (cached), trigger onload manually
-                loadingPlaceholder.style.display = 'none';
-                img.style.display = 'block';
+            // Check if image is already loaded (cached images) - do this after setting src
+            // Use multiple checks to ensure we catch cached images
+            const checkLoaded = () => {
+                if (img.complete && img.naturalWidth > 0) {
+                    // Image was already loaded (cached), show it immediately
+                    showImage();
+                    return true;
+                }
+                return false;
+            };
+            
+            // Check immediately and after a short delay
+            requestAnimationFrame(checkLoaded);
+            setTimeout(checkLoaded, 100);
+            
+            // Polling fallback: check periodically if image has loaded (for lazy loading cases)
+            let pollCount = 0;
+            const maxPolls = 50; // Check for up to 5 seconds (50 * 100ms)
+            const pollInterval = setInterval(() => {
+                pollCount++;
+                if (checkLoaded() || pollCount >= maxPolls) {
+                    clearInterval(pollInterval);
+                }
+            }, 100);
+            
+            // Fallback: if image hasn't loaded after 3 seconds, try removing lazy loading
+            if (!isGif) {
+                setTimeout(() => {
+                    if (loadingPlaceholder.style.display !== 'none' && !img.complete) {
+                        // Image hasn't loaded, try removing lazy loading
+                        img.loading = 'eager';
+                        // Force reload
+                        const currentSrc = img.src;
+                        img.src = '';
+                        img.src = currentSrc;
+                    }
+                }, 3000);
             }
             
             // Ensure GIFs loop continuously
