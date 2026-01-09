@@ -466,7 +466,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const otherGrid = document.querySelector('.other-grid:not(.very-nice-pictures-grid)');
     if (otherGrid) {
         const otherImages = [
+            '01.png',
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
+            '20180729_164648.jpg',
             '20190501_153758.jpg',
             '20190611_194204.jpg',
             '20190909_091540_1.gif',
@@ -507,6 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_055_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_056_Image_0001.jpg',
             'litenku.jpg',
+            'Sequence 01_6.gif',
             'skull_2.png',
             'WP_20130917_007.JPG',
             'WP_20131229_001.jpg',
