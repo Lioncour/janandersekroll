@@ -522,14 +522,53 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Load all images at once but with lazy loading
         otherImages.forEach(imageName => {
-            const img = new Image();
             const isGif = imageName.toLowerCase().endsWith('.gif');
+            
+            // Create container for image with loading placeholder
+            const container = document.createElement('div');
+            container.className = 'image-container';
+            container.style.position = 'relative';
+            container.style.width = '100%';
+            container.style.height = '180px';
+            container.style.background = 'var(--bg-color)';
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            
+            // Create loading placeholder
+            const loadingPlaceholder = document.createElement('div');
+            loadingPlaceholder.className = 'image-loading';
+            loadingPlaceholder.style.width = '100%';
+            loadingPlaceholder.style.height = '100%';
+            loadingPlaceholder.style.display = 'flex';
+            loadingPlaceholder.style.alignItems = 'center';
+            loadingPlaceholder.style.justifyContent = 'center';
+            loadingPlaceholder.style.color = 'var(--text-color-muted)';
+            loadingPlaceholder.style.fontSize = '0.8rem';
+            loadingPlaceholder.style.fontFamily = "'Space Mono', monospace";
+            loadingPlaceholder.textContent = 'Loading...';
+            container.appendChild(loadingPlaceholder);
+            
+            // Create the actual image
+            const img = new Image();
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            img.style.display = 'none'; // Hide until loaded
+            
             img.onerror = () => {
-                // Silently fail - image doesn't exist, remove from DOM
-                if (img.parentNode) {
-                    img.parentNode.removeChild(img);
-                }
+                // Show error message instead of removing
+                loadingPlaceholder.textContent = 'Failed to load';
+                loadingPlaceholder.style.color = 'var(--text-color-muted)';
+                // Don't remove - keep the placeholder visible
             };
+            
+            img.onload = () => {
+                // Hide loading placeholder and show image
+                loadingPlaceholder.style.display = 'none';
+                img.style.display = 'block';
+            };
+            
             img.src = `content/other/${imageName}`;
             img.alt = 'Other Project Image';
             // Don't use lazy loading for GIFs to ensure they play
@@ -537,6 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.loading = 'lazy';
             }
             img.className = 'modal-trigger';
+            
             // Ensure GIFs loop continuously
             if (isGif) {
                 img.style.imageRendering = 'auto';
@@ -554,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Reload the GIF periodically to ensure it keeps looping
                 let loopInterval = setInterval(() => {
-                    if (!img.parentNode || !document.body.contains(img)) {
+                    if (!container.parentNode || !document.body.contains(container)) {
                         clearInterval(loopInterval);
                         return;
                     }
@@ -569,7 +609,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 500);
                 }, { once: true });
             }
-            otherGrid.appendChild(img);  // Append immediately to maintain order
+            
+            container.appendChild(img);
+            otherGrid.appendChild(container);  // Append immediately to maintain order
         });
     }
 
@@ -817,11 +859,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function navigateImage(direction) {
         if (!modalImg) return;
         
-        if (allImages.length === 0) {
-            // Try to collect images again if array is empty
-            const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
-            const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
-            allImages = [...allProjectImages, ...allOtherImages];
+            if (allImages.length === 0) {
+                // Try to collect images again if array is empty
+                const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
+                const allOtherImages = Array.from(document.querySelectorAll('.other-grid img, .other-grid .image-container img'));
+                allImages = [...allProjectImages, ...allOtherImages];
             
             if (allImages.length === 0) return;
             
@@ -893,12 +935,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Image click handler - combine both project and other images
         document.addEventListener('click', (e) => {
-            // Check if clicked element is an image or inside a video container
+            // Check if clicked element is an image or inside a video container or image container
             let clickedImg = null;
-            if (e.target.matches('.project-images img, .other-grid img, .video-container img')) {
+            if (e.target.matches('.project-images img, .other-grid img, .other-grid .image-container img, .video-container img')) {
                 clickedImg = e.target;
-            } else if (e.target.closest('.video-container img')) {
-                clickedImg = e.target.closest('.video-container img');
+            } else if (e.target.closest('.video-container img, .image-container img')) {
+                clickedImg = e.target.closest('.video-container img, .image-container img');
             }
             
             if (clickedImg) {
@@ -921,7 +963,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     // Fallback: collect all images from all containers
                     const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
-                    const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
+                    const allOtherImages = Array.from(document.querySelectorAll('.other-grid img, .other-grid .image-container img'));
                     allImages = [...allProjectImages, ...allOtherImages];
                     currentImageIndex = allImages.findIndex(img => img === clickedImg || img.src === clickedImg.src);
                 }

@@ -1308,9 +1308,24 @@ h1, h2, h3, h4, p, a, .project-year {
     contain: content;
 }
 
-.other-grid img {
+.other-grid .image-container {
     width: 100%;
     height: 180px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: var(--bg-color);
+    will-change: transform;
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+
+.other-grid .image-container:hover {
+    transform: scale(1.05);
+}
+
+.other-grid .image-container img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     cursor: pointer;
     transition: transform 0.3s ease;
@@ -1326,6 +1341,18 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .other-grid img:hover {
     transform: scale(1.05);
+}
+
+.other-grid .image-loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-muted);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    background: var(--bg-color);
 } 
 
 .cursor-toggle {
