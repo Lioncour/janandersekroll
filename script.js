@@ -1269,79 +1269,62 @@ document.addEventListener('DOMContentLoaded', () => {
         loadFavicon(img, domain);
     });
     
-    // Load YouTube channel profile images
-    async function loadYouTubeProfileImage(img, handle) {
-        // Use a CORS proxy to fetch the YouTube channel page and extract profile image
-        try {
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.youtube.com/@${handle}/about`)}`;
-            const response = await fetch(proxyUrl);
-            
-            if (response.ok) {
-                const data = await response.json();
-                const html = data.contents;
-                
-                // Extract profile image URL from meta tags or page content
-                // YouTube stores it in og:image meta tag or in yt-img-shadow elements
-                const profileImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i) ||
-                                          html.match(/yt-img-shadow[^>]*?src="([^"]+)"/i) ||
-                                          html.match(/src="(https:\/\/yt3\.ggpht.com[^"]+)"/i);
-                
-                if (profileImageMatch && profileImageMatch[1]) {
-                    let profileUrl = profileImageMatch[1];
-                    // Ensure we get a good size (replace size parameter if present)
-                    profileUrl = profileUrl.replace(/=s\d+-c-k-c0x00ffffff-no-rj/, '=s176-c-k-c0x00ffffff-no-rj');
-                    if (!profileUrl.includes('=s')) {
-                        profileUrl += '=s176-c-k-c0x00ffffff-no-rj';
-                    }
-                    img.src = profileUrl;
-                    return;
-                }
-            }
-        } catch (e) {
-            console.log('Failed to fetch YouTube profile image via proxy:', e);
-        }
-        
-        // Fallback: Use icon.horse service
-        const fallbackUrl = `https://icon.horse/icon/youtube.com/@${handle}`;
-        const testImg = new Image();
-        testImg.onload = () => {
-            img.src = fallbackUrl;
+    // Load YouTube channel icons from local files
+    function loadYouTubeIcon(img, handle) {
+        // Map handles to folder names
+        const folderMap = {
+            'FlokrollProjects': 'flokroll-projects',
+            'FlokrollAdventures': 'flokroll-adventure',
+            'FlokrollLife': 'flokroll-life',
+            'FlokrollDev': 'flokroll_dev',
+            'FlokrollDiv': 'flokroll-div'
         };
-        testImg.onerror = () => {
-            // Final fallback: show placeholder
-            img.style.display = 'none';
-            const placeholder = img.nextElementSibling;
-            if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
-                placeholder.style.display = 'flex';
-            }
-        };
-        testImg.src = fallbackUrl;
         
-        // Add error handler
-        img.addEventListener('error', function() {
-            if (this.src.includes('icon.horse')) {
-                // icon.horse failed, show placeholder
-                this.style.display = 'none';
-                const placeholder = this.nextElementSibling;
+        const folder = folderMap[handle] || handle.toLowerCase();
+        
+        // Try different file extensions for the icon
+        const extensions = ['png', 'jpg', 'jpeg', 'svg', 'webp'];
+        let currentIndex = 0;
+        
+        function tryNext() {
+            if (currentIndex >= extensions.length) {
+                // All extensions failed, show placeholder
+                img.style.display = 'none';
+                const placeholder = img.nextElementSibling;
                 if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
                     placeholder.style.display = 'flex';
                 }
+                return;
             }
-        });
-    }
-    
-    // Load YouTube profile images for all channel logos
-    document.querySelectorAll('.channel-logo[data-youtube-handle]').forEach(img => {
-        const handle = img.getAttribute('data-youtube-handle');
-        loadYouTubeProfileImage(img, handle);
+            
+            const iconPath = `content/youtube/${folder}/icon.${extensions[currentIndex]}`;
+            const testImg = new Image();
+            testImg.onload = () => {
+                img.src = iconPath;
+            };
+            testImg.onerror = () => {
+                currentIndex++;
+                tryNext();
+            };
+            testImg.src = iconPath;
+        }
         
-        // Add error handler for placeholders
+        tryNext();
+        
+        // Add error handler for the actual image element
         img.addEventListener('error', function() {
+            this.style.display = 'none';
             const placeholder = this.nextElementSibling;
             if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
                 placeholder.style.display = 'flex';
             }
         });
+    }
+    
+    // Load YouTube icons for all channel logos
+    document.querySelectorAll('.channel-logo[data-youtube-handle]').forEach(img => {
+        const handle = img.getAttribute('data-youtube-handle');
+        loadYouTubeIcon(img, handle);
     });
     
     // Handle missing YouTube channel logos - show placeholders (for backwards compatibility)
