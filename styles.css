@@ -1194,10 +1194,22 @@ h1, h2, h3, h4, p, a, .project-year {
     border-left: 2px solid var(--text-color-muted);
 } 
 
+.webpage-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .webpage-item {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--text-color-muted);
+    transition: transform 0.3s ease;
+}
+
+.webpage-item-link:hover .webpage-item {
+    transform: translateX(10px);
+    border-bottom-color: #FF69B4;
 }
 
 .webpage-title {
@@ -1217,13 +1229,18 @@ h1, h2, h3, h4, p, a, .project-year {
     margin: 0;
 }
 
-.webpage-title-text h3 a {
+.webpage-title-text h3.webpage-link {
     color: var(--text-color);
     text-decoration: none;
     transition: color 0.3s ease;
+    margin: 0;
 }
 
-.webpage-title-text h3 a:hover {
+.webpage-item-link:hover .webpage-title-text h3.webpage-link {
+    color: #FF69B4;
+}
+
+.webpage-item-link:hover .webpage-link {
     color: #FF69B4;
 }
 

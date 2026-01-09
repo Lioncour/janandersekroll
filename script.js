@@ -1535,18 +1535,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const iconPath = `content/youtube/${folder}/${config.filenames[filenameIndex]}`;
-            const testImg = new Image();
-            testImg.onload = () => {
-                img.src = iconPath;
-                // Add lazy loading to YouTube icons (they're small but good practice)
-                img.loading = 'lazy';
-            };
-            testImg.onerror = () => {
-                filenameIndex++;
-                tryNext();
-            };
-            testImg.src = iconPath;
+            const filename = config.filenames[filenameIndex];
+            
+            // Try multiple path formats to ensure it works both locally and on live site
+            const pathsToTry = [
+                `content/youtube/${folder}/${filename}`,  // Relative path (works locally)
+                `/content/youtube/${folder}/${filename}`, // Absolute from root
+                `./content/youtube/${folder}/${filename}` // Explicit relative
+            ];
+            
+            let pathIndex = 0;
+            
+            function tryPath() {
+                if (pathIndex >= pathsToTry.length) {
+                    // All paths failed for this filename, try next filename
+                    filenameIndex++;
+                    tryNext();
+                    return;
+                }
+                
+                const iconPath = pathsToTry[pathIndex];
+                const testImg = new Image();
+                testImg.onload = () => {
+                    img.src = iconPath;
+                    // Don't use lazy loading for icons - they should load immediately
+                };
+                testImg.onerror = () => {
+                    pathIndex++;
+                    tryPath();
+                };
+                testImg.src = iconPath;
+            }
+            
+            tryPath();
         }
         
         tryNext();
