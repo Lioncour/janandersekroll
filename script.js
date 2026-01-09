@@ -253,6 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 img.style.height = '100%';
                                 img.style.objectFit = 'contain';
                                 
+                                // Ensure GIFs loop continuously
+                                if (isGif) {
+                                    img.style.imageRendering = 'auto';
+                                    img.style.animationPlayState = 'running';
+                                }
+                                
                                 imageContainer.appendChild(img);
                                 imagesContainer.insertBefore(imageContainer, imagesContainer.firstChild);
                             } else {
@@ -323,11 +329,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             const paddedIndex = String(i).padStart(2, '0');
                         ['png', 'jpg', 'jpeg', 'gif'].forEach(ext => {
                                 const img = new Image();
+                                const isGif = ext.toLowerCase() === 'gif';
                                 img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
                                 img.onload = function() {
                                     img.alt = `${projectConfig.title} Image ${i}`;
-                                    img.loading = 'lazy';
+                                    // Don't use lazy loading for GIFs to ensure they play
+                                    if (!isGif) {
+                                        img.loading = 'lazy';
+                                    }
                                     img.className = 'modal-trigger';
+                                    // Ensure GIFs loop continuously
+                                    if (isGif) {
+                                        img.style.imageRendering = 'auto';
+                                        // Ensure GIF plays by removing any potential pause
+                                        img.style.animationPlayState = 'running';
+                                    }
                                     imagesContainer.appendChild(img);
                                 };
                             });
@@ -449,6 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load all images at once but with lazy loading
         otherImages.forEach(imageName => {
             const img = new Image();
+            const isGif = imageName.toLowerCase().endsWith('.gif');
             img.onerror = () => {
                 // Silently fail - image doesn't exist, remove from DOM
                 if (img.parentNode) {
@@ -457,8 +474,16 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             img.src = `content/other/${imageName}`;
             img.alt = 'Other Project Image';
-            img.loading = 'lazy';
+            // Don't use lazy loading for GIFs to ensure they play
+            if (!isGif) {
+                img.loading = 'lazy';
+            }
             img.className = 'modal-trigger';
+            // Ensure GIFs loop continuously
+            if (isGif) {
+                img.style.imageRendering = 'auto';
+                img.style.animationPlayState = 'running';
+            }
             otherGrid.appendChild(img);  // Append immediately to maintain order
         });
     }
@@ -697,17 +722,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Keyboard navigation for modal
+        function isModalOpen() {
+            return modal.style.display === 'block' || 
+                   window.getComputedStyle(modal).display === 'block' ||
+                   !modal.hasAttribute('aria-hidden') || 
+                   modal.getAttribute('aria-hidden') === 'false';
+        }
+        
         document.addEventListener('keydown', (e) => {
-            if (modal.style.display === 'block') {
+            if (isModalOpen()) {
                 if (e.key === 'Escape') {
+                    e.preventDefault();
                     modal.style.display = 'none';
                     document.body.style.overflow = '';
                     modal.setAttribute('aria-hidden', 'true');
-                } else if (e.key === 'ArrowLeft') {
+                } else if (e.key === 'ArrowLeft' || e.keyCode === 37) {
                     e.preventDefault();
+                    e.stopPropagation();
                     navigateImage(-1);
-                } else if (e.key === 'ArrowRight') {
+                } else if (e.key === 'ArrowRight' || e.keyCode === 39) {
                     e.preventDefault();
+                    e.stopPropagation();
                     navigateImage(1);
                 }
             }
@@ -715,7 +750,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Function to navigate to next/previous image
         function navigateImage(direction) {
-            if (allImages.length === 0) return;
+            if (allImages.length === 0) {
+                // Try to collect images again if array is empty
+                const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
+                const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
+                allImages = [...allProjectImages, ...allOtherImages];
+                
+                if (allImages.length === 0) return;
+                
+                // Find current image in the new collection
+                const currentSrc = modalImg.src;
+                currentImageIndex = allImages.findIndex(img => img.src === currentSrc);
+                if (currentImageIndex === -1) {
+                    currentImageIndex = 0;
+                }
+            }
             
             currentImageIndex += direction;
             
@@ -727,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const nextImg = allImages[currentImageIndex];
-            if (nextImg) {
+            if (nextImg && nextImg.src) {
                 modalImg.src = nextImg.src;
                 modalImg.alt = nextImg.alt || 'Enlarged image view';
             }
@@ -735,29 +784,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Image click handler - combine both project and other images
         document.addEventListener('click', (e) => {
-            if (e.target.matches('.project-images img, .other-grid img')) {
-                const clickedImg = e.target;
-                
+            // Check if clicked element is an image or inside a video container
+            let clickedImg = null;
+            if (e.target.matches('.project-images img, .other-grid img, .video-container img')) {
+                clickedImg = e.target;
+            } else if (e.target.closest('.video-container img')) {
+                clickedImg = e.target.closest('.video-container img');
+            }
+            
+            if (clickedImg) {
                 // Collect all images from the same container
-                const container = clickedImg.closest('.project-images, .other-grid');
+                const container = clickedImg.closest('.project-images, .other-grid, .video-container');
                 if (container) {
-                    allImages = Array.from(container.querySelectorAll('img'));
-                    currentImageIndex = allImages.indexOf(clickedImg);
+                    // Get the parent container (project-images or other-grid)
+                    const parentContainer = container.closest('.project-images, .other-grid') || container;
+                    allImages = Array.from(parentContainer.querySelectorAll('img'));
+                    currentImageIndex = allImages.findIndex(img => img === clickedImg || img.src === clickedImg.src);
                     
                     // If image not found, try to find it in all images on page
                     if (currentImageIndex === -1) {
                         // Fallback: collect all images from all containers
-                        const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
+                        const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
                         const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
                         allImages = [...allProjectImages, ...allOtherImages];
-                        currentImageIndex = allImages.indexOf(clickedImg);
+                        currentImageIndex = allImages.findIndex(img => img === clickedImg || img.src === clickedImg.src);
                     }
                 } else {
                     // Fallback: collect all images from all containers
-                    const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
+                    const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
                     const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
                     allImages = [...allProjectImages, ...allOtherImages];
-                    currentImageIndex = allImages.indexOf(clickedImg);
+                    currentImageIndex = allImages.findIndex(img => img === clickedImg || img.src === clickedImg.src);
                 }
                 
                 if (currentImageIndex === -1) {
@@ -768,7 +825,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalImg.alt = clickedImg.alt || 'Enlarged image view';
                 modal.style.display = 'block';
                 modal.setAttribute('aria-hidden', 'false');
+                modal.setAttribute('tabindex', '-1');
                 document.body.style.overflow = 'hidden';
+                
+                // Focus the modal to ensure keyboard events work
+                setTimeout(() => {
+                    modal.focus();
+                }, 10);
             }
         });
     }
@@ -1252,6 +1315,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const testImg = new Image();
             testImg.onload = () => {
                 img.src = sources[currentIndex];
+                // Add lazy loading to favicons (they're small but good practice)
+                img.loading = 'lazy';
             };
             testImg.onerror = () => {
                 currentIndex++;
@@ -1301,6 +1366,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const testImg = new Image();
             testImg.onload = () => {
                 img.src = iconPath;
+                // Add lazy loading to YouTube icons (they're small but good practice)
+                img.loading = 'lazy';
             };
             testImg.onerror = () => {
                 currentIndex++;

@@ -691,6 +691,11 @@ svg line {
     transition: transform 0.3s ease;
 }
 
+.project-images img[src$=".gif"] {
+    image-rendering: auto;
+    animation-play-state: running;
+}
+
 .project-images img:hover {
     transform: scale(1.05);
     cursor: pointer;
@@ -926,6 +931,7 @@ h1, h2, h3, h4, p, a, .project-year {
     background: rgba(0, 0, 0, 0.98);
     z-index: 1000;
     backdrop-filter: blur(5px);
+    outline: none;
 }
 
 .modal img {
@@ -1278,6 +1284,11 @@ h1, h2, h3, h4, p, a, .project-year {
     background: var(--bg-color);
     will-change: transform;
     backface-visibility: hidden;  /* Reduce paint operations */
+}
+
+.other-grid img[src$=".gif"] {
+    image-rendering: auto;
+    animation-play-state: running;
 }
 
 .other-grid img:hover {
