@@ -797,6 +797,91 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentImageIndex = 0;
     let allImages = [];
 
+    // Function to check if modal is open
+    function isModalOpen() {
+        if (!modal) return false;
+        return modal.style.display === 'block' || 
+               window.getComputedStyle(modal).display === 'block' ||
+               !modal.hasAttribute('aria-hidden') || 
+               modal.getAttribute('aria-hidden') === 'false';
+    }
+    
+    // Function to close all open projects
+    function closeAllProjects() {
+        document.querySelectorAll('.project-details.active').forEach(project => {
+            project.classList.remove('active');
+        });
+    }
+    
+    // Function to navigate to next/previous image
+    function navigateImage(direction) {
+        if (!modalImg) return;
+        
+        if (allImages.length === 0) {
+            // Try to collect images again if array is empty
+            const allProjectImages = Array.from(document.querySelectorAll('.project-images img, .project-images .video-container img'));
+            const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
+            allImages = [...allProjectImages, ...allOtherImages];
+            
+            if (allImages.length === 0) return;
+            
+            // Find current image in the new collection
+            const currentSrc = modalImg.src;
+            currentImageIndex = allImages.findIndex(img => img.src === currentSrc);
+            if (currentImageIndex === -1) {
+                currentImageIndex = 0;
+            }
+        }
+        
+        currentImageIndex += direction;
+        
+        // Wrap around
+        if (currentImageIndex < 0) {
+            currentImageIndex = allImages.length - 1;
+        } else if (currentImageIndex >= allImages.length) {
+            currentImageIndex = 0;
+        }
+        
+        const nextImg = allImages[currentImageIndex];
+        if (nextImg && nextImg.src) {
+            modalImg.src = nextImg.src;
+            modalImg.alt = nextImg.alt || 'Enlarged image view';
+        }
+    }
+    
+    // Global keyboard handler for Escape key and modal navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            // First check if modal is open - close that first
+            if (isModalOpen()) {
+                e.preventDefault();
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    modal.setAttribute('aria-hidden', 'true');
+                }
+            } else {
+                // If modal is not open, close any open projects
+                const openProjects = document.querySelectorAll('.project-details.active');
+                if (openProjects.length > 0) {
+                    e.preventDefault();
+                    closeAllProjects();
+                }
+            }
+        } else if (isModalOpen() && modalImg) {
+            // Only handle arrow keys when modal is open
+            if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+                e.preventDefault();
+                e.stopPropagation();
+                navigateImage(-1);
+            } else if (e.key === 'ArrowRight' || e.keyCode === 39) {
+                e.preventDefault();
+                e.stopPropagation();
+                navigateImage(1);
+            }
+        }
+    });
+
     if (modal && modalClose && modalImg) {
         modal.addEventListener('click', (e) => {
             if (e.target === modal || e.target === modalClose) {
@@ -805,85 +890,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.setAttribute('aria-hidden', 'true');
             }
         });
-
-        // Keyboard navigation for modal
-        function isModalOpen() {
-            return modal.style.display === 'block' || 
-                   window.getComputedStyle(modal).display === 'block' ||
-                   !modal.hasAttribute('aria-hidden') || 
-                   modal.getAttribute('aria-hidden') === 'false';
-        }
-        
-        // Function to close all open projects
-        function closeAllProjects() {
-            document.querySelectorAll('.project-details.active').forEach(project => {
-                project.classList.remove('active');
-            });
-        }
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                // First check if modal is open - close that first
-                if (isModalOpen()) {
-                    e.preventDefault();
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                    modal.setAttribute('aria-hidden', 'true');
-                } else {
-                    // If modal is not open, close any open projects
-                    const openProjects = document.querySelectorAll('.project-details.active');
-                    if (openProjects.length > 0) {
-                        e.preventDefault();
-                        closeAllProjects();
-                    }
-                }
-            } else if (isModalOpen()) {
-                // Only handle arrow keys when modal is open
-                if (e.key === 'ArrowLeft' || e.keyCode === 37) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigateImage(-1);
-                } else if (e.key === 'ArrowRight' || e.keyCode === 39) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    navigateImage(1);
-                }
-            }
-        });
-
-        // Function to navigate to next/previous image
-        function navigateImage(direction) {
-            if (allImages.length === 0) {
-                // Try to collect images again if array is empty
-                const allProjectImages = Array.from(document.querySelectorAll('.project-images img'));
-                const allOtherImages = Array.from(document.querySelectorAll('.other-grid img'));
-                allImages = [...allProjectImages, ...allOtherImages];
-                
-                if (allImages.length === 0) return;
-                
-                // Find current image in the new collection
-                const currentSrc = modalImg.src;
-                currentImageIndex = allImages.findIndex(img => img.src === currentSrc);
-                if (currentImageIndex === -1) {
-                    currentImageIndex = 0;
-                }
-            }
-            
-            currentImageIndex += direction;
-            
-            // Wrap around
-            if (currentImageIndex < 0) {
-                currentImageIndex = allImages.length - 1;
-            } else if (currentImageIndex >= allImages.length) {
-                currentImageIndex = 0;
-            }
-            
-            const nextImg = allImages[currentImageIndex];
-            if (nextImg && nextImg.src) {
-                modalImg.src = nextImg.src;
-                modalImg.alt = nextImg.alt || 'Enlarged image view';
-            }
-        }
 
         // Image click handler - combine both project and other images
         document.addEventListener('click', (e) => {
@@ -1439,24 +1445,46 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load YouTube channel icons from local files
     function loadYouTubeIcon(img, handle) {
-        // Map handles to folder names
-        const folderMap = {
-            'FlokrollProjects': 'flokroll-projects',
-            'FlokrollAdventures': 'flokroll-adventure',
-            'FlokrollLife': 'flokroll-life',
-            'FlokrollDev': 'flokroll_dev',
-            'FlokrollDiv': 'flokroll-div'
+        // Map handles to folder names and specific icon filenames
+        const iconMap = {
+            'FlokrollProjects': {
+                folder: 'flokroll-projects',
+                filenames: ['icon logo.png', 'icon.png', 'logo.png']
+            },
+            'FlokrollAdventures': {
+                folder: 'flokroll-adventure',
+                filenames: ['logo.png', 'icon.png', 'icon logo.png']
+            },
+            'FlokrollLife': {
+                folder: 'flokroll-life',
+                filenames: ['logo.png', 'icon.png', 'icon logo.png']
+            },
+            'FlokrollDev': {
+                folder: 'flokroll_dev',
+                filenames: ['flokrolldevlogoicon.jpg', 'icon.jpg', 'icon.png', 'logo.png']
+            },
+            'FlokrollDiv': {
+                folder: 'flokroll-div',
+                filenames: ['logoicon flokroll div.png', 'icon.png', 'logo.png', 'icon logo.png']
+            }
         };
         
-        const folder = folderMap[handle] || handle.toLowerCase();
+        const config = iconMap[handle];
+        if (!config) {
+            // Fallback for unknown handles
+            const folder = handle.toLowerCase();
+            config = {
+                folder: folder,
+                filenames: ['icon.png', 'logo.png', 'icon.jpg', 'logo.jpg']
+            };
+        }
         
-        // Try different file extensions for the icon
-        const extensions = ['png', 'jpg', 'jpeg', 'svg', 'webp'];
-        let currentIndex = 0;
+        const folder = config.folder;
+        let filenameIndex = 0;
         
         function tryNext() {
-            if (currentIndex >= extensions.length) {
-                // All extensions failed, show placeholder
+            if (filenameIndex >= config.filenames.length) {
+                // All filenames failed, show placeholder
                 img.style.display = 'none';
                 const placeholder = img.nextElementSibling;
                 if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
@@ -1465,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const iconPath = `content/youtube/${folder}/icon.${extensions[currentIndex]}`;
+            const iconPath = `content/youtube/${folder}/${config.filenames[filenameIndex]}`;
             const testImg = new Image();
             testImg.onload = () => {
                 img.src = iconPath;
@@ -1473,7 +1501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.loading = 'lazy';
             };
             testImg.onerror = () => {
-                currentIndex++;
+                filenameIndex++;
                 tryNext();
             };
             testImg.src = iconPath;
