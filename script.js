@@ -256,7 +256,36 @@ document.addEventListener('DOMContentLoaded', () => {
                                 // Ensure GIFs loop continuously
                                 if (isGif) {
                                     img.style.imageRendering = 'auto';
-                                    img.style.animationPlayState = 'running';
+                                    
+                                    // Force GIF to loop by reloading the source
+                                    // This works by clearing and resetting the src, which restarts the animation
+                                    const forceGifLoop = () => {
+                                        const currentSrc = img.src;
+                                        // Temporarily set to empty, then restore to force restart
+                                        img.src = '';
+                                        // Use requestAnimationFrame to ensure smooth transition
+                                        requestAnimationFrame(() => {
+                                            img.src = currentSrc;
+                                        });
+                                    };
+                                    
+                                    // Reload the GIF periodically to ensure it keeps looping
+                                    // Check if the image is still in the DOM before reloading
+                                    let loopInterval = setInterval(() => {
+                                        if (!img.parentNode || !document.body.contains(img)) {
+                                            clearInterval(loopInterval);
+                                            return;
+                                        }
+                                        forceGifLoop();
+                                    }, 2000); // Reload every 2 seconds to ensure continuous looping
+                                    
+                                    // Also reload once when the image first loads
+                                    img.addEventListener('load', function() {
+                                        // Small delay to let the GIF start playing
+                                        setTimeout(() => {
+                                            forceGifLoop();
+                                        }, 500);
+                                    }, { once: true });
                                 }
                                 
                                 imageContainer.appendChild(img);
@@ -341,8 +370,34 @@ document.addEventListener('DOMContentLoaded', () => {
                                     // Ensure GIFs loop continuously
                                     if (isGif) {
                                         img.style.imageRendering = 'auto';
-                                        // Ensure GIF plays by removing any potential pause
-                                        img.style.animationPlayState = 'running';
+                                        
+                                        // Force GIF to loop by reloading the source
+                                        const forceGifLoop = () => {
+                                            const currentSrc = img.src;
+                                            // Temporarily set to empty, then restore to force restart
+                                            img.src = '';
+                                            // Use requestAnimationFrame to ensure smooth transition
+                                            requestAnimationFrame(() => {
+                                                img.src = currentSrc;
+                                            });
+                                        };
+                                        
+                                        // Reload the GIF periodically to ensure it keeps looping
+                                        let loopInterval = setInterval(() => {
+                                            if (!img.parentNode || !document.body.contains(img)) {
+                                                clearInterval(loopInterval);
+                                                return;
+                                            }
+                                            forceGifLoop();
+                                        }, 2000); // Reload every 2 seconds to ensure continuous looping
+                                        
+                                        // Also reload once when the image first loads
+                                        img.addEventListener('load', function() {
+                                            // Small delay to let the GIF start playing
+                                            setTimeout(() => {
+                                                forceGifLoop();
+                                            }, 500);
+                                        }, { once: true });
                                     }
                                     imagesContainer.appendChild(img);
                                 };
@@ -482,7 +537,34 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ensure GIFs loop continuously
             if (isGif) {
                 img.style.imageRendering = 'auto';
-                img.style.animationPlayState = 'running';
+                
+                // Force GIF to loop by reloading the source
+                const forceGifLoop = () => {
+                    const currentSrc = img.src;
+                    // Temporarily set to empty, then restore to force restart
+                    img.src = '';
+                    // Use requestAnimationFrame to ensure smooth transition
+                    requestAnimationFrame(() => {
+                        img.src = currentSrc;
+                    });
+                };
+                
+                // Reload the GIF periodically to ensure it keeps looping
+                let loopInterval = setInterval(() => {
+                    if (!img.parentNode || !document.body.contains(img)) {
+                        clearInterval(loopInterval);
+                        return;
+                    }
+                    forceGifLoop();
+                }, 2000); // Reload every 2 seconds to ensure continuous looping
+                
+                // Also reload once when the image first loads
+                img.addEventListener('load', function() {
+                    // Small delay to let the GIF start playing
+                    setTimeout(() => {
+                        forceGifLoop();
+                    }, 500);
+                }, { once: true });
             }
             otherGrid.appendChild(img);  // Append immediately to maintain order
         });
@@ -729,14 +811,32 @@ document.addEventListener('DOMContentLoaded', () => {
                    modal.getAttribute('aria-hidden') === 'false';
         }
         
+        // Function to close all open projects
+        function closeAllProjects() {
+            document.querySelectorAll('.project-details.active').forEach(project => {
+                project.classList.remove('active');
+            });
+        }
+        
         document.addEventListener('keydown', (e) => {
-            if (isModalOpen()) {
-                if (e.key === 'Escape') {
+            if (e.key === 'Escape') {
+                // First check if modal is open - close that first
+                if (isModalOpen()) {
                     e.preventDefault();
                     modal.style.display = 'none';
                     document.body.style.overflow = '';
                     modal.setAttribute('aria-hidden', 'true');
-                } else if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+                } else {
+                    // If modal is not open, close any open projects
+                    const openProjects = document.querySelectorAll('.project-details.active');
+                    if (openProjects.length > 0) {
+                        e.preventDefault();
+                        closeAllProjects();
+                    }
+                }
+            } else if (isModalOpen()) {
+                // Only handle arrow keys when modal is open
+                if (e.key === 'ArrowLeft' || e.keyCode === 37) {
                     e.preventDefault();
                     e.stopPropagation();
                     navigateImage(-1);
