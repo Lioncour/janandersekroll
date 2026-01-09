@@ -1557,6 +1557,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load YouTube channel icons from local files
     function loadYouTubeIcon(img, handle) {
+        // Explicitly set loading to eager for immediate load (icons are small)
+        img.loading = 'eager';
+        
         // Map handles to folder names and specific icon filenames
         const iconMap = {
             'FlokrollProjects': {
@@ -1627,8 +1630,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const iconPath = pathsToTry[pathIndex];
                 const testImg = new Image();
                 testImg.onload = () => {
+                    // Explicitly set loading to eager for immediate load
+                    img.loading = 'eager';
                     img.src = iconPath;
-                    // Don't use lazy loading for icons - they should load immediately
                 };
                 testImg.onerror = () => {
                     pathIndex++;
