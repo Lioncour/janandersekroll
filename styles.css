@@ -40,9 +40,9 @@ header {
 }
 
 h1 {
-    font-size: 1.75rem;
+    font-size: 0.9rem;
     margin-bottom: 0.5rem;
-    color: var(--text-color);
+    color: #FF8C94;
     font-family: 'Space Mono', monospace;
     white-space: nowrap;
     font-weight: 400;
@@ -50,8 +50,8 @@ h1 {
 }
 
 .ingress {
-    font-size: 1.2rem;
-    color: var(--text-color-muted);
+    font-size: 0.9rem;
+    color: #FF8C94;
 }
 
 .category {
