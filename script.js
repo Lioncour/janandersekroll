@@ -1517,6 +1517,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load favicons for webpages
     function loadFavicon(img, domain) {
+        // Explicitly set loading to eager for immediate load (favicons are small)
+        img.loading = 'eager';
+        
         // Try multiple favicon sources
         const sources = [
             `https://${domain}/favicon.ico`,
@@ -1536,8 +1539,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const testImg = new Image();
             testImg.onload = () => {
                 img.src = sources[currentIndex];
-                // Add lazy loading to favicons (they're small but good practice)
-                img.loading = 'lazy';
             };
             testImg.onerror = () => {
                 currentIndex++;
