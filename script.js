@@ -107,6 +107,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    function setupLazyCategoryLoader(categoryNameIncludes, loader) {
+        const categories = Array.from(document.querySelectorAll('.category'));
+        const category = categories.find(item => {
+            const heading = item.querySelector('h2');
+            return heading && heading.textContent.toLowerCase().includes(categoryNameIncludes);
+        });
+
+        if (!category) return;
+
+        const content = category.querySelector('.content');
+        if (!content) return;
+
+        const runLoader = () => {
+            if (content.classList.contains('active')) {
+                loader();
+            }
+        };
+
+        // Load immediately if already open.
+        runLoader();
+
+        // Load as soon as the category opens.
+        const observer = new MutationObserver(runLoader);
+        observer.observe(content, { attributes: true, attributeFilter: ['class'] });
+    }
+
     // Project click handler - simple and reliable
     function handleProjectClick(e) {
         // Don't handle if clicking on category headers
@@ -400,49 +426,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    Object.entries(veryNicePicturesConfig).forEach(([subcategoryId, config]) => {
-        const grid = document.querySelector(`.very-nice-pictures-grid[data-subcategory="${subcategoryId}"]`);
-        if (grid && config.images.length > 0) {
-            config.images.forEach(imageName => {
-                // Create container like other images
-                const container = document.createElement('div');
-                container.className = 'image-container';
+    let hasLoadedVeryNicePictures = false;
+    function loadVeryNicePictures() {
+        if (hasLoadedVeryNicePictures) return;
+        hasLoadedVeryNicePictures = true;
 
-                const loadingPlaceholder = document.createElement('div');
-                loadingPlaceholder.className = 'image-loading';
-                loadingPlaceholder.textContent = 'Loading...';
-                container.appendChild(loadingPlaceholder);
-                
-                const img = new Image();
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.display = 'none';
-                img.alt = `Very nice picture - ${subcategoryId}`;
-                img.loading = 'lazy';
-                img.className = 'modal-trigger';
-                
-                img.onerror = () => {
-                    loadingPlaceholder.textContent = 'Failed to load';
-                };
-                
-                img.onload = () => {
-                    loadingPlaceholder.style.display = 'none';
-                    img.style.display = 'block';
-                };
-                
-                container.appendChild(img);
-                grid.appendChild(container);
-                
-                // Set src after appending to container
-                img.src = `content/${config.folder}/${imageName}`;
-            });
-        }
-    });
+        Object.entries(veryNicePicturesConfig).forEach(([subcategoryId, config]) => {
+            const grid = document.querySelector(`.very-nice-pictures-grid[data-subcategory="${subcategoryId}"]`);
+            if (grid && config.images.length > 0) {
+                config.images.forEach(imageName => {
+                    // Create container like other images
+                    const container = document.createElement('div');
+                    container.className = 'image-container';
+
+                    const loadingPlaceholder = document.createElement('div');
+                    loadingPlaceholder.className = 'image-loading';
+                    loadingPlaceholder.textContent = 'Loading...';
+                    container.appendChild(loadingPlaceholder);
+                    
+                    const img = new Image();
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.display = 'none';
+                    img.alt = `Very nice picture - ${subcategoryId}`;
+                    img.loading = 'lazy';
+                    img.className = 'modal-trigger';
+                    
+                    img.onerror = () => {
+                        loadingPlaceholder.textContent = 'Failed to load';
+                    };
+                    
+                    img.onload = () => {
+                        loadingPlaceholder.style.display = 'none';
+                        img.style.display = 'block';
+                    };
+                    
+                    container.appendChild(img);
+                    grid.appendChild(container);
+                    
+                    // Set src after appending to container
+                    img.src = `content/${config.folder}/${imageName}`;
+                });
+            }
+        });
+    }
 
     // Load other images
-    const otherGrid = document.querySelector('.other-grid:not(.very-nice-pictures-grid)');
-    if (otherGrid) {
+    let hasLoadedOtherImages = false;
+    function loadOtherImages() {
+        if (hasLoadedOtherImages) return;
+        hasLoadedOtherImages = true;
+
+        const otherGrid = document.querySelector('.other-grid:not(.very-nice-pictures-grid)');
+        if (!otherGrid) return;
+
         const otherImages = [
             '01.png',
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
@@ -498,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'WP_20160729_22_11_37_Pro.jpg'
         ];
         
-        // Load all images at once but with lazy loading
+        // Append all cards quickly; each image still lazy-loads.
         otherImages.forEach(imageName => {
             const isGif = imageName.toLowerCase().endsWith('.gif');
             
@@ -1443,11 +1481,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tryNext();
     }
     
-    // Load favicons for all webpage icons
-    document.querySelectorAll('.webpage-icon[data-domain]').forEach(img => {
-        const domain = img.getAttribute('data-domain');
-        loadFavicon(img, domain);
-    });
+    let hasLoadedWebpageFavicons = false;
+    function loadWebpageFavicons() {
+        if (hasLoadedWebpageFavicons) return;
+        hasLoadedWebpageFavicons = true;
+
+        document.querySelectorAll('.webpage-icon[data-domain]').forEach(img => {
+            const domain = img.getAttribute('data-domain');
+            loadFavicon(img, domain);
+        });
+    }
     
     // Load YouTube channel icons from local files
     function loadYouTubeIcon(img, handle) {
@@ -1550,11 +1593,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Load YouTube icons for all channel logos
-    document.querySelectorAll('.channel-logo[data-youtube-handle]').forEach(img => {
-        const handle = img.getAttribute('data-youtube-handle');
-        loadYouTubeIcon(img, handle);
-    });
+    let hasLoadedYoutubeIcons = false;
+    function loadYouTubeIcons() {
+        if (hasLoadedYoutubeIcons) return;
+        hasLoadedYoutubeIcons = true;
+
+        document.querySelectorAll('.channel-logo[data-youtube-handle]').forEach(img => {
+            const handle = img.getAttribute('data-youtube-handle');
+            loadYouTubeIcon(img, handle);
+        });
+    }
     
     // Handle missing YouTube channel logos - show placeholders (for backwards compatibility)
     const channelLogos = document.querySelectorAll('.channel-logo[src*="flokroll_dev"], .channel-logo[src*="flokroll-div"]');
@@ -1569,5 +1617,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    setupLazyCategoryLoader('webpages', loadWebpageFavicons);
+    setupLazyCategoryLoader('youtube', loadYouTubeIcons);
+    setupLazyCategoryLoader('other things', loadOtherImages);
+    setupLazyCategoryLoader('very nice pictures', loadVeryNicePictures);
     
 }); 
