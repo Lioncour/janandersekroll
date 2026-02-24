@@ -270,39 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 img.style.height = '100%';
                                 img.style.objectFit = 'contain';
                                 
-                                // Ensure GIFs loop continuously
                                 if (isGif) {
                                     img.style.imageRendering = 'auto';
-                                    
-                                    // Force GIF to loop by reloading the source
-                                    // This works by clearing and resetting the src, which restarts the animation
-                                    const forceGifLoop = () => {
-                                        const currentSrc = img.src;
-                                        // Temporarily set to empty, then restore to force restart
-                                        img.src = '';
-                                        // Use requestAnimationFrame to ensure smooth transition
-                                        requestAnimationFrame(() => {
-                                            img.src = currentSrc;
-                                        });
-                                    };
-                                    
-                                    // Reload the GIF periodically to ensure it keeps looping
-                                    // Check if the image is still in the DOM before reloading
-                                    let loopInterval = setInterval(() => {
-                                        if (!img.parentNode || !document.body.contains(img)) {
-                                            clearInterval(loopInterval);
-                                            return;
-                                        }
-                                        forceGifLoop();
-                                    }, 2000); // Reload every 2 seconds to ensure continuous looping
-                                    
-                                    // Also reload once when the image first loads
-                                    img.addEventListener('load', function() {
-                                        // Small delay to let the GIF start playing
-                                        setTimeout(() => {
-                                            forceGifLoop();
-                                        }, 500);
-                                    }, { once: true });
                                 }
                                 
                                 imageContainer.appendChild(img);
@@ -355,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 // Add error handling
                                 iframe.onerror = () => {
                                     console.error('Failed to load iframe for video:', embedUrl);
-                                    videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" style="color: #FF69B4;">Watch on YouTube</a></p>`;
+                                    videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4;">Watch on YouTube</a></p>`;
                                 };
                                 
                                 videoContainer.appendChild(iframe);
@@ -384,37 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                         img.loading = 'lazy';
                                     }
                                     img.className = 'modal-trigger';
-                                    // Ensure GIFs loop continuously
                                     if (isGif) {
                                         img.style.imageRendering = 'auto';
-                                        
-                                        // Force GIF to loop by reloading the source
-                                        const forceGifLoop = () => {
-                                            const currentSrc = img.src;
-                                            // Temporarily set to empty, then restore to force restart
-                                            img.src = '';
-                                            // Use requestAnimationFrame to ensure smooth transition
-                                            requestAnimationFrame(() => {
-                                                img.src = currentSrc;
-                                            });
-                                        };
-                                        
-                                        // Reload the GIF periodically to ensure it keeps looping
-                                        let loopInterval = setInterval(() => {
-                                            if (!img.parentNode || !document.body.contains(img)) {
-                                                clearInterval(loopInterval);
-                                                return;
-                                            }
-                                            forceGifLoop();
-                                        }, 2000); // Reload every 2 seconds to ensure continuous looping
-                                        
-                                        // Also reload once when the image first loads
-                                        img.addEventListener('load', function() {
-                                            // Small delay to let the GIF start playing
-                                            setTimeout(() => {
-                                                forceGifLoop();
-                                            }, 500);
-                                        }, { once: true });
                                     }
                                     imagesContainer.appendChild(img);
                                 };
@@ -467,23 +407,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Create container like other images
                 const container = document.createElement('div');
                 container.className = 'image-container';
+
+                const loadingPlaceholder = document.createElement('div');
+                loadingPlaceholder.className = 'image-loading';
+                loadingPlaceholder.textContent = 'Loading...';
+                container.appendChild(loadingPlaceholder);
                 
                 const img = new Image();
                 img.style.width = '100%';
                 img.style.height = '100%';
                 img.style.objectFit = 'cover';
+                img.style.display = 'none';
                 img.alt = `Very nice picture - ${subcategoryId}`;
                 img.loading = 'lazy';
                 img.className = 'modal-trigger';
                 
                 img.onerror = () => {
-                    if (container.parentNode) {
-                        container.parentNode.removeChild(container);
-                    }
+                    loadingPlaceholder.textContent = 'Failed to load';
                 };
                 
                 img.onload = () => {
-                    // Image loaded successfully
+                    loadingPlaceholder.style.display = 'none';
+                    img.style.display = 'block';
                 };
                 
                 container.appendChild(img);
@@ -591,110 +536,33 @@ document.addEventListener('DOMContentLoaded', () => {
             img.alt = 'Other Project Image';
             img.className = 'modal-trigger';
             
-            // Function to show the image
             const showImage = () => {
                 loadingPlaceholder.style.display = 'none';
                 img.style.display = 'block';
             };
-            
-            // Set up event handlers BEFORE setting src to avoid race conditions
+
             img.onerror = () => {
-                // Show error message instead of removing
                 loadingPlaceholder.textContent = 'Failed to load';
                 loadingPlaceholder.style.color = 'var(--text-color-muted)';
-                // Don't remove - keep the placeholder visible
             };
-            
+
             img.onload = showImage;
-            
-            // Also use addEventListener as a backup
-            img.addEventListener('load', showImage);
-            img.addEventListener('error', () => {
-                loadingPlaceholder.textContent = 'Failed to load';
-                loadingPlaceholder.style.color = 'var(--text-color-muted)';
-            });
-            
-            // Set loading attribute BEFORE setting src (for lazy loading non-GIFs)
+
             if (!isGif) {
                 img.loading = 'lazy';
             }
-            
-            // Append image to container first
+
+            // Append first so placeholders preserve layout while image loads.
             container.appendChild(img);
-            
-            // Set src to trigger loading
             img.src = `content/other/${imageName}`;
-            
-            // Check if image is already loaded (cached images) - do this after setting src
-            // Use multiple checks to ensure we catch cached images
-            const checkLoaded = () => {
-                if (img.complete && img.naturalWidth > 0) {
-                    // Image was already loaded (cached), show it immediately
-                    showImage();
-                    return true;
-                }
-                return false;
-            };
-            
-            // Check immediately and after a short delay
-            requestAnimationFrame(checkLoaded);
-            setTimeout(checkLoaded, 100);
-            
-            // Polling fallback: check periodically if image has loaded (for lazy loading cases)
-            let pollCount = 0;
-            const maxPolls = 50; // Check for up to 5 seconds (50 * 100ms)
-            const pollInterval = setInterval(() => {
-                pollCount++;
-                if (checkLoaded() || pollCount >= maxPolls) {
-                    clearInterval(pollInterval);
-                }
-            }, 100);
-            
-            // Fallback: if image hasn't loaded after 3 seconds, try removing lazy loading
-            if (!isGif) {
-                setTimeout(() => {
-                    if (loadingPlaceholder.style.display !== 'none' && !img.complete) {
-                        // Image hasn't loaded, try removing lazy loading
-                        img.loading = 'eager';
-                        // Force reload
-                        const currentSrc = img.src;
-                        img.src = '';
-                        img.src = currentSrc;
-                    }
-                }, 3000);
+
+            // Cached-image support: show immediately when browser already has the file.
+            if (img.complete && img.naturalWidth > 0) {
+                showImage();
             }
             
-            // Ensure GIFs loop continuously
             if (isGif) {
                 img.style.imageRendering = 'auto';
-                
-                // Force GIF to loop by reloading the source
-                const forceGifLoop = () => {
-                    const currentSrc = img.src;
-                    // Temporarily set to empty, then restore to force restart
-                    img.src = '';
-                    // Use requestAnimationFrame to ensure smooth transition
-                    requestAnimationFrame(() => {
-                        img.src = currentSrc;
-                    });
-                };
-                
-                // Reload the GIF periodically to ensure it keeps looping
-                let loopInterval = setInterval(() => {
-                    if (!container.parentNode || !document.body.contains(container)) {
-                        clearInterval(loopInterval);
-                        return;
-                    }
-                    forceGifLoop();
-                }, 2000); // Reload every 2 seconds to ensure continuous looping
-                
-                // Also reload once when the image first loads
-                img.addEventListener('load', function() {
-                    // Small delay to let the GIF start playing
-                    setTimeout(() => {
-                        forceGifLoop();
-                    }, 500);
-                }, { once: true });
             }
             
             // Container already has img appended, now append to grid
@@ -1610,7 +1478,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         
-        const config = iconMap[handle];
+        let config = iconMap[handle];
         if (!config) {
             // Fallback for unknown handles
             const folder = handle.toLowerCase();
