@@ -32,6 +32,7 @@ const projectsConfig = {
         description: 'Have been so lucky to work with Oslonøkkelen for many years.\n\n' + 
             'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone.\n\n' + 
             'Have been part of the entire journey and got to do so incredibly many different things together with the very best people.',
+        officialLink: 'https://www.oslo.kommune.no/oslonokkelen/',
         videos: [
             'content/projects/Oslonøkkelen/images/Ny_n_kkel_animation_1.gif'
         ]
@@ -223,6 +224,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const descElement = projectDetails.querySelector('.project-desc');
             if (descElement) {
                     descElement.textContent = projectConfig.description;
+                    const projectInfo = projectDetails.querySelector('.project-info');
+                    let officialLinkElement = projectInfo ? projectInfo.querySelector('.project-official-link') : null;
+
+                    if (projectConfig.officialLink && projectInfo) {
+                        if (!officialLinkElement) {
+                            officialLinkElement = document.createElement('a');
+                            officialLinkElement.className = 'project-official-link';
+                            officialLinkElement.target = '_blank';
+                            officialLinkElement.rel = 'noopener noreferrer';
+                            projectInfo.appendChild(officialLinkElement);
+                        }
+                        officialLinkElement.href = projectConfig.officialLink;
+                        officialLinkElement.textContent = 'Official Oslonøkkelen page';
+                    } else if (officialLinkElement) {
+                        officialLinkElement.remove();
+                    }
                 }
 
             // Load images for projects that need it
