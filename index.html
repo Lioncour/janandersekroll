@@ -386,7 +386,7 @@
                         
                         <div class="book-recommendations-section">
                             <h3>Book Recommendations</h3>
-                            <p class="recommendations-note">Have a book recommendation? Enter the ISBN and it gets emailed to me.</p>
+                            <p class="recommendations-note">Have a book recommendation? Enter the ISBN — it opens an email to me with the book details.</p>
                             <form id="book-recommendation-form" class="book-recommendation-form">
                                 <input 
                                     type="text" 
@@ -473,13 +473,11 @@
                         <div class="newsletter-signup">
                             <h3>Newsletter</h3>
                             <p>Get updates on new projects and blog posts</p>
-                            <form name="newsletter" class="signup-form" action="https://formsubmit.co/ajax/jaekroll@outlook.com" method="POST">
-                                <input type="hidden" name="_subject" value="Newsletter signup — janandersekroll.no">
-                                <input type="hidden" name="_template" value="table">
-                                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+                            <form name="newsletter" class="signup-form">
                                 <input type="email" name="email" placeholder="your@email.com" required>
                                 <button type="submit">Subscribe</button>
                             </form>
+                            <p class="contact-note" style="margin-top: 0.75rem;">This opens an email app, sry!</p>
                             <div id="newsletter-confirmation" style="display: none; margin-top: 1rem; color: #FF69B4; font-weight: bold;">
                                 Thank you for subscribing! 🎉
                             </div>

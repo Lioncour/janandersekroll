@@ -622,60 +622,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Newsletter — FormSubmit works on GitHub Pages (confirm email once when first used)
+    // Contact forms — mailto works on static GitHub Pages without third-party activation
     const CONTACT_EMAIL = 'jaekroll@outlook.com';
+
+    function openMailTo({ subject, body }) {
+        const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = href;
+    }
+
     const newsletterForm = document.querySelector('form[name="newsletter"]');
 
     if (newsletterForm) {
-        newsletterForm.addEventListener('submit', async (e) => {
+        newsletterForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const button = newsletterForm.querySelector('button');
             const confirmationDiv = document.getElementById('newsletter-confirmation');
             const emailInput = newsletterForm.querySelector('input[name="email"]');
+            const email = (emailInput.value || '').trim();
 
-            button.textContent = 'Submitting...';
+            if (!email) return;
+
+            button.textContent = 'Opening email…';
             button.disabled = true;
 
-            try {
-                const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: emailInput.value,
-                        _subject: 'Newsletter signup — janandersekroll.no',
-                        _template: 'table',
-                        source: 'janandersekroll.no newsletter'
-                    })
+            openMailTo({
+                subject: 'Newsletter signup — janandersekroll.no',
+                body: `Hi Jan Anders,\n\nPlease add this email to the newsletter:\n${email}\n`
+            });
+
+            confirmationDiv.style.display = 'block';
+            confirmationDiv.style.color = '#FF69B4';
+            confirmationDiv.textContent = 'Your email app should open — just hit send. If nothing opens, email jaekroll@outlook.com.';
+            button.textContent = 'Subscribe';
+            button.disabled = false;
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
                 });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                emailInput.style.display = 'none';
-                button.style.display = 'none';
-                confirmationDiv.style.display = 'block';
-                confirmationDiv.style.color = '#FF69B4';
-                confirmationDiv.textContent = 'Thank you for subscribing! 🎉';
-
-                if (typeof confetti === 'function') {
-                    confetti({
-                        particleCount: 150,
-                        spread: 90,
-                        origin: { y: 0.6 }
-                    });
-                }
-            } catch (error) {
-                console.error('Form submission error:', error);
-                confirmationDiv.textContent = 'Oops! Something went wrong. Please try again, or email jaekroll@outlook.com.';
-                confirmationDiv.style.display = 'block';
-                confirmationDiv.style.color = 'red';
-                button.textContent = 'Subscribe';
-                button.disabled = false;
             }
         });
     }
@@ -1113,44 +1100,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            recommendationStatus.textContent = 'Sending recommendation...';
             const button = bookRecommendationForm.querySelector('button');
             button.disabled = true;
 
-            try {
-                const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: `Book recommendation: ${bookData.title}`,
-                        _template: 'table',
-                        title: bookData.title,
-                        author: bookData.author,
-                        isbn: bookData.isbn,
-                        cover: bookData.cover || '',
-                        source: 'janandersekroll.no book recommendation'
-                    })
-                });
+            openMailTo({
+                subject: `Book recommendation: ${bookData.title}`,
+                body: [
+                    'Hi Jan Anders,',
+                    '',
+                    'Book recommendation from janandersekroll.no:',
+                    `Title: ${bookData.title}`,
+                    `Author: ${bookData.author}`,
+                    `ISBN: ${bookData.isbn}`,
+                    bookData.cover ? `Cover: ${bookData.cover}` : '',
+                    ''
+                ].filter(Boolean).join('\n')
+            });
 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            recommendationStatus.textContent = `Found "${bookData.title}" — your email app should open so you can send it.`;
+            recommendationStatus.className = 'recommendation-status success';
+            isbnInput.value = '';
+            button.disabled = false;
 
-                recommendationStatus.textContent = `Thank you! "${bookData.title}" was sent to me.`;
-                recommendationStatus.className = 'recommendation-status success';
-                isbnInput.value = '';
-                setTimeout(() => {
-                    recommendationStatus.textContent = '';
-                    recommendationStatus.className = 'recommendation-status';
-                }, 5000);
-            } catch (error) {
-                console.error('Error sending recommendation:', error);
-                recommendationStatus.textContent = 'Could not send right now. Please try again later.';
-                recommendationStatus.className = 'recommendation-status error';
-            } finally {
-                button.disabled = false;
-            }
+            setTimeout(() => {
+                recommendationStatus.textContent = '';
+                recommendationStatus.className = 'recommendation-status';
+            }, 8000);
         });
     }
 
