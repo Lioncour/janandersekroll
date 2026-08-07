@@ -1277,6 +1277,22 @@ h1, h2, h3, h4, p, a, .project-year {
     object-fit: contain;
     display: block;
     flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.webpage-icon-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 105, 180, 0.18);
+    border: 1px solid rgba(255, 105, 180, 0.35);
+    color: #FF69B4;
+    font-size: 0.85rem;
+    font-family: 'Space Mono', monospace;
 }
 
 .webpage-title-text h3 {

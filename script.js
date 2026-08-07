@@ -1094,46 +1094,78 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Load favicons for webpages
-    function loadFavicon(img, domain) {
-        // Explicitly set loading to eager for immediate load (favicons are small)
-        img.loading = 'eager';
-        
-        // Try multiple favicon sources - Google's service is most reliable
-        const sources = [
-            `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-            `https://icon.horse/icon/${domain}`,
-            `https://${domain}/favicon.ico`
+    // Webpage favicons — local files first, then remote fallbacks, then letter placeholder
+    function normalizeDomain(domain) {
+        return String(domain || '').replace(/^www\./i, '').toLowerCase();
+    }
+
+    function faviconSourcesFor(domain) {
+        const host = normalizeDomain(domain);
+        return [
+            `content/webpages/icons/${host}.png`,
+            `https://icon.horse/icon/${host}`,
+            `https://icons.duckduckgo.com/ip3/${host}.ico`,
+            `https://www.google.com/s2/favicons?domain=${host}&sz=64`
         ];
-        
+    }
+
+    function showWebpageIconPlaceholder(img) {
+        img.style.display = 'none';
+        let placeholder = img.nextElementSibling;
+        if (!placeholder || !placeholder.classList.contains('webpage-icon-placeholder')) {
+            placeholder = document.createElement('div');
+            placeholder.className = 'webpage-icon-placeholder';
+            placeholder.setAttribute('aria-hidden', 'true');
+            const label = (img.alt || img.getAttribute('data-domain') || '?').trim();
+            placeholder.textContent = label.charAt(0).toUpperCase();
+            img.insertAdjacentElement('afterend', placeholder);
+        }
+        placeholder.style.display = 'flex';
+    }
+
+    function loadFavicon(img, domain) {
+        img.loading = 'eager';
+        img.decoding = 'async';
+
+        const sources = faviconSourcesFor(domain);
         let currentIndex = 0;
-        
-        function tryNext() {
+
+        // If HTML already points at a local icon, start from there; otherwise begin at 0.
+        const currentSrc = img.getAttribute('src') || '';
+        if (currentSrc) {
+            const matchIndex = sources.findIndex((src) => currentSrc.endsWith(src) || currentSrc.includes(src));
+            currentIndex = matchIndex >= 0 ? matchIndex : 0;
+        }
+
+        const tryNext = () => {
             if (currentIndex >= sources.length) {
-                // All sources failed, show a default placeholder or hide
-                img.style.display = 'none';
+                showWebpageIconPlaceholder(img);
                 return;
             }
-            
-            // Set src directly and handle errors
+
             img.onerror = () => {
-                currentIndex++;
-                if (currentIndex < sources.length) {
-                    tryNext();
-                } else {
-                    img.style.display = 'none';
+                currentIndex += 1;
+                tryNext();
+            };
+
+            img.onload = () => {
+                img.onerror = null;
+                img.style.display = 'block';
+                const placeholder = img.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('webpage-icon-placeholder')) {
+                    placeholder.style.display = 'none';
                 }
             };
-            
-            img.onload = () => {
-                // Successfully loaded, remove error handler
-                img.onerror = null;
-            };
-            
-            // Try the current source
+
             img.src = sources[currentIndex];
+        };
+
+        // Cached local icons may already be complete.
+        if (img.complete && img.naturalWidth > 0) {
+            img.style.display = 'block';
+            return;
         }
-        
+
         tryNext();
     }
     
