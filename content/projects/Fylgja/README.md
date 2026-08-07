@@ -1,22 +1,5 @@
 # Fylgja
 
-A design exploration inspired by Norwegian folklore and modern functionality.
+An app that alerts you when your phone has coverage again — made for mountains and other places where signal comes and goes.
 
-## Project Overview
-Merging traditional Norwegian design elements with contemporary needs.
-
-### Key Features
-- Nordic design principles
-- Sustainable materials
-- Cultural storytelling through design
-
-### Process
-1. Research into Norwegian folklore
-2. Material selection and testing
-3. Prototype development
-4. User feedback integration
-
-## Technical Details
-- Natural and local materials
-- Traditional crafting techniques
-- Modern manufacturing methods 
+The idea came on a snow-cave trip: constantly pulling out the phone to check for bars. Fylgja sings and vibrates when coverage returns instead.

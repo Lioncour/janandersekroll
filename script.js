@@ -10,26 +10,38 @@ function encodeAssetPath(path) {
 const projectsConfig = {
     'medical-projects': {
         title: 'A bunch of medical projects',
-        description: 'Did a lot of various projects all revolving around healthcare products of some sort. Super happy to use the whole range of the design landscape, including package design, service design, industrial design and a lot of UX/UI design.',
+        description:
+            'A stretch of work across healthcare products and services — from packaging and industrial design to service design and a lot of UX/UI.\n\n' +
+            'What I liked most was getting to move between scales: the feel of a physical object in someone\'s hands, how a kit sits on a shelf, and the screens and flows that make the whole system make sense in a clinic or at home.\n\n' +
+            'Healthcare is picky (and it should be). These projects were a good training ground for clear information, careful interaction, and design that has to work when people are stressed, tired, or in a hurry.',
         folder: 'A bunch of medical projects',
         images: ['01.jpg', '02.png', '03.jpg', '04.jpg', '05.JPG', '06.jpg', '07.jpg', '08.jpg', '09.png', '11.jpg']
     },
     'fylgja': {
         title: 'Fylgja',
         folder: 'Fylgja',
-        description: 'An app that alerts you when you have coverage in the mountains (and other places). The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.',
+        description:
+            'Fylgja is a small app with one job: alert you when your phone finally has coverage again — in the mountains, in the woods, or anywhere the signal keeps vanishing.\n\n' +
+            'The idea came on a snow-cave trip. We kept hiking toward the nearest peak just to check if we could get a bar of signal, pulling the phone out every few hundred meters. Super annoying.\n\n' +
+            'So Fylgja sits in the background and sings / vibrates when coverage returns. Less fiddling with the screen, more walking. Named after the Norse “fylgja” — a kind of companion spirit that follows you — which felt right for a little helper that watches the network while you watch the terrain.',
         images: ['01.png', '02.png', '03.png']
     },
     'lego': {
         title: 'Lego',
         folder: 'Lego',
-        description: 'Was lucky enough to work on a couple of projects for LEGO. Super fun, I do believe one of the projects made it into the store in the end :D Had to sign a bunch of NDAs so not really allowed to show much :(',
+        description:
+            'I was lucky enough to work on a couple of projects for LEGO — the kind of brief where playfulness is the point and every detail still has to be airtight.\n\n' +
+            'It was ridiculously fun. I believe one of the projects made it into the store in the end :D\n\n' +
+            'I signed a stack of NDAs, so I can\'t show much. What I can say: it was a great lesson in designing for delight under serious constraints — kids, parents, manufacturing, and a brand that everyone already has strong feelings about.',
         images: ['01.jpg', '02.jpg', '03.jpg', '04.webp']
     },
     'master-thesis': {
         title: 'Master Thesis at The Oslo School of Architecture and Design',
         folder: 'Master Thesis',
-        description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics." I was looking at how we could expand old games with new mechanics and create new mechanics for new games.',
+        description:
+            'Diploma title: “The creation and exploration of new tangible interactive game mechanics.”\n\n' +
+            'I was looking at how physical interaction can expand old games — and how new mechanics can grow into wholly new ones. Screens are great, but hands, weight, friction, and shared space do something else to how we play and how we think.\n\n' +
+            'The work mixed research, prototyping, and a lot of making: building pieces, testing rules, filming how people actually use the things. The videos below are from that process — rough, playful, and very much about finding mechanics that feel good in the hand before they look finished on a page.',
         images: [
             '01.png', '02.webp', '03.webp', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg',
             '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg'
@@ -45,9 +57,11 @@ const projectsConfig = {
     'Oslonøkkelen': {
         title: 'Oslonøkkelen',
         folder: 'Oslonøkkelen',
-        description: 'Have been so lucky to work with Oslonøkkelen for many years.\n\n' +
-            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone.\n\n' +
-            'Have been part of the entire journey and got to do so incredibly many different things together with the very best people.',
+        description:
+            'I\'ve been lucky enough to work on Oslonøkkelen for many years at Oslo Origo — from early days through a product that now opens a big chunk of the city for hundreds of thousands of people.\n\n' +
+            'Oslonøkkelen is Oslo\'s digital key: an app that gives easier, often extended, access to municipal places and services. Unlock doors, turn on lights, show library or recycling codes, and find what you can use on a map — after a one-time login with ID-porten. Location is used so you only open what you\'re actually standing next to.\n\n' +
+            'It\'s used for libraries, neighbourhood venues, recycling stations, schools, kindergartens, sports facilities, and more. Some access is open to everyone; some is personal or comes automatically when you book a room.\n\n' +
+            'I\'ve been part of the whole journey and got to do an absurd number of different things — product and interaction design, flows, visuals, prototypes, and the messy middle between citizens, locks, bookings, and city services — together with some of the best people I\'ve worked with.',
         officialLink: 'https://www.oslo.kommune.no/oslonokkelen/',
         officialLinkLabel: 'Official Oslonøkkelen page',
         images: ['01.jpg', '02.png', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.JPEG', '10.jpg'],

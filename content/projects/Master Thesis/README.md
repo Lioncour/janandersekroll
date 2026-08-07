@@ -1,22 +1,7 @@
 # Master Thesis
 
-Industrial design research and development project.
+Diploma at The Oslo School of Architecture and Design (AHO).
 
-## Project Overview
-Comprehensive exploration of design methodology and practical application.
+**Title:** The creation and exploration of new tangible interactive game mechanics.
 
-### Key Features
-- Research-based approach
-- Innovative solutions
-- User-centered design
-
-### Process
-1. Literature review
-2. User research
-3. Design development
-4. Testing and validation
-
-## Technical Details
-- Research methodology
-- Design implementation
-- Documentation and findings 
+Research and prototypes around physical play: expanding familiar games with new tangible mechanics, and inventing mechanics for new ones.

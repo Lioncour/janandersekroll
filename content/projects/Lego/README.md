@@ -1,1 +1,3 @@
-Was lucky enough to work on a couple of projects for LEGO. Super fun, I do believe one of the projects made it into the store in the end :D Had to sign a bunch of NDAs so not really allowed to show much :(
+# Lego
+
+Design work for LEGO under NDA. Playful briefs, serious constraints — and at least one project that (I believe) made it into the store.
