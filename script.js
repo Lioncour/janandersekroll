@@ -424,7 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
             projectTitle.blur();
             
             // Open Projects category if closed - do this FIRST
-            const projectsCategory = document.querySelector('.category:first-of-type');
+            const projectsCategory = Array.from(document.querySelectorAll('.category')).find((category) => {
+                const heading = category.querySelector('h2');
+                return heading && heading.textContent.toLowerCase().includes('projects');
+            });
             if (projectsCategory) {
                 const content = projectsCategory.querySelector('.content');
                 const h2 = projectsCategory.querySelector('h2');
