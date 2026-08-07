@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Contact forms — mailto works on static GitHub Pages without third-party activation
+    // Contact email (book recommendations still use mailto)
     const CONTACT_EMAIL = 'jaekroll@outlook.com';
 
     function openMailTo({ subject, body }) {
@@ -630,39 +630,34 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = href;
     }
 
+    // Newsletter via Buttondown — set username in the form's data-buttondown-user
+    // (find it at https://buttondown.com/settings/embedding)
     const newsletterForm = document.querySelector('form[name="newsletter"]');
 
     if (newsletterForm) {
+        const confirmationDiv = document.getElementById('newsletter-confirmation');
+        const buttondownUser = (newsletterForm.getAttribute('data-buttondown-user') || '').trim();
+
+        if (buttondownUser) {
+            newsletterForm.action = `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(buttondownUser)}`;
+        }
+
         newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            if (!buttondownUser || buttondownUser === 'USERNAME') {
+                e.preventDefault();
+                if (confirmationDiv) {
+                    confirmationDiv.style.display = 'block';
+                    confirmationDiv.style.color = '#ff4444';
+                    confirmationDiv.textContent = 'Newsletter is almost ready — Buttondown username not set yet.';
+                }
+                return;
+            }
 
+            // Native POST to Buttondown (no CORS issues). They’ll see Buttondown’s confirm page.
             const button = newsletterForm.querySelector('button');
-            const confirmationDiv = document.getElementById('newsletter-confirmation');
-            const emailInput = newsletterForm.querySelector('input[name="email"]');
-            const email = (emailInput.value || '').trim();
-
-            if (!email) return;
-
-            button.textContent = 'Opening email…';
-            button.disabled = true;
-
-            openMailTo({
-                subject: 'Newsletter signup — janandersekroll.no',
-                body: `Hi Jan Anders,\n\nPlease add this email to the newsletter:\n${email}\n`
-            });
-
-            confirmationDiv.style.display = 'block';
-            confirmationDiv.style.color = '#FF69B4';
-            confirmationDiv.textContent = 'Your email app should open — just hit send. If nothing opens, email jaekroll@outlook.com.';
-            button.textContent = 'Subscribe';
-            button.disabled = false;
-
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 120,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
+            if (button) {
+                button.textContent = 'Subscribing…';
+                button.disabled = true;
             }
         });
     }
