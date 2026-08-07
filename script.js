@@ -1,23 +1,39 @@
-// Add project configurations at the top of the file
+// Encode each path segment so spaces, &, (), and unicode work on GitHub Pages / Linux hosts.
+function encodeAssetPath(path) {
+    return String(path)
+        .split('/')
+        .map((segment) => (segment ? encodeURIComponent(segment) : ''))
+        .join('/');
+}
+
+// Explicit image lists — avoids probing 99×4 extensions (hundreds of failed requests) and keeps order stable.
 const projectsConfig = {
     'medical-projects': {
         title: 'A bunch of medical projects',
         description: 'Did a lot of various projects all revolving around healthcare products of some sort. Super happy to use the whole range of the design landscape, including package design, service design, industrial design and a lot of UX/UI design.',
-        folder: 'A bunch of medical projects'
+        folder: 'A bunch of medical projects',
+        images: ['01.jpg', '02.png', '03.jpg', '04.jpg', '05.JPG', '06.jpg', '07.jpg', '08.jpg', '09.png', '11.jpg']
     },
     'fylgja': {
         title: 'Fylgja',
-        description: 'An app that alerts you when you have coverage in the mountains (and other places). The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.'
+        folder: 'Fylgja',
+        description: 'An app that alerts you when you have coverage in the mountains (and other places). The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check. This app sings a tune and vibrates to alert you if you get phone coverage.',
+        images: ['01.png', '02.png', '03.png']
     },
     'lego': {
         title: 'Lego',
-        description: 'Was lucky enough to work on a couple of projects for LEGO. Super fun, I do believe one of the projects made it into the store in the end :D Had to sign a bunch of NDAs so not really allowed to show much :('
+        folder: 'Lego',
+        description: 'Was lucky enough to work on a couple of projects for LEGO. Super fun, I do believe one of the projects made it into the store in the end :D Had to sign a bunch of NDAs so not really allowed to show much :(',
+        images: ['01.jpg', '02.jpg', '03.jpg', '04.webp']
     },
     'master-thesis': {
         title: 'Master Thesis at The Oslo School of Architecture and Design',
         folder: 'Master Thesis',
-        images: true,  // Enable dynamic image loading
         description: 'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics." I was looking at how we could expand old games with new mechanics and create new mechanics for new games.',
+        images: [
+            '01.png', '02.webp', '03.webp', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg',
+            '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg'
+        ],
         videos: [
             'https://youtu.be/rBf26crYyzk',
             'https://youtu.be/hdXjrF_VJCw',
@@ -29,36 +45,190 @@ const projectsConfig = {
     'Oslonøkkelen': {
         title: 'Oslonøkkelen',
         folder: 'Oslonøkkelen',
-        description: 'Have been so lucky to work with Oslonøkkelen for many years.\n\n' + 
-            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone.\n\n' + 
+        description: 'Have been so lucky to work with Oslonøkkelen for many years.\n\n' +
+            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone.\n\n' +
             'Have been part of the entire journey and got to do so incredibly many different things together with the very best people.',
         officialLink: 'https://www.oslo.kommune.no/oslonokkelen/',
+        officialLinkLabel: 'Official Oslonøkkelen page',
+        images: ['01.jpg', '02.png', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.JPEG', '10.jpg'],
         videos: [
-            'content/projects/Oslonøkkelen/images/Ny_n_kkel_animation_1.gif'
+            'content/projects/Oslonøkkelen/images/Ny_n_kkel_animation_1.webp'
         ]
     }
 };
 
+function extractYouTubeId(mediaUrl) {
+    if (mediaUrl.includes('youtu.be/')) {
+        return mediaUrl.split('youtu.be/')[1].split(/[?#&]/)[0].trim();
+    }
+    if (mediaUrl.includes('youtube.com/watch?v=')) {
+        return mediaUrl.split('v=')[1].split(/[?#&]/)[0].trim();
+    }
+    if (mediaUrl.includes('youtube.com/embed/')) {
+        return mediaUrl.split('embed/')[1].split(/[?#&]/)[0].trim();
+    }
+    if (mediaUrl.includes('youtube.com/v/')) {
+        return mediaUrl.split('v/')[1].split(/[?#&]/)[0].trim();
+    }
+    return null;
+}
+
+function createProjectImageSlot(src, alt, { hero = false, eager = false } = {}) {
+    const slot = document.createElement('div');
+    slot.className = hero ? 'project-image-slot project-image-slot--hero' : 'project-image-slot';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'image-loading';
+    placeholder.setAttribute('aria-hidden', 'true');
+    slot.appendChild(placeholder);
+
+    const img = new Image();
+    img.alt = alt;
+    img.className = hero ? 'modal-trigger project-hero-media' : 'modal-trigger';
+    img.decoding = 'async';
+    if (!eager) {
+        img.loading = 'lazy';
+    }
+
+    const isAnimated = /\.(gif|webp)$/i.test(src);
+    if (isAnimated) {
+        img.style.imageRendering = 'auto';
+    }
+
+    img.onload = () => {
+        placeholder.remove();
+        slot.appendChild(img);
+        slot.classList.add('is-loaded');
+    };
+
+    img.onerror = () => {
+        slot.remove();
+    };
+
+    img.src = src;
+    return slot;
+}
+
+function loadProjectMedia(imagesContainer, projectConfig) {
+    const folder = projectConfig.folder;
+
+    if (projectConfig.videos && projectConfig.videos.length > 0) {
+        projectConfig.videos.forEach((mediaUrl, index) => {
+            const isLocalImage = /\.(gif|jpe?g|png|webp)$/i.test(mediaUrl) ||
+                (!mediaUrl.includes('youtube.com') && !mediaUrl.includes('youtu.be'));
+
+            if (isLocalImage) {
+                const src = encodeAssetPath(mediaUrl);
+                imagesContainer.appendChild(
+                    createProjectImageSlot(src, `${projectConfig.title} Animation ${index + 1}`, {
+                        hero: true,
+                        eager: true
+                    })
+                );
+                return;
+            }
+
+            const videoId = extractYouTubeId(mediaUrl);
+            const embedUrl = `https://www.youtube.com/embed/${videoId || ''}`;
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+
+            const iframe = document.createElement('iframe');
+            iframe.src = embedUrl;
+            iframe.width = '560';
+            iframe.height = '315';
+            iframe.title = `${projectConfig.title} video ${index + 1}`;
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.loading = 'lazy';
+            iframe.onerror = () => {
+                videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4;">Watch on YouTube</a></p>`;
+            };
+
+            videoContainer.appendChild(iframe);
+            imagesContainer.appendChild(videoContainer);
+        });
+    }
+
+    if (folder && Array.isArray(projectConfig.images)) {
+        projectConfig.images.forEach((imageName, index) => {
+            const src = encodeAssetPath(`content/projects/${folder}/images/${imageName}`);
+            imagesContainer.appendChild(
+                createProjectImageSlot(src, `${projectConfig.title} Image ${index + 1}`, {
+                    eager: index < 4
+                })
+            );
+        });
+    }
+}
+
+function createGalleryImageCard(src, alt) {
+    const container = document.createElement('div');
+    container.className = 'image-container';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'image-loading';
+    placeholder.setAttribute('aria-hidden', 'true');
+    container.appendChild(placeholder);
+
+    const img = document.createElement('img');
+    img.alt = alt;
+    img.className = 'modal-trigger';
+    img.decoding = 'async';
+    img.style.display = 'none';
+
+    let loadStarted = false;
+    const startLoad = () => {
+        if (loadStarted) return;
+        loadStarted = true;
+        img.src = src;
+    };
+
+    const showImage = () => {
+        placeholder.remove();
+        img.style.display = 'block';
+        container.classList.add('is-loaded');
+    };
+
+    img.onload = showImage;
+    img.onerror = () => {
+        placeholder.textContent = 'Unavailable';
+        placeholder.classList.add('image-loading-error');
+    };
+
+    if (/\.(gif|webp)$/i.test(src)) {
+        img.style.imageRendering = 'auto';
+    }
+
+    container.appendChild(img);
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    observer.disconnect();
+                    startLoad();
+                }
+            });
+        }, { rootMargin: '300px 0px' });
+        observer.observe(container);
+    } else {
+        img.loading = 'lazy';
+        startLoad();
+    }
+
+    return container;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Load preview images
     Object.entries(projectsConfig).forEach(([projectId, config]) => {
-        if (config.folder) {
+        if (config.folder && config.images && config.images.length > 0) {
             const previewImg = document.querySelector(`[data-project="${projectId}"] .project-preview img`);
             if (previewImg) {
-                // Try both png and jpg for the preview
-                const tryLoadPreview = (ext) => {
-                    const tempImg = new Image();
-                    tempImg.onload = () => {
-                        previewImg.src = tempImg.src;
-                    };
-                    tempImg.onerror = () => {
-                        // Silently fail - image doesn't exist
-                    };
-                    tempImg.src = `content/projects/${config.folder}/images/01.${ext}`;
-                };
-                
-                tryLoadPreview('png');
-                tryLoadPreview('jpg');
+                previewImg.decoding = 'async';
+                previewImg.src = encodeAssetPath(`content/projects/${config.folder}/images/${config.images[0]}`);
             }
         }
     });
@@ -188,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // If we found a project, handle it
         if (projectTitle && projectId) {
-            console.log('Opening project:', projectId);
             e.stopPropagation();
             
             // Remove focus outline after click
@@ -203,7 +372,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const content = projectsCategory.querySelector('.content');
                 const h2 = projectsCategory.querySelector('h2');
                 if (content && !content.classList.contains('active')) {
-                    console.log('Opening Projects category');
                     content.classList.add('active');
                     if (h2) h2.setAttribute('aria-expanded', 'true');
                     // Wait a moment for display to update
@@ -231,8 +399,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Project config not found:', projectId);
             return;
         }
-        
-        console.log('Found project details and config for:', projectId);
         
         // Toggle project details
             if (projectDetails.classList.contains('active')) {
@@ -262,131 +428,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             projectInfo.appendChild(officialLinkElement);
                         }
                         officialLinkElement.href = projectConfig.officialLink;
-                        officialLinkElement.textContent = 'Official Oslonøkkelen page';
+                        officialLinkElement.textContent = projectConfig.officialLinkLabel || 'Official page';
                     } else if (officialLinkElement) {
                         officialLinkElement.remove();
                     }
                 }
 
-            // Load images for projects that need it
-                if (projectId === 'medical-projects' || projectId === 'fylgja' || projectId === 'Oslonøkkelen' || projectId === 'master-thesis') {
-                    const imagesContainer = projectDetails.querySelector('.project-images');
-                    if (imagesContainer && imagesContainer.children.length === 0) {
-                    // Add videos and images/GIFs
-                        if (projectConfig.videos && projectConfig.videos.length > 0) {
-                        projectConfig.videos.forEach((mediaUrl, index) => {
-                            // Check if it's an image/GIF file (not a YouTube URL)
-                            const isImage = mediaUrl.match(/\.(gif|jpg|jpeg|png|webp)$/i) || 
-                                          (!mediaUrl.includes('youtube.com') && !mediaUrl.includes('youtu.be'));
-                            
-                            if (isImage) {
-                                // Create image container for GIF/image
-                                const imageContainer = document.createElement('div');
-                                imageContainer.className = 'video-container';
-                                
-                                const img = document.createElement('img');
-                                // For GIFs, don't use lazy loading to ensure they play
-                                const isGif = mediaUrl.toLowerCase().endsWith('.gif');
-                                if (!isGif) {
-                                    img.loading = 'lazy';
-                                }
-                                img.src = mediaUrl;
-                                img.alt = `${projectConfig.title} Animation ${index + 1}`;
-                                img.style.width = '100%';
-                                img.style.height = '100%';
-                                img.style.objectFit = 'contain';
-                                
-                                if (isGif) {
-                                    img.style.imageRendering = 'auto';
-                                }
-                                
-                                imageContainer.appendChild(img);
-                                imagesContainer.insertBefore(imageContainer, imagesContainer.firstChild);
-                            } else {
-                                // It's a YouTube video
-                                let videoId = null;
-                                let embedUrl = null;
-                                
-                                // Extract video ID from various YouTube URL formats
-                                if (mediaUrl.includes('youtu.be/')) {
-                                    // Short URL: https://youtu.be/VIDEO_ID
-                                    videoId = mediaUrl.split('youtu.be/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
-                                } else if (mediaUrl.includes('youtube.com/watch?v=')) {
-                                    // Standard URL: https://youtube.com/watch?v=VIDEO_ID
-                                    videoId = mediaUrl.split('v=')[1].split('&')[0].split('#')[0].trim();
-                                } else if (mediaUrl.includes('youtube.com/embed/')) {
-                                    // Already embed URL: extract ID
-                                    videoId = mediaUrl.split('embed/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
-                                } else if (mediaUrl.includes('youtube.com/v/')) {
-                                    // Old format: https://youtube.com/v/VIDEO_ID
-                                    videoId = mediaUrl.split('v/')[1].split('?')[0].split('&')[0].split('#')[0].trim();
-                                }
-                                
-                                // Validate video ID (YouTube IDs are typically 11 characters)
-                                if (!videoId || videoId.length !== 11) {
-                                    console.error('Invalid YouTube video ID from URL:', mediaUrl, 'Extracted ID:', videoId);
-                                    // Still try to embed, might work
-                                }
-                                
-                                // Build proper embed URL
-                                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                                
-                                console.log('Embedding video:', embedUrl, 'from original URL:', mediaUrl, 'Video ID:', videoId);
-
-                                const videoContainer = document.createElement('div');
-                                videoContainer.className = 'video-container';
-                                
-                                // Create iframe element directly
-                                const iframe = document.createElement('iframe');
-                                iframe.setAttribute('src', embedUrl);
-                                iframe.setAttribute('width', '560');
-                                iframe.setAttribute('height', '315');
-                                iframe.setAttribute('title', 'YouTube video player');
-                                iframe.setAttribute('frameborder', '0');
-                                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-                                iframe.setAttribute('allowfullscreen', '');
-                                iframe.setAttribute('loading', 'lazy');
-                                
-                                // Add error handling
-                                iframe.onerror = () => {
-                                    console.error('Failed to load iframe for video:', embedUrl);
-                                    videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4;">Watch on YouTube</a></p>`;
-                                };
-                                
-                                videoContainer.appendChild(iframe);
-                                imagesContainer.insertBefore(videoContainer, imagesContainer.firstChild);
-                            }
-                            });
-                        }
-
-                    // Load images
-                        const projectFolder = projectId === 'medical-projects' 
-                            ? 'A bunch of medical projects'
-                        : projectId === 'fylgja' ? 'Fylgja'
-                        : projectId === 'Oslonøkkelen' ? 'Oslonøkkelen'
-                                    : 'Master Thesis';
-                        
-                        for(let i = 1; i <= 99; i++) {
-                            const paddedIndex = String(i).padStart(2, '0');
-                        ['png', 'jpg', 'jpeg', 'gif'].forEach(ext => {
-                                const img = new Image();
-                                const isGif = ext.toLowerCase() === 'gif';
-                                img.src = `content/projects/${projectFolder}/images/${paddedIndex}.${ext}`;
-                                img.onload = function() {
-                                    img.alt = `${projectConfig.title} Image ${i}`;
-                                    // Don't use lazy loading for GIFs to ensure they play
-                                    if (!isGif) {
-                                        img.loading = 'lazy';
-                                    }
-                                    img.className = 'modal-trigger';
-                                    if (isGif) {
-                                        img.style.imageRendering = 'auto';
-                                    }
-                                    imagesContainer.appendChild(img);
-                                };
-                            });
-                        }
-                    }
+            const imagesContainer = projectDetails.querySelector('.project-images');
+                if (imagesContainer && imagesContainer.children.length === 0) {
+                    loadProjectMedia(imagesContainer, projectConfig);
                 }
             
             // Scroll into view
@@ -435,38 +485,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const grid = document.querySelector(`.very-nice-pictures-grid[data-subcategory="${subcategoryId}"]`);
             if (grid && config.images.length > 0) {
                 config.images.forEach(imageName => {
-                    // Create container like other images
-                    const container = document.createElement('div');
-                    container.className = 'image-container';
-
-                    const loadingPlaceholder = document.createElement('div');
-                    loadingPlaceholder.className = 'image-loading';
-                    loadingPlaceholder.textContent = 'Loading...';
-                    container.appendChild(loadingPlaceholder);
-                    
-                    const img = new Image();
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    img.style.display = 'none';
-                    img.alt = `Very nice picture - ${subcategoryId}`;
-                    img.loading = 'lazy';
-                    img.className = 'modal-trigger';
-                    
-                    img.onerror = () => {
-                        loadingPlaceholder.textContent = 'Failed to load';
-                    };
-                    
-                    img.onload = () => {
-                        loadingPlaceholder.style.display = 'none';
-                        img.style.display = 'block';
-                    };
-                    
-                    container.appendChild(img);
-                    grid.appendChild(container);
-                    
-                    // Set src after appending to container
-                    img.src = `content/${config.folder}/${imageName}`;
+                    const src = encodeAssetPath(`content/${config.folder}/${imageName}`);
+                    grid.appendChild(createGalleryImageCard(src, `Very nice picture - ${subcategoryId}`));
                 });
             }
         });
@@ -487,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '20180729_164648.jpg',
             '20190501_153758.jpg',
             '20190611_194204.jpg',
-            '20190909_091540_1.gif',
+            '20190909_091540_1.webp',
             'Drap & Design_Page_02_Image_0001.jpg',
             'Drap & Design_Page_03_Image_0001.jpg',
             'Drap & Design_Page_05_Image_0001.jpg',
@@ -513,8 +533,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'DSC08029.jpg',
             'DSC08455.ARW.jpg',
             'DSC09074.jpg',
-            'folding_1.gif',
-            'gutta.png',
+            'folding_1.webp',
+            'gutta.jpg',
             'IMG_4220.JPG',
             'IMG_4808.JPG',
             'IMG_5561.JPG',
@@ -525,8 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_055_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_056_Image_0001.jpg',
             'litenku.jpg',
-            'Sequence 01_6.gif',
-            'skull_2.png',
+            'Sequence 01_6.webp',
+            'skull_2.webp',
             'WP_20130917_007.JPG',
             'WP_20131229_001.jpg',
             'WP_20140611_003.jpg',
@@ -535,122 +555,68 @@ document.addEventListener('DOMContentLoaded', () => {
             'WP_20150412_008.jpg',
             'WP_20160729_22_11_37_Pro.jpg'
         ];
-        
-        // Append all cards quickly; each image still lazy-loads.
+
         otherImages.forEach(imageName => {
-            const isGif = imageName.toLowerCase().endsWith('.gif');
-            
-            // Create container for image with loading placeholder
-            const container = document.createElement('div');
-            container.className = 'image-container';
-            container.style.position = 'relative';
-            container.style.width = '100%';
-            container.style.height = '180px';
-            container.style.background = 'var(--bg-color)';
-            container.style.display = 'flex';
-            container.style.alignItems = 'center';
-            container.style.justifyContent = 'center';
-            
-            // Create loading placeholder
-            const loadingPlaceholder = document.createElement('div');
-            loadingPlaceholder.className = 'image-loading';
-            loadingPlaceholder.style.width = '100%';
-            loadingPlaceholder.style.height = '100%';
-            loadingPlaceholder.style.display = 'flex';
-            loadingPlaceholder.style.alignItems = 'center';
-            loadingPlaceholder.style.justifyContent = 'center';
-            loadingPlaceholder.style.color = 'var(--text-color-muted)';
-            loadingPlaceholder.style.fontSize = '0.8rem';
-            loadingPlaceholder.style.fontFamily = "'Space Mono', monospace";
-            loadingPlaceholder.textContent = 'Loading...';
-            container.appendChild(loadingPlaceholder);
-            
-            // Create the actual image
-            const img = new Image();
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            img.style.display = 'none'; // Hide until loaded
-            img.alt = 'Other Project Image';
-            img.className = 'modal-trigger';
-            
-            const showImage = () => {
-                loadingPlaceholder.style.display = 'none';
-                img.style.display = 'block';
-            };
-
-            img.onerror = () => {
-                loadingPlaceholder.textContent = 'Failed to load';
-                loadingPlaceholder.style.color = 'var(--text-color-muted)';
-            };
-
-            img.onload = showImage;
-
-            if (!isGif) {
-                img.loading = 'lazy';
-            }
-
-            // Append first so placeholders preserve layout while image loads.
-            container.appendChild(img);
-            img.src = `content/other/${imageName}`;
-
-            // Cached-image support: show immediately when browser already has the file.
-            if (img.complete && img.naturalWidth > 0) {
-                showImage();
-            }
-            
-            if (isGif) {
-                img.style.imageRendering = 'auto';
-            }
-            
-            // Container already has img appended, now append to grid
-            otherGrid.appendChild(container);  // Append immediately to maintain order
+            const src = encodeAssetPath(`content/other/${imageName}`);
+            otherGrid.appendChild(createGalleryImageCard(src, 'Other Project Image'));
         });
     }
 
-    // Newsletter form handler
+    // Newsletter — FormSubmit works on GitHub Pages (confirm email once when first used)
+    const CONTACT_EMAIL = 'jaekroll@outlook.com';
     const newsletterForm = document.querySelector('form[name="newsletter"]');
 
     if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Prevent default page reload/redirect
+        newsletterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
             const button = newsletterForm.querySelector('button');
-            const formData = new FormData(newsletterForm);
             const confirmationDiv = document.getElementById('newsletter-confirmation');
             const emailInput = newsletterForm.querySelector('input[name="email"]');
 
-            // Change button state while submitting
             button.textContent = 'Submitting...';
             button.disabled = true;
 
-            fetch("/", { // Submit to the same path (Netlify requirement for AJAX)
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString(),
-            })
-            .then(() => {
-                // Success!
-                emailInput.style.display = 'none'; // Hide input
-                button.style.display = 'none'; // Hide button
-                confirmationDiv.style.display = 'block'; // Show confirmation message
-
-                // Trigger confetti
-                confetti({
-                    particleCount: 150,
-                    spread: 90,
-                    origin: { y: 0.6 }
+            try {
+                const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value,
+                        _subject: 'Newsletter signup — janandersekroll.no',
+                        _template: 'table',
+                        source: 'janandersekroll.no newsletter'
+                    })
                 });
 
-            }).catch((error) => {
-                // Handle errors
-                console.error('Form submission error:', error);
-                confirmationDiv.textContent = 'Oops! Something went wrong. Please try again.';
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                emailInput.style.display = 'none';
+                button.style.display = 'none';
                 confirmationDiv.style.display = 'block';
-                confirmationDiv.style.color = 'red'; // Indicate error
-                button.textContent = 'Subscribe'; // Reset button
+                confirmationDiv.style.color = '#FF69B4';
+                confirmationDiv.textContent = 'Thank you for subscribing! 🎉';
+
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 150,
+                        spread: 90,
+                        origin: { y: 0.6 }
+                    });
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                confirmationDiv.textContent = 'Oops! Something went wrong. Please try again, or email jaekroll@outlook.com.';
+                confirmationDiv.style.display = 'block';
+                confirmationDiv.style.color = 'red';
+                button.textContent = 'Subscribe';
                 button.disabled = false;
-            });
+            }
         });
     }
 
@@ -748,25 +714,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Initialize cursor effect
-    window.addEventListener('pointerdown', updatePointer);
-    window.addEventListener('pointermove', updatePointer);
-    createTrail(null, 35);  // Shorter trail
-    
-    // Toggle cursor effect
+    // Initialize cursor effect (skip on touch / reduced-motion)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
     const cursorToggle = document.getElementById('cursor-toggle');
-    let isEnabled = true;
-    
-    cursorToggle.addEventListener('click', () => {
+    let isEnabled = !(prefersReducedMotion || isCoarsePointer);
+
+    if (isEnabled) {
+        window.addEventListener('pointerdown', updatePointer);
+        window.addEventListener('pointermove', updatePointer);
+        createTrail(null, 35);
+    } else {
         const svg = document.querySelector('.cursor-trail');
-        if (isEnabled) {
-            svg.style.display = 'none';
-        } else {
-            svg.style.display = 'block';
-            createTrail(null, 35);
-        }
-        isEnabled = !isEnabled;
-    });
+        if (svg) svg.style.display = 'none';
+        if (cursorToggle) cursorToggle.style.display = 'none';
+    }
+
+    if (cursorToggle) {
+        cursorToggle.addEventListener('click', () => {
+            const svg = document.querySelector('.cursor-trail');
+            if (isEnabled) {
+                svg.style.display = 'none';
+            } else {
+                svg.style.display = 'block';
+                createTrail(null, 35);
+            }
+            isEnabled = !isEnabled;
+        });
+    }
 
     // Profile image fireworks effect
     function createParticle(x, y, color) {
@@ -930,10 +905,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             // Check if clicked element is an image or inside a video container or image container
             let clickedImg = null;
-            if (e.target.matches('.project-images img, .other-grid img, .other-grid .image-container img, .video-container img')) {
+            if (e.target.matches('.project-images img, .other-grid img, .other-grid .image-container img, .video-container img, .project-image-slot img')) {
                 clickedImg = e.target;
-            } else if (e.target.closest('.video-container img, .image-container img')) {
-                clickedImg = e.target.closest('.video-container img, .image-container img');
+            } else if (e.target.closest('.video-container img, .image-container img, .project-image-slot img')) {
+                clickedImg = e.target.closest('.video-container img, .image-container img, .project-image-slot img');
             }
             
             if (clickedImg) {
@@ -980,464 +955,145 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Books section - ISBN recommendation handler
+    // Books — static list from content/books.json + ISBN recommendations emailed via FormSubmit
     const bookRecommendationForm = document.getElementById('book-recommendation-form');
     const isbnInput = document.getElementById('isbn-input');
     const recommendationStatus = document.getElementById('recommendation-status');
-    const recommendedBooksList = document.getElementById('recommended-books-list');
-    
-    // JSONStore.io configuration - A free service for storing JSON without a backend
-    // The store ID below is a unique identifier for your recommendations
-    // You can change it to any unique string if you want a fresh store
-    const JSONSTORE_ID = 'janandersekroll-book-recommendations';
-    const JSONSTORE_URL = `https://www.jsonstore.io/${JSONSTORE_ID}`;
-    
-    // Load recommended books from JSONStore.io (or localStorage as fallback)
-    async function loadRecommendedBooks() {
-        recommendedBooksList.innerHTML = '<p style="color: var(--text-color-muted); font-size: 0.9rem;">Loading recommendations...</p>';
-        
-        let recommended = [];
-        
-        try {
-            const response = await fetch(JSONSTORE_URL);
-            
-            if (response.ok) {
-                const data = await response.json();
-                recommended = data.books || data || [];
-                
-                // If we got data from JSONStore, also update localStorage as backup
-                if (recommended.length > 0) {
-                    localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
-                }
-            } else {
-                // Fallback to localStorage if fetch fails
-                recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
-            }
-        } catch (error) {
-            console.error('Error loading from JSONStore:', error);
-            // Fallback to localStorage
-            recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
-        }
-        
-        recommendedBooksList.innerHTML = '';
-        
-        if (recommended.length === 0) {
-            recommendedBooksList.innerHTML = '<p style="color: var(--text-color-muted); font-size: 0.9rem;">No recommendations yet. Be the first!</p>';
-            return;
-        }
-        
-        recommended.forEach(book => {
-            const bookItem = document.createElement('div');
-            bookItem.className = 'recommended-book-item';
-            bookItem.innerHTML = `
-                ${book.cover ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">` : ''}
-                <div class="book-title">${book.title || 'Unknown Title'}</div>
-                <div class="book-author">${book.author || 'Unknown Author'}</div>
-                <div style="font-size: 0.7rem; color: var(--text-color-muted); margin-top: 0.5rem;">ISBN: ${book.isbn}</div>
-            `;
-            recommendedBooksList.appendChild(bookItem);
-        });
-    }
-    
-    // Save recommended books to JSONStore.io (or localStorage as fallback)
-    async function saveRecommendedBooks(recommended) {
-        try {
-            const response = await fetch(JSONSTORE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ books: recommended })
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to save to JSONStore');
-            }
-            
-            // Also save to localStorage as backup
-            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
-        } catch (error) {
-            console.error('Error saving to JSONStore:', error);
-            // Fallback to localStorage
-            localStorage.setItem('recommendedBooks', JSON.stringify(recommended));
-        }
-    }
-    
-    // Validate and clean ISBN
+    const booksList = document.getElementById('books-list');
+
     function validateISBN(isbn) {
-        // Remove hyphens and spaces
         const cleaned = isbn.replace(/[-\s]/g, '');
-        
-        // Check if it's ISBN-10 or ISBN-13
-        if (cleaned.length === 10) {
-            return { valid: true, isbn: cleaned, type: 'ISBN-10' };
-        } else if (cleaned.length === 13) {
-            return { valid: true, isbn: cleaned, type: 'ISBN-13' };
+        if (cleaned.length === 10 || cleaned.length === 13) {
+            return { valid: true, isbn: cleaned };
         }
         return { valid: false, error: 'ISBN must be 10 or 13 digits' };
     }
-    
-    // Fetch book data from Open Library API
+
     async function fetchBookData(isbn) {
         try {
-            const response = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+            const response = await fetch(
+                `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
+            );
             const data = await response.json();
-            const bookKey = `ISBN:${isbn}`;
-            
-            if (data[bookKey]) {
-                const book = data[bookKey];
-                return {
-                    title: book.title || 'Unknown Title',
-                    author: book.authors?.[0]?.name || 'Unknown Author',
-                    cover: book.cover?.large || book.cover?.medium || null,
-                    isbn: isbn
-                };
-            }
-            return null;
+            const book = data[`ISBN:${isbn}`];
+            if (!book) return null;
+            return {
+                title: book.title || 'Unknown Title',
+                author: book.authors?.[0]?.name || 'Unknown Author',
+                cover: book.cover?.large || book.cover?.medium || null,
+                isbn
+            };
         } catch (error) {
             console.error('Error fetching book data:', error);
             return null;
         }
     }
-    
+
+    function displayBooks(books) {
+        if (!booksList) return;
+
+        if (!books || books.length === 0) {
+            booksList.innerHTML = '';
+            return;
+        }
+
+        booksList.innerHTML = '';
+        books.forEach((book) => {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'book-item';
+            const coverHtml = book.cover
+                ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" loading="lazy" onerror="this.style.display='none'">`
+                : '<div class="book-cover-placeholder">No Cover</div>';
+
+            bookItem.innerHTML = `
+                <div class="book-item-content">
+                    ${coverHtml}
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author book-info-hidden">${book.author || ''}</div>
+                    ${book.rating ? `<div class="book-rating book-info-hidden">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+                </div>
+            `;
+            booksList.appendChild(bookItem);
+        });
+    }
+
+    async function loadBooksFromJson() {
+        if (!booksList) return;
+        try {
+            const response = await fetch('content/books.json', { cache: 'no-cache' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            displayBooks(Array.isArray(data.books) ? data.books : []);
+        } catch (error) {
+            console.error('Error loading books.json:', error);
+            booksList.innerHTML = '';
+        }
+    }
+
+    setupLazyCategoryLoader('i love books', loadBooksFromJson);
+
     if (bookRecommendationForm) {
         bookRecommendationForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const isbnValue = isbnInput.value.trim();
-            const validation = validateISBN(isbnValue);
-            
+
+            const validation = validateISBN(isbnInput.value.trim());
             if (!validation.valid) {
                 recommendationStatus.textContent = validation.error;
                 recommendationStatus.className = 'recommendation-status error';
                 return;
             }
-            
+
             recommendationStatus.textContent = 'Looking up book...';
             recommendationStatus.className = 'recommendation-status';
-            
-            // Fetch book data
+
             const bookData = await fetchBookData(validation.isbn);
-            
             if (!bookData) {
                 recommendationStatus.textContent = 'Book not found. Please check the ISBN and try again.';
                 recommendationStatus.className = 'recommendation-status error';
                 return;
             }
-            
-            // Load existing recommendations
-            let recommended = [];
+
+            recommendationStatus.textContent = 'Sending recommendation...';
+            const button = bookRecommendationForm.querySelector('button');
+            button.disabled = true;
+
             try {
-                const response = await fetch(JSONSTORE_URL);
-                if (response.ok) {
-                    const data = await response.json();
-                    recommended = data.books || data || [];
-                } else {
-                    recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
-                }
-            } catch (error) {
-                recommended = JSON.parse(localStorage.getItem('recommendedBooks') || '[]');
-            }
-            
-            // Check if already recommended
-            if (recommended.some(b => b.isbn === validation.isbn)) {
-                recommendationStatus.textContent = 'This book has already been recommended!';
-                recommendationStatus.className = 'recommendation-status error';
-                return;
-            }
-            
-            recommended.push(bookData);
-            
-            // Save to JSONBin.io (or localStorage)
-            await saveRecommendedBooks(recommended);
-            
-            // Update display
-            await loadRecommendedBooks();
-            
-            // Success message
-            recommendationStatus.textContent = `Thank you! "${bookData.title}" has been added to recommendations.`;
-            recommendationStatus.className = 'recommendation-status success';
-            
-            // Clear input
-            isbnInput.value = '';
-            
-            // Clear status after 5 seconds
-            setTimeout(() => {
-                recommendationStatus.textContent = '';
-                recommendationStatus.className = 'recommendation-status';
-            }, 5000);
-        });
-        
-        // Load recommended books on page load
-        loadRecommendedBooks().catch(error => {
-            console.error('Error loading recommended books:', error);
-        });
-    }
-    
-    // Goodreads integration - locked to your account only
-    const booksList = document.getElementById('books-list');
-    const GOODREADS_USER_ID = '120322204'; // Your Goodreads user ID
-    
-    // Auto-load books on page load
-    function autoLoadBooks() {
-        if (!booksList) {
-            console.error('Books list element not found');
-            return;
-        }
-        
-        // First try to load from localStorage (faster)
-        const hasCachedBooks = loadBooksFromStorage();
-        
-        // Always fetch fresh data (will update if cached books exist)
-        fetchGoodreadsBooks(GOODREADS_USER_ID);
-    }
-    
-    // Auto-load when books section is opened
-    let booksLoaded = false;
-    
-    function setupBooksAutoLoad() {
-        const categories = document.querySelectorAll('.category');
-        categories.forEach(category => {
-            const h2 = category.querySelector('h2');
-            if (h2 && h2.textContent.includes('I love books')) {
-                const booksContent = category.querySelector('.content');
-                if (booksContent) {
-                    // Watch for when the category is opened
-                    const observer = new MutationObserver((mutations) => {
-                        if (booksContent.classList.contains('active') && !booksLoaded) {
-                            booksLoaded = true;
-                            autoLoadBooks();
-                        }
-                    });
-                    observer.observe(booksContent, { attributes: true, attributeFilter: ['class'] });
-                    
-                    // Also listen for clicks on the category header
-                    h2.addEventListener('click', () => {
-                        setTimeout(() => {
-                            if (booksContent.classList.contains('active') && !booksLoaded) {
-                                booksLoaded = true;
-                                autoLoadBooks();
-                            }
-                        }, 100);
-                    });
-                    
-                    // Try to load immediately if category is already open
-                    if (booksContent.classList.contains('active')) {
-                        autoLoadBooks();
-                    }
-                }
-            }
-        });
-    }
-    
-    setupBooksAutoLoad();
-    
-    // Load books from localStorage on page load (if available)
-    function loadBooksFromStorage() {
-        const savedBooks = localStorage.getItem('goodreadsBooks');
-        const savedUserId = localStorage.getItem('goodreadsUserId');
-        if (savedBooks && savedUserId === GOODREADS_USER_ID && booksList) {
-            const books = JSON.parse(savedBooks);
-            displayBooks(books);
-            return true;
-        }
-        return false;
-    }
-    
-    function displayBooks(books) {
-        if (!booksList) {
-            console.error('Books list element not found');
-            return;
-        }
-        
-        if (!books || books.length === 0) {
-            booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Make sure your "read" shelf is public on Goodreads.</p>';
-            return;
-        }
-        
-        booksList.innerHTML = '';
-        books.forEach(book => {
-            const bookItem = document.createElement('div');
-            bookItem.className = 'book-item';
-            
-            // Create cover image (hidden, shown on hover) - positioned at cursor
-            const coverHtml = book.cover 
-                ? `<img src="${book.cover}" alt="${book.title}" class="book-cover" onerror="this.style.display='none'">`
-                : '<div class="book-cover-placeholder">No Cover</div>';
-            
-            bookItem.innerHTML = `
-                <div class="book-item-content">
-                    ${coverHtml}
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author book-info-hidden">${book.author}</div>
-                    ${book.rating ? `<div class="book-rating book-info-hidden">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
-                </div>
-            `;
-            
-            booksList.appendChild(bookItem);
-        });
-    }
-    
-    async function fetchGoodreadsBooks(userId) {
-        if (!booksList) {
-            console.error('Books list element not found');
-            return;
-        }
-        
-        if (!userId || userId !== GOODREADS_USER_ID) {
-            booksList.innerHTML = '<p style="color: #ff4444;">Invalid user ID.</p>';
-            return;
-        }
-        
-        // Show loading state
-        booksList.innerHTML = '<p style="color: var(--text-color-muted);">Loading books from Goodreads...</p>';
-        
-        try {
-            // Goodreads RSS feed URL
-            const rssUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=read&per_page=200`;
-            
-            // Try multiple CORS proxy services as fallback
-            const proxies = [
-                `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
-                `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
-                `https://cors-anywhere.herokuapp.com/${rssUrl}`,
-                `https://thingproxy.freeboard.io/fetch/${rssUrl}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`
-            ];
-            
-            let response = null;
-            let data = null;
-            let xmlContent = null;
-            
-            // Try each proxy until one works
-            let lastError = null;
-            for (const proxyUrl of proxies) {
-                try {
-                    response = await fetch(proxyUrl, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/xml, text/xml, */*'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        lastError = `HTTP ${response.status}`;
-                        continue;
-                    }
-                    
-                    // Try to get as text first (some proxies return XML directly)
-                    const contentType = response.headers.get('content-type') || '';
-                    if (contentType.includes('xml') || contentType.includes('text')) {
-                        xmlContent = await response.text();
-                        if (xmlContent && xmlContent.trim().startsWith('<?xml') || xmlContent.trim().startsWith('<rss')) {
-                            break;
-                        }
-                    }
-                    
-                    // Otherwise try JSON
-                    try {
-                        data = await response.json();
-                        
-                        // Handle different proxy response formats
-                        if (data.contents) {
-                            xmlContent = data.contents;
-                        } else if (data.content) {
-                            xmlContent = data.content;
-                        } else if (data.data) {
-                            xmlContent = data.data;
-                        } else if (typeof data === 'string') {
-                            xmlContent = data;
-                        } else {
-                            lastError = 'Unexpected response format';
-                            continue;
-                        }
-                        
-                        if (xmlContent && (xmlContent.trim().startsWith('<?xml') || xmlContent.trim().startsWith('<rss'))) {
-                            break;
-                        }
-                    } catch (jsonErr) {
-                        // If JSON parsing fails, we already have xmlContent from text
-                        if (xmlContent) break;
-                        lastError = jsonErr.message;
-                        continue;
-                    }
-                } catch (err) {
-                    lastError = err.message;
-                    console.log('Proxy failed, trying next...', proxyUrl, err);
-                    continue;
-                }
-            }
-            
-            if (!xmlContent) {
-                // Test if RSS feed is accessible directly (for debugging)
-                const testUrl = `https://www.goodreads.com/review/list_rss/${userId}?shelf=read&per_page=5`;
-                throw new Error(`All proxy services failed. Last error: ${lastError || 'Unknown'}. The RSS feed URL should be: ${testUrl}. Please verify your "read" shelf is public by visiting this URL in your browser.`);
-            }
-            
-            // Parse XML/RSS
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
-            
-            // Check for errors
-            const parseError = xmlDoc.querySelector('parsererror');
-            if (parseError) {
-                throw new Error('Failed to parse RSS feed. Make sure your "read" shelf is set to PUBLIC in Goodreads privacy settings.');
-            }
-            
-            // Check if feed is empty or blocked
-            const channel = xmlDoc.querySelector('channel');
-            if (!channel) {
-                throw new Error('RSS feed appears to be empty or inaccessible. Make sure your "read" shelf is PUBLIC in Goodreads settings.');
-            }
-            
-            // Extract books from RSS
-            const items = xmlDoc.querySelectorAll('item');
-            const books = [];
-            
-            items.forEach(item => {
-                const title = item.querySelector('title')?.textContent || 'Unknown Title';
-                const author = item.querySelector('author_name')?.textContent || item.querySelector('author')?.textContent || 'Unknown Author';
-                const cover = item.querySelector('book_large_image_url')?.textContent || item.querySelector('book_medium_image_url')?.textContent || null;
-                const rating = item.querySelector('user_rating')?.textContent || null;
-                const isbn = item.querySelector('isbn')?.textContent || null;
-                
-                books.push({
-                    title: title.replace(/^.*: /, ''), // Remove "Book Title: " prefix if present
-                    author: author,
-                    cover: cover,
-                    rating: rating ? parseFloat(rating) : null,
-                    isbn: isbn
+                const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _subject: `Book recommendation: ${bookData.title}`,
+                        _template: 'table',
+                        title: bookData.title,
+                        author: bookData.author,
+                        isbn: bookData.isbn,
+                        cover: bookData.cover || '',
+                        source: 'janandersekroll.no book recommendation'
+                    })
                 });
-            });
-            
-            if (books.length === 0) {
-                booksList.innerHTML = '<p style="color: var(--text-color-muted);">No books found. Make sure your "read" shelf is public on Goodreads.</p>';
-                return;
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                recommendationStatus.textContent = `Thank you! "${bookData.title}" was sent to me.`;
+                recommendationStatus.className = 'recommendation-status success';
+                isbnInput.value = '';
+                setTimeout(() => {
+                    recommendationStatus.textContent = '';
+                    recommendationStatus.className = 'recommendation-status';
+                }, 5000);
+            } catch (error) {
+                console.error('Error sending recommendation:', error);
+                recommendationStatus.textContent = 'Could not send right now. Please try again later.';
+                recommendationStatus.className = 'recommendation-status error';
+            } finally {
+                button.disabled = false;
             }
-            
-            // Save to localStorage
-            localStorage.setItem('goodreadsBooks', JSON.stringify(books));
-            localStorage.setItem('goodreadsUserId', userId);
-            
-            // Display books
-            displayBooks(books);
-            
-        } catch (error) {
-            console.error('Error fetching Goodreads books:', error);
-            let errorMessage = error.message || 'Unknown error';
-            
-            // Provide more helpful error messages
-            if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
-                errorMessage = 'Network error. This might be a CORS issue. Try refreshing the page or check if your "read" shelf is public on Goodreads.';
-            } else if (errorMessage.includes('proxy')) {
-                errorMessage = 'Proxy service unavailable. Please try again in a few moments.';
-            }
-            
-            booksList.innerHTML = `<p style="color: #ff4444;">Error loading books: ${errorMessage}<br><br>Make sure:<br>1. Your "read" shelf is set to <strong>public</strong> in Goodreads settings<br>2. You have books marked as "read" on Goodreads</p>`;
-        }
+        });
     }
-    
+
     // Load favicons for webpages
     function loadFavicon(img, domain) {
         // Explicitly set loading to eager for immediate load (favicons are small)
@@ -1494,10 +1150,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load YouTube channel icons from local files
     function loadYouTubeIcon(img, handle) {
-        // Explicitly set loading to eager for immediate load (icons are small)
         img.loading = 'eager';
-        
-        // Map handles to folder names and specific icon filenames
+        img.decoding = 'async';
+
         const iconMap = {
             'FlokrollProjects': {
                 folder: 'flokroll-projects',
@@ -1520,77 +1175,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 filenames: ['logoicon flokroll div.png', 'icon.png', 'logo.png', 'icon logo.png']
             }
         };
-        
-        let config = iconMap[handle];
-        if (!config) {
-            // Fallback for unknown handles
-            const folder = handle.toLowerCase();
-            config = {
-                folder: folder,
-                filenames: ['icon.png', 'logo.png', 'icon.jpg', 'logo.jpg']
-            };
-        }
-        
-        const folder = config.folder;
+
+        const config = iconMap[handle] || {
+            folder: handle.toLowerCase(),
+            filenames: ['icon.png', 'logo.png', 'icon.jpg', 'logo.jpg']
+        };
+
         let filenameIndex = 0;
-        
-        function tryNext() {
-            if (filenameIndex >= config.filenames.length) {
-                // All filenames failed, show placeholder
-                img.style.display = 'none';
-                const placeholder = img.nextElementSibling;
-                if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
-                    placeholder.style.display = 'flex';
-                }
-                return;
-            }
-            
-            const filename = config.filenames[filenameIndex];
-            
-            // Try multiple path formats to ensure it works both locally and on live site
-            const pathsToTry = [
-                `content/youtube/${folder}/${filename}`,  // Relative path (works locally)
-                `/content/youtube/${folder}/${filename}`, // Absolute from root
-                `./content/youtube/${folder}/${filename}` // Explicit relative
-            ];
-            
-            let pathIndex = 0;
-            
-            function tryPath() {
-                if (pathIndex >= pathsToTry.length) {
-                    // All paths failed for this filename, try next filename
-                    filenameIndex++;
-                    tryNext();
-                    return;
-                }
-                
-                const iconPath = pathsToTry[pathIndex];
-                const testImg = new Image();
-                testImg.onload = () => {
-                    // Explicitly set loading to eager for immediate load
-                    img.loading = 'eager';
-                    img.src = iconPath;
-                };
-                testImg.onerror = () => {
-                    pathIndex++;
-                    tryPath();
-                };
-                testImg.src = iconPath;
-            }
-            
-            tryPath();
-        }
-        
-        tryNext();
-        
-        // Add error handler for the actual image element
-        img.addEventListener('error', function() {
-            this.style.display = 'none';
-            const placeholder = this.nextElementSibling;
+
+        const showPlaceholder = () => {
+            img.style.display = 'none';
+            const placeholder = img.nextElementSibling;
             if (placeholder && placeholder.classList.contains('channel-logo-placeholder')) {
                 placeholder.style.display = 'flex';
             }
-        });
+        };
+
+        const tryNext = () => {
+            if (filenameIndex >= config.filenames.length) {
+                showPlaceholder();
+                return;
+            }
+
+            const iconPath = encodeAssetPath(`content/youtube/${config.folder}/${config.filenames[filenameIndex]}`);
+            const testImg = new Image();
+            testImg.onload = () => {
+                img.src = iconPath;
+            };
+            testImg.onerror = () => {
+                filenameIndex += 1;
+                tryNext();
+            };
+            testImg.src = iconPath;
+        };
+
+        img.addEventListener('error', showPlaceholder);
+        tryNext();
     }
     
     let hasLoadedYoutubeIcons = false;

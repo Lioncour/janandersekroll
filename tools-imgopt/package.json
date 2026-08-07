@@ -1,0 +1,11 @@
+{
+  "name": "tools-imgopt",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize": "node optimize.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.35.3"
+  }
+}

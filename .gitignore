@@ -1,4 +1,9 @@
 subscribers.json
 .DS_Store
 node_modules/
-*.log 
+*.log
+*.ARW
+*.arw
+originals/
+tools-imgopt/node_modules/
+ 

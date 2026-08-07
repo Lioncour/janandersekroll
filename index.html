@@ -98,9 +98,7 @@
                                         <p class="project-desc"></p>
                                     </div>
                                     <div class="project-images">
-                                        <img src="content/projects/Lego/images/01.jpg" alt="Lego Project 1" loading="lazy">
-                                        <img src="content/projects/Lego/images/02.jpg" alt="Lego Project 2" loading="lazy">
-                                        <img src="content/projects/Lego/images/03.jpg" alt="Lego Project 3" loading="lazy">
+                                        <!-- Images will be loaded dynamically -->
                                     </div>
                                 </article>
                             </div>
@@ -377,14 +375,18 @@
                     <div class="books-content">
                         <div class="books-read-section">
                             <h3>Books I've Read</h3>
+                            <p class="books-note">
+                                Full shelf on
+                                <a href="https://www.goodreads.com/user/show/120322204" target="_blank" rel="noopener noreferrer" class="project-official-link" style="margin: 0;">Goodreads</a>.
+                            </p>
                             <div id="books-list" class="books-list">
-                                <!-- Books will be loaded dynamically -->
+                                <!-- Loaded from content/books.json -->
                             </div>
                         </div>
                         
                         <div class="book-recommendations-section">
                             <h3>Book Recommendations</h3>
-                            <p class="recommendations-note">Have a book recommendation? Enter the ISBN number below!</p>
+                            <p class="recommendations-note">Have a book recommendation? Enter the ISBN and it gets emailed to me.</p>
                             <form id="book-recommendation-form" class="book-recommendation-form">
                                 <input 
                                     type="text" 
@@ -397,13 +399,6 @@
                                 <button type="submit">Recommend</button>
                             </form>
                             <div id="recommendation-status" class="recommendation-status"></div>
-                            
-                            <div class="recommended-books-section">
-                                <h4>Recommended Books</h4>
-                                <div id="recommended-books-list" class="recommended-books-list">
-                                    <!-- Recommended books will be displayed here -->
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -478,11 +473,10 @@
                         <div class="newsletter-signup">
                             <h3>Newsletter</h3>
                             <p>Get updates on new projects and blog posts</p>
-                            <form name="newsletter" netlify class="signup-form">
-                                <!-- Netlify Honeypot field for spam protection -->
-                                <p class="hidden" style="display: none;">
-                                    <label>Don't fill this out if you're human: <input name="bot-field"></label>
-                                </p>
+                            <form name="newsletter" class="signup-form" action="https://formsubmit.co/ajax/jaekroll@outlook.com" method="POST">
+                                <input type="hidden" name="_subject" value="Newsletter signup — janandersekroll.no">
+                                <input type="hidden" name="_template" value="table">
+                                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
                                 <input type="email" name="email" placeholder="your@email.com" required>
                                 <button type="submit">Subscribe</button>
                             </form>
