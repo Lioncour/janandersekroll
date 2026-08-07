@@ -73,9 +73,9 @@ function extractYouTubeId(mediaUrl) {
     return null;
 }
 
-function createProjectImageSlot(src, alt, { hero = false, eager = false } = {}) {
+function createProjectImageSlot(src, alt, { eager = false } = {}) {
     const slot = document.createElement('div');
-    slot.className = hero ? 'project-image-slot project-image-slot--hero' : 'project-image-slot';
+    slot.className = 'project-image-slot';
 
     const placeholder = document.createElement('div');
     placeholder.className = 'image-loading';
@@ -84,7 +84,7 @@ function createProjectImageSlot(src, alt, { hero = false, eager = false } = {}) 
 
     const img = new Image();
     img.alt = alt;
-    img.className = hero ? 'modal-trigger project-hero-media' : 'modal-trigger';
+    img.className = 'modal-trigger';
     img.decoding = 'async';
     if (!eager) {
         img.loading = 'lazy';
@@ -109,6 +109,81 @@ function createProjectImageSlot(src, alt, { hero = false, eager = false } = {}) 
     return slot;
 }
 
+function createProjectVideoSlot(mediaUrl, title, index) {
+    const videoId = extractYouTubeId(mediaUrl);
+    const slot = document.createElement('div');
+    slot.className = 'project-image-slot project-video-slot';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'image-loading';
+    placeholder.setAttribute('aria-hidden', 'true');
+    slot.appendChild(placeholder);
+
+    // Thumbnail first keeps the grid uniform; click swaps in the embed.
+    const thumb = document.createElement('img');
+    thumb.className = 'project-video-thumb';
+    thumb.alt = `${title} video ${index + 1}`;
+    thumb.decoding = 'async';
+    thumb.loading = 'lazy';
+    thumb.src = videoId
+        ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+        : '';
+
+    const playBadge = document.createElement('div');
+    playBadge.className = 'project-video-play';
+    playBadge.setAttribute('aria-hidden', 'true');
+    playBadge.textContent = '▶';
+
+    const activate = () => {
+        if (slot.dataset.activated === 'true' || !videoId) return;
+        slot.dataset.activated = 'true';
+        slot.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        iframe.title = `${title} video ${index + 1}`;
+        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('frameborder', '0');
+        slot.appendChild(iframe);
+    };
+
+    thumb.onload = () => {
+        placeholder.remove();
+        slot.appendChild(thumb);
+        slot.appendChild(playBadge);
+        slot.classList.add('is-loaded');
+    };
+
+    thumb.onerror = () => {
+        placeholder.remove();
+        playBadge.textContent = 'YouTube';
+        slot.appendChild(playBadge);
+        slot.classList.add('is-loaded');
+    };
+
+    slot.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activate();
+    });
+    slot.setAttribute('role', 'button');
+    slot.setAttribute('tabindex', '0');
+    slot.setAttribute('aria-label', `Play ${title} video ${index + 1}`);
+    slot.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activate();
+        }
+    });
+
+    if (!videoId) {
+        placeholder.textContent = 'Unavailable';
+        placeholder.classList.add('image-loading-error');
+    }
+
+    return slot;
+}
+
 function loadProjectMedia(imagesContainer, projectConfig) {
     const folder = projectConfig.folder;
 
@@ -121,33 +196,15 @@ function loadProjectMedia(imagesContainer, projectConfig) {
                 const src = encodeAssetPath(mediaUrl);
                 imagesContainer.appendChild(
                     createProjectImageSlot(src, `${projectConfig.title} Animation ${index + 1}`, {
-                        hero: true,
                         eager: true
                     })
                 );
                 return;
             }
 
-            const videoId = extractYouTubeId(mediaUrl);
-            const embedUrl = `https://www.youtube.com/embed/${videoId || ''}`;
-            const videoContainer = document.createElement('div');
-            videoContainer.className = 'video-container';
-
-            const iframe = document.createElement('iframe');
-            iframe.src = embedUrl;
-            iframe.width = '560';
-            iframe.height = '315';
-            iframe.title = `${projectConfig.title} video ${index + 1}`;
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-            iframe.setAttribute('allowfullscreen', '');
-            iframe.loading = 'lazy';
-            iframe.onerror = () => {
-                videoContainer.innerHTML = `<p style="color: #ff4444;">Failed to load video. <a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4;">Watch on YouTube</a></p>`;
-            };
-
-            videoContainer.appendChild(iframe);
-            imagesContainer.appendChild(videoContainer);
+            imagesContainer.appendChild(
+                createProjectVideoSlot(mediaUrl, projectConfig.title, index)
+            );
         });
     }
 
@@ -905,10 +962,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             // Check if clicked element is an image or inside a video container or image container
             let clickedImg = null;
-            if (e.target.matches('.project-images img, .other-grid img, .other-grid .image-container img, .video-container img, .project-image-slot img')) {
+            if (e.target.matches('.project-images img:not(.project-video-thumb), .other-grid img, .other-grid .image-container img, .video-container img, .project-image-slot:not(.project-video-slot) img')) {
                 clickedImg = e.target;
-            } else if (e.target.closest('.video-container img, .image-container img, .project-image-slot img')) {
-                clickedImg = e.target.closest('.video-container img, .image-container img, .project-image-slot img');
+            } else if (e.target.closest('.video-container img, .image-container img, .project-image-slot:not(.project-video-slot) img')) {
+                clickedImg = e.target.closest('.video-container img, .image-container img, .project-image-slot:not(.project-video-slot) img');
             }
             
             if (clickedImg) {
@@ -1010,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${coverHtml}
                     <div class="book-title">${book.title}</div>
                     <div class="book-author book-info-hidden">${book.author || ''}</div>
-                    ${book.rating ? `<div class="book-rating book-info-hidden">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
+                    ${book.rating > 0 ? `<div class="book-rating book-info-hidden">${'★'.repeat(Math.round(book.rating))}${'☆'.repeat(5 - Math.round(book.rating))}</div>` : ''}
                 </div>
             `;
             booksList.appendChild(bookItem);

@@ -1,5 +1,790 @@
 {
   "goodreadsUrl": "https://www.goodreads.com/user/show/120322204",
+  "updatedAt": "2026-08-07",
   "books": [
+    {
+      "title": "Harry Potter og Føniksordenen (Harry Potter, #5)",
+      "author": "J.K. Rowling",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1327691522l/2395114.jpg",
+      "rating": 0,
+      "isbn": "8204124740"
+    },
+    {
+      "title": "L",
+      "author": "Erlend Loe",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1528353204l/40458220._SX318_.jpg",
+      "rating": 0,
+      "isbn": "8202426383"
+    },
+    {
+      "title": "Aftermath (Expeditionary Force, #16)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1702384835l/197694719._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Match Game (Expeditionary Force, #14)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1652362297l/60874817._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Breakaway (Expeditionary Force, #12)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1619142606l/57662892.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Homefront (Expeditionary Force, #7.5)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1557507439l/45712668._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Mavericks (Expeditionary Force, #6)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1527848965l/40280648._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Black Ops (Expeditionary Force, #4)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1495742445l/35224512._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "SpecOps (Expeditionary Force, #2)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1464952346l/30342581._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Columbus Day (Expeditionary Force, #1)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1508556358l/36449535._SY475_.jpg",
+      "rating": 0,
+      "isbn": "1520126247"
+    },
+    {
+      "title": "Malice (The Faithful and the Fallen, #1)",
+      "author": "John Gwynne",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1342785006l/15750692.jpg",
+      "rating": 4,
+      "isbn": "0230758452"
+    },
+    {
+      "title": "The Picture of Dorian Gray",
+      "author": "Oscar Wilde",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1454087681l/489732._SY475_.jpg",
+      "rating": 5,
+      "isbn": "0141439572"
+    },
+    {
+      "title": "The Bonesetter&apos;s Daughter",
+      "author": "Amy Tan",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1442687221l/12555._SY475_.jpg",
+      "rating": 3,
+      "isbn": "0345457374"
+    },
+    {
+      "title": "Words of Radiance (The Stormlight Archive, #2)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1728768241l/17332218.jpg",
+      "rating": 5,
+      "isbn": "0765326361"
+    },
+    {
+      "title": "Carl's Doomsday Scenario (Dungeon Crawler Carl, #2)",
+      "author": "Matt Dinniman",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1608612407l/56377548._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "The Way of Kings (The Stormlight Archive, #1)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1730464382l/53463056._SY475_.jpg",
+      "rating": 5,
+      "isbn": null
+    },
+    {
+      "title": "Mannen som elsket Yngve (Jarle Klepp, #1)",
+      "author": "Tore Renberg",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1352160361l/656960.jpg",
+      "rating": 5,
+      "isbn": "8249501470"
+    },
+    {
+      "title": "Dune (Dune, #1)",
+      "author": "Frank Herbert",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1555447414l/44767458.jpg",
+      "rating": 5,
+      "isbn": "059309932X"
+    },
+    {
+      "title": "Vi er fem",
+      "author": "Matias Faldbakken",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1570824167l/52713006._SX318_SY475_.jpg",
+      "rating": 4,
+      "isbn": "8249521498"
+    },
+    {
+      "title": "The Hobbit, or There and Back Again",
+      "author": "J.R.R. Tolkien",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1546071216l/5907.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Shogun Part 1 Of 3",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1174353314l/385464.jpg",
+      "rating": 5,
+      "isbn": "0736648585"
+    },
+    {
+      "title": "The Music of Chance",
+      "author": "Paul Auster",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1392501162l/19490.jpg",
+      "rating": 3,
+      "isbn": "0571203035"
+    },
+    {
+      "title": "I, Robot (Robot, #0.1)",
+      "author": "Isaac Asimov",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1609035271l/41804.jpg",
+      "rating": 0,
+      "isbn": "0553803700"
+    },
+    {
+      "title": "The Way of Kings (The Stormlight Archive, #1)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1659905828l/7235533._SY475_.jpg",
+      "rating": 5,
+      "isbn": "0765326353"
+    },
+    {
+      "title": "Rendezvous with Rama (Rama, #1)",
+      "author": "Arthur C. Clarke",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1405456427l/112537.jpg",
+      "rating": 5,
+      "isbn": "1857231589"
+    },
+    {
+      "title": "Trouble on Paradise (Expeditionary Force, #3.5)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1652363113l/61079443._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Brødrene Karamazov",
+      "author": "Fyodor Dostoevsky",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1304757576l/11281832.jpg",
+      "rating": 0,
+      "isbn": "8700491888"
+    },
+    {
+      "title": "The Hero of Ages (Mistborn, #3)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1628563911l/2767793._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0765316897"
+    },
+    {
+      "title": "The Well of Ascension (Mistborn, #2)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1619538925l/68429._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0765316889"
+    },
+    {
+      "title": "The Final Empire (Mistborn, #1)",
+      "author": "Brandon Sanderson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1617768316l/68428._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "En verdenshistorie",
+      "author": "Thor Gotaas",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1347643725l/16008058.jpg",
+      "rating": 0,
+      "isbn": "8205401845"
+    },
+    {
+      "title": "Demon Copperhead",
+      "author": "Barbara Kingsolver",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1660050779l/60194162.jpg",
+      "rating": 5,
+      "isbn": null
+    },
+    {
+      "title": "Travels in Turkmenistan, Kazakhstan, Tajikistan, Kyrgyzstan, and Uzbekistan",
+      "author": "Erika Fatland",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1563766950l/46158740.jpg",
+      "rating": 5,
+      "isbn": "1643133268"
+    },
+    {
+      "title": "Renegades (Expeditionary Force, #7)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1542388910l/42844512._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Rediscovering America on the Appalachian Trail",
+      "author": "Bill Bryson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388189974l/9791.jpg",
+      "rating": 0,
+      "isbn": "0307279464"
+    },
+    {
+      "title": "The Thirst (Harry Hole, #11)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1493126601l/32775291._SX318_.jpg",
+      "rating": 0,
+      "isbn": "0735272492"
+    },
+    {
+      "title": "Cockroaches (Harry Hole, #2)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1418343189l/18373214.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Flaggermusmannen (Harry Hole, #1)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1236348090l/1991039.jpg",
+      "rating": 0,
+      "isbn": "8203180728"
+    },
+    {
+      "title": "Nemesis (Harry Hole, #4)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1348360176l/6979826.jpg",
+      "rating": 0,
+      "isbn": "0061655511"
+    },
+    {
+      "title": "The Devil's Star (Harry Hole, #5)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1328611163l/498389.jpg",
+      "rating": 0,
+      "isbn": "0099478536"
+    },
+    {
+      "title": "The Redbreast (Harry Hole, #3)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1320540474l/465226.jpg",
+      "rating": 0,
+      "isbn": "184343217X"
+    },
+    {
+      "title": "The Redeemer (Harry Hole, #6)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1483116047l/33641782._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Phantom (Harry Hole, #9)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1333577303l/13256064.jpg",
+      "rating": 0,
+      "isbn": "0307960471"
+    },
+    {
+      "title": "Police (Harry Hole, #10)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1373049226l/18142329.jpg",
+      "rating": 0,
+      "isbn": "0307960498"
+    },
+    {
+      "title": "Snømannen (Harry Hole, #7)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1364082601l/2671770.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Stieg Larsson's Millennium Trilogy in Feminist Perspective",
+      "author": "Donna  King",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1404959073l/13043619.jpg",
+      "rating": 0,
+      "isbn": "0826518508"
+    },
+    {
+      "title": "Panserhjerte (Harry Hole, #8)",
+      "author": "Jo Nesbø",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1408635770l/6891433.jpg",
+      "rating": 0,
+      "isbn": "8203195512"
+    },
+    {
+      "title": "I Skaperens Tempel",
+      "author": "Frithjov Iversen",
+      "cover": "https://s.gr-assets.com/assets/nophoto/book/111x148-675b3b2743c83e96e2540d2929d5f4d2.png",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "The Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide to the Galaxy, #1)",
+      "author": "Douglas Adams",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1531891848l/11._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Førkrigsår",
+      "author": "Dag Solstad",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1620761880l/3775763.jpg",
+      "rating": 5,
+      "isbn": "8270941956"
+    },
+    {
+      "title": "Hostage Free Comic Book Day",
+      "author": "Guy Delisle",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1598141196l/55072137._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Tre av fem overlever ikke",
+      "author": "Maia Kjeldset Siverts",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1651317045l/60906792._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Zero Hour (Expeditionary Force, #5)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1509918589l/36542226._SX318_.jpg",
+      "rating": 5,
+      "isbn": null
+    },
+    {
+      "title": "Growth of the Soil",
+      "author": "Knut Hamsun",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1420733175l/342049.jpg",
+      "rating": 5,
+      "isbn": "0394717813"
+    },
+    {
+      "title": "Dungeon Crawler Carl (Dungeon Crawler Carl, #1)",
+      "author": "Matt Dinniman",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1734203042l/56791389._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Sons of Ares #1 (Sons of Ares, #1)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1492236359l/31178398.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "The Man from St. Petersburg",
+      "author": "Ken Follett",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1411331808l/5053.jpg",
+      "rating": 0,
+      "isbn": "0451208706"
+    },
+    {
+      "title": "The New Jedi Order, #1)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1412181316l/192214.jpg",
+      "rating": 0,
+      "isbn": "0345479335"
+    },
+    {
+      "title": "Transitions, #1; Legend of Drizzt, #17)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1474922224l/280125.jpg",
+      "rating": 0,
+      "isbn": "0786943408"
+    },
+    {
+      "title": "Legacy of the Drow, #4; Legend of Drizzt, #10)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1312023199l/111023.jpg",
+      "rating": 0,
+      "isbn": "0786907509"
+    },
+    {
+      "title": "Glacier's Edge (The Way of the Drow, #2; The Legend of Drizzt, #38)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1646648300l/59586582.jpg",
+      "rating": 0,
+      "isbn": "0063029820"
+    },
+    {
+      "title": "Hunter's Blades, #1-3; Legend of Drizzt, #14-16)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388212752l/62480.jpg",
+      "rating": 0,
+      "isbn": "0786943157"
+    },
+    {
+      "title": "Hunter's Blades, #3; Legend of Drizzt, #16)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1390694377l/66676.jpg",
+      "rating": 0,
+      "isbn": "0786937904"
+    },
+    {
+      "title": "Hunter's Blades, #2; Legend of Drizzt, #15)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1428294158l/239109.jpg",
+      "rating": 0,
+      "isbn": "0786932287"
+    },
+    {
+      "title": "Hunter's Blades, #1; Legend of Drizzt, #14)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1635522420l/66683._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0786929804"
+    },
+    {
+      "title": "Paths of Darkness, #4; Legend of Drizzt, #13)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388235286l/239107.jpg",
+      "rating": 0,
+      "isbn": "0786927720"
+    },
+    {
+      "title": "Paths of Darkness, #3; The Sellswords, #1)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1590506350l/62479._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0786939508"
+    },
+    {
+      "title": "Paths of Darkness, #2; Legend of Drizzt, #12)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388201689l/171471.jpg",
+      "rating": 0,
+      "isbn": "0786914041"
+    },
+    {
+      "title": "Legacy of the Drow, #3; Legend of Drizzt, #9)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1389536148l/239103.jpg",
+      "rating": 0,
+      "isbn": "0786901640"
+    },
+    {
+      "title": "Legacy of the Drow, #2; Legend of Drizzt, #8)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1625702533l/239102.jpg",
+      "rating": 0,
+      "isbn": "1560768800"
+    },
+    {
+      "title": "Legacy of the Drow, #1; Legend of Drizzt, #7)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1389897830l/227454.jpg",
+      "rating": 0,
+      "isbn": "0786939842"
+    },
+    {
+      "title": "Icewind Dale, #1-3; Legend of Drizzt, #4-6)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1442601703l/62485._SY475_.jpg",
+      "rating": 0,
+      "isbn": "078691811X"
+    },
+    {
+      "title": "The Icewind Dale, #3; The Legend of Drizzt, #6)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1736102262l/68396.jpg",
+      "rating": 0,
+      "isbn": "0786938250"
+    },
+    {
+      "title": "The Icewind Dale, #2; Legend of Drizzt, #5)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1457322786l/66692._SY475_.jpg",
+      "rating": 0,
+      "isbn": "088038672X"
+    },
+    {
+      "title": "The Icewind Dale, #1; Legend of Drizzt, #4)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1736867692l/66693._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0786942460"
+    },
+    {
+      "title": "Dark Elf Trilogy, #1-3; Legend of Drizzt, #1-3)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388191945l/68418.jpg",
+      "rating": 0,
+      "isbn": "0786915889"
+    },
+    {
+      "title": "The Dark Elf Trilogy, #3; Legend of Drizzt, #3)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1322861953l/66695.jpg",
+      "rating": 0,
+      "isbn": "1560760478"
+    },
+    {
+      "title": "The Dark Elf Trilogy, #2; Legend of Drizzt, #2)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1736095475l/66678._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0786939834"
+    },
+    {
+      "title": "The Dark Elf Trilogy, #1; Legend of Drizzt, #1)",
+      "author": "R.A. Salvatore",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1736095303l/50027._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "The Adventures of Tom Sawyer",
+      "author": "Mark Twain",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1404811979l/24583.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "A Savage Journey to the Heart of the American Dream",
+      "author": "Hunter S. Thompson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1703312483l/7745._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0679785892"
+    },
+    {
+      "title": "King Rat (Asian Saga, #4)",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388889819l/9827.jpg",
+      "rating": 0,
+      "isbn": "0385333765"
+    },
+    {
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1398034300l/5107.jpg",
+      "rating": 0,
+      "isbn": "0316769177"
+    },
+    {
+      "title": "304 dager",
+      "author": "Simon Stranger",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1633585667l/59233043._SY475_.jpg",
+      "rating": 0,
+      "isbn": "8203368794"
+    },
+    {
+      "title": "Ulvenatten (Kristin Bye, #3)",
+      "author": "Tom Egeland",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1300282444l/4913174.jpg",
+      "rating": 0,
+      "isbn": "8203190251"
+    },
+    {
+      "title": "Paktens voktere (Bjørn Beltø, #2)",
+      "author": "Tom Egeland",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1248719656l/3221533.jpg",
+      "rating": 0,
+      "isbn": "8203192637"
+    },
+    {
+      "title": "Cirklens Ende (Bjørn Beltø, #1)",
+      "author": "Tom Egeland",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1300119586l/2067245.jpg",
+      "rating": 0,
+      "isbn": "8760424265"
+    },
+    {
+      "title": "Lucifers evangelium (Bjørn Beltø, #3)",
+      "author": "Tom Egeland",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1244662242l/6539426.jpg",
+      "rating": 0,
+      "isbn": "8203194745"
+    },
+    {
+      "title": "Engler og Demoner (Robert Langdon, #1)",
+      "author": "Dan    Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1384025531l/18773479.jpg",
+      "rating": 0,
+      "isbn": "8280870377"
+    },
+    {
+      "title": "Detaljene",
+      "author": "Ia Genberg",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1673791300l/77925733._SY475_.jpg",
+      "rating": 0,
+      "isbn": "824952599X"
+    },
+    {
+      "title": "Sons of Ares #4 (Sons of Ares, #4)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1499486586l/35620644._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Sons of Ares #5 (Sons of Ares, #5)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1500505916l/35708105._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Sons of Ares #3 (Sons of Ares, #3)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1496974618l/35392051._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Sons of Ares #2 (Sons of Ares, #2)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1492562869l/34884623._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Sons of Ares",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1566802420l/35757828._SY475_.jpg",
+      "rating": 0,
+      "isbn": "1524104922"
+    },
+    {
+      "title": "Light Bringer (Red Rising Saga, #6)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1667655583l/29227774._SY475_.jpg",
+      "rating": 0,
+      "isbn": "1473646804"
+    },
+    {
+      "title": "Dark Age (Red Rising Saga, #5)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1525464420l/29226553._SY475_.jpg",
+      "rating": 0,
+      "isbn": "0425285952"
+    },
+    {
+      "title": "Morning Star (Red Rising Saga, #3)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1461354277l/18966806.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Golden Son (Red Rising Saga, #2)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1394684475l/18966819.jpg",
+      "rating": 0,
+      "isbn": "0345539826"
+    },
+    {
+      "title": "Red Rising (Red Rising Saga, #1)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1461354651l/15839976._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Iron Gold (Red Rising Saga, #4)",
+      "author": "Pierce Brown",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1716325988l/33257757._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Neuromancer (Sprawl, #1)",
+      "author": "William Gibson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1752514552l/6088007._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Shogun (Shogun #3)",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1618833523l/57792812._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Shōgun, Volume 2",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1718919724l/12319459._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Shōgun, Volume 1",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1715639508l/12319445._SY475_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Shōgun (Asian Saga, #1)",
+      "author": "James Clavell",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1704385704l/52382796._SY475_.jpg",
+      "rating": 0,
+      "isbn": "1982603844"
+    },
+    {
+      "title": "Failure Mode (Expeditionary Force, #15)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1668903595l/63358096._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Fallout (Expeditionary Force #13)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1636504013l/59582787._SX318_.jpg",
+      "rating": 4,
+      "isbn": null
+    },
+    {
+      "title": "Brushfire (Expeditionary Force, #11)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1608096629l/55648998._SX318_.jpg",
+      "rating": 5,
+      "isbn": null
+    },
+    {
+      "title": "Critical Mass (Expeditionary Force, #10)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1607707523l/53179797.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Valkyrie (Expeditionary Force, #9)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1575134385l/49016595._SX318_.jpg",
+      "rating": 0,
+      "isbn": null
+    },
+    {
+      "title": "Armageddon (Expeditionary Force, #8)",
+      "author": "Craig Alanson",
+      "cover": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1564417386l/52736489._SX318_SY475_.jpg",
+      "rating": 5,
+      "isbn": null
+    }
   ]
 }

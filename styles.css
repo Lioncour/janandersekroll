@@ -707,12 +707,6 @@ svg line {
     background: rgba(255, 255, 255, 0.03);
 }
 
-.project-images .project-image-slot--hero {
-    grid-column: 1 / -1;
-    aspect-ratio: 16 / 9;
-    max-height: 70vh;
-}
-
 .project-images .project-image-slot img,
 .project-images img {
     width: 100%;
@@ -723,10 +717,33 @@ svg line {
     display: block;
 }
 
-.project-images .project-image-slot--hero img,
-.project-images .project-hero-media {
-    object-fit: contain;
-    background: #0f1216;
+.project-images .project-video-slot {
+    cursor: pointer;
+}
+
+.project-images .project-video-slot iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.project-images .project-video-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 1.6rem;
+    pointer-events: none;
+    transition: background 0.2s ease;
+}
+
+.project-images .project-video-slot:hover .project-video-play {
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .project-images img[src$=".gif"],
@@ -737,7 +754,7 @@ svg line {
     animation-play-state: running;
 }
 
-.project-images img:hover {
+.project-images .project-image-slot:not(.project-video-slot):hover img {
     transform: scale(1.03);
     cursor: pointer;
 }
@@ -1510,31 +1527,27 @@ h1, h2, h3, h4, p, a, .project-year {
 
 .video-container {
     position: relative;
-    grid-column: 1 / -1;
-    width: min(100%, 720px);
-    padding-bottom: 56.25%;
-    height: 0;
+    width: 100%;
+    aspect-ratio: 1;
     overflow: hidden;
-    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .video-container iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    border-radius: 4px;
+    border: 0;
+    border-radius: 0;
 }
 
 .video-container img {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
+    object-fit: cover;
 } 
 
 /* Update responsive breakpoints */
@@ -1547,11 +1560,6 @@ h1, h2, h3, h4, p, a, .project-year {
 @media (max-width: 1200px) {
     .project-images {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .video-container {
-        width: 100%;
-        padding-bottom: 56.25%;
     }
 
     .project-desc {
