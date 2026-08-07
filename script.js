@@ -6,13 +6,13 @@ function encodeAssetPath(path) {
         .join('/');
 }
 
-// Explicit image lists — avoids probing 99×4 extensions (hundreds of failed requests) and keeps order stable.
+// Explicit image lists: avoids probing 99x4 extensions (hundreds of failed requests) and keeps order stable.
 const projectsConfig = {
     'medical-projects': {
         title: 'A bunch of medical projects',
         description:
             'Did a lot of various projects all revolving around healthcare products of some sort.\n\n' +
-            'Super happy to use the whole range of the design landscape — package design, service design, industrial design, and a lot of UX/UI. Jumping between a physical thing in someone\'s hand and the screens around it is kind of my favourite place to be.\n\n' +
+            'Super happy to use the whole range of the design landscape: package design, service design, industrial design, and a lot of UX/UI. Jumping between a physical thing in someone\'s hand and the screens around it is kind of my favourite place to be.\n\n' +
             'Healthcare is picky (good!), and people are often stressed or in a hurry, so things kind of have to make sense. Learned a ton.',
         folder: 'A bunch of medical projects',
         images: ['01.jpg', '02.png', '03.jpg', '04.jpg', '05.JPG', '06.jpg', '07.jpg', '08.jpg', '09.png', '11.jpg']
@@ -23,7 +23,7 @@ const projectsConfig = {
         description:
             'An app that alerts you when you have coverage in the mountains (and other places).\n\n' +
             'The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check.\n\n' +
-            'This app sings a tune and vibrates to alert you if you get phone coverage. Named Fylgja after the little companion spirit that follows you around in the old stories — felt right for a tiny helper watching the signal while you watch where you\'re walking :D',
+            'This app sings a tune and vibrates to alert you if you get phone coverage. Named Fylgja after the little companion spirit that follows you around in the old stories. Felt right for a tiny helper watching the signal while you watch where you\'re walking :D',
         images: ['01.png', '02.png', '03.png']
     },
     'lego': {
@@ -32,7 +32,7 @@ const projectsConfig = {
         description:
             'Was lucky enough to work on a couple of projects for LEGO. Super fun.\n\n' +
             'I do believe one of the projects made it into the store in the end :D\n\n' +
-            'Had to sign a bunch of NDAs so not really allowed to show much :( Which is a bit sad, because it was a blast — designing for play under a mountain of constraints.',
+            'Had to sign a bunch of NDAs so not really allowed to show much :( Which is a bit sad, because it was a blast. Designing for play under a mountain of constraints.',
         images: ['01.jpg', '02.jpg', '03.jpg', '04.webp']
     },
     'master-thesis': {
@@ -41,7 +41,7 @@ const projectsConfig = {
         description:
             'The title of my diploma was "The creation and exploration of new tangible interactive game mechanics."\n\n' +
             'I was looking at how we could expand old games with new mechanics and create new mechanics for new games. Screens are fine, but hands and physical stuff do something else to how we play.\n\n' +
-            'Lots of prototyping, fiddling, testing, and filming people using weird little objects. The videos below are from that — a bit rough, a bit silly, very much about what feels good before it looks finished.',
+            'Lots of prototyping, fiddling, testing, and filming people using weird little objects. The videos below are from that. A bit rough, a bit silly, very much about what feels good before it looks finished.',
         images: [
             '01.png', '02.webp', '03.webp', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg',
             '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg'
@@ -59,7 +59,7 @@ const projectsConfig = {
         folder: 'Oslonøkkelen',
         description:
             'Have been so lucky to work with Oslonøkkelen for many years at Oslo Origo.\n\n' +
-            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone. Open doors, turn on lights, library stuff, recycling stations, bookings — the whole "open city" idea, basically.\n\n' +
+            'It is a digital key that gives you extended and easier access to many of the city\'s locations and services via an app on your mobile phone. Open doors, turn on lights, library stuff, recycling stations, bookings... the whole "open city" idea, basically.\n\n' +
             'Have been part of the entire journey and got to do so incredibly many different things together with the very best people. Still pinch myself a bit about that one.',
         officialLink: 'https://www.oslo.kommune.no/oslonokkelen/',
         officialLinkLabel: 'Official Oslonøkkelen page',
@@ -643,13 +643,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = href;
     }
 
-    // Newsletter via Buttondown (native POST — subscribers land in your Buttondown dashboard)
+    // Newsletter via Buttondown (native POST; subscribers land in your Buttondown dashboard)
     const newsletterForm = document.querySelector('form[name="newsletter"]');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', () => {
             const button = newsletterForm.querySelector('button[type="submit"], button');
             if (button) {
-                button.textContent = 'Subscribing…';
+                button.textContent = 'Subscribing...';
                 button.disabled = true;
             }
         });
@@ -990,7 +990,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Books — static list from content/books.json + ISBN recommendations emailed via FormSubmit
+    // Books: static list from content/books.json + ISBN recommendations via mailto
     const bookRecommendationForm = document.getElementById('book-recommendation-form');
     const isbnInput = document.getElementById('isbn-input');
     const recommendationStatus = document.getElementById('recommendation-status');
@@ -1105,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ].filter(Boolean).join('\n')
             });
 
-            recommendationStatus.textContent = `Found "${bookData.title}" — your email app should open so you can send it.`;
+            recommendationStatus.textContent = `Found "${bookData.title}". Your email app should open so you can send it.`;
             recommendationStatus.className = 'recommendation-status success';
             isbnInput.value = '';
             button.disabled = false;
@@ -1117,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Webpage favicons — local files first, then remote fallbacks, then letter placeholder
+    // Webpage favicons: local files first, then remote fallbacks, then letter placeholder
     function normalizeDomain(domain) {
         return String(domain || '').replace(/^www\./i, '').toLowerCase();
     }
