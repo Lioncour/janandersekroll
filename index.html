@@ -473,19 +473,21 @@
                         <div class="newsletter-signup">
                             <h3>Newsletter</h3>
                             <p>Get updates on new projects and blog posts</p>
-                            <!-- Set data-buttondown-user to your Buttondown username (buttondown.com/settings/embedding) -->
                             <form
                                 name="newsletter"
-                                class="signup-form"
-                                action="https://buttondown.com/api/emails/embed-subscribe/USERNAME"
+                                class="signup-form embeddable-buttondown-form"
+                                action="https://buttondown.com/api/emails/embed-subscribe/AndersEkrollJan"
                                 method="post"
-                                data-buttondown-user=""
+                                data-buttondown-user="AndersEkrollJan"
                             >
-                                <input type="email" name="email" placeholder="your@email.com" required>
+                                <label for="bd-email" class="visually-hidden">Email</label>
+                                <input type="email" name="email" id="bd-email" placeholder="your@email.com" required>
                                 <input type="hidden" name="embed" value="1">
                                 <button type="submit">Subscribe</button>
                             </form>
-                            <div id="newsletter-confirmation" style="display: none; margin-top: 1rem; color: #FF69B4; font-weight: bold;"></div>
+                            <p class="contact-note" style="margin-top: 0.75rem;">
+                                <a href="https://buttondown.com/refer/AndersEkrollJan" target="_blank" rel="noopener noreferrer">Powered by Buttondown</a>
+                            </p>
                         </div>
                     </div>
                 </div>

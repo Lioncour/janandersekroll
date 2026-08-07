@@ -630,31 +630,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = href;
     }
 
-    // Newsletter via Buttondown — set username in the form's data-buttondown-user
-    // (find it at https://buttondown.com/settings/embedding)
+    // Newsletter via Buttondown (native POST — subscribers land in your Buttondown dashboard)
     const newsletterForm = document.querySelector('form[name="newsletter"]');
-
     if (newsletterForm) {
-        const confirmationDiv = document.getElementById('newsletter-confirmation');
-        const buttondownUser = (newsletterForm.getAttribute('data-buttondown-user') || '').trim();
-
-        if (buttondownUser) {
-            newsletterForm.action = `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(buttondownUser)}`;
-        }
-
-        newsletterForm.addEventListener('submit', (e) => {
-            if (!buttondownUser || buttondownUser === 'USERNAME') {
-                e.preventDefault();
-                if (confirmationDiv) {
-                    confirmationDiv.style.display = 'block';
-                    confirmationDiv.style.color = '#ff4444';
-                    confirmationDiv.textContent = 'Newsletter is almost ready — Buttondown username not set yet.';
-                }
-                return;
-            }
-
-            // Native POST to Buttondown (no CORS issues). They’ll see Buttondown’s confirm page.
-            const button = newsletterForm.querySelector('button');
+        newsletterForm.addEventListener('submit', () => {
+            const button = newsletterForm.querySelector('button[type="submit"], button');
             if (button) {
                 button.textContent = 'Subscribing…';
                 button.disabled = true;
