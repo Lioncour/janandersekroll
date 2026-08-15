@@ -26,7 +26,7 @@ const projectsConfig = {
             'This app sings a tune and vibrates to alert you if you get phone coverage. Named Fylgja after the little companion spirit that follows you around in the old stories. Felt right for a tiny helper watching the signal while you watch where you\'re walking :D',
         officialLink: 'https://play.google.com/store/apps/details?id=no.fylgja.app&hl=no',
         officialLinkLabel: 'Get Fylgja on Google Play',
-        images: ['01.png', '02.png', '03.png']
+        images: ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg']
     },
     'lego': {
         title: 'Lego',
