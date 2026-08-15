@@ -21,9 +21,11 @@ const projectsConfig = {
         title: 'Fylgja',
         folder: 'Fylgja',
         description:
-            'An app that alerts you when you have coverage in the mountains (and other places).\n\n' +
+            'An app that alerts you when you have coverage in the mountains (and other places). And yes, it is live on Google Play now :D\n\n' +
             'The idea came when we were out on a snow cave expedition, and we needed to go up to the nearest mountain to see if we could get coverage. It is super annoying to pull out the phone every few hundred meters to check.\n\n' +
             'This app sings a tune and vibrates to alert you if you get phone coverage. Named Fylgja after the little companion spirit that follows you around in the old stories. Felt right for a tiny helper watching the signal while you watch where you\'re walking :D',
+        officialLink: 'https://play.google.com/store/apps/details?id=no.fylgja.app&hl=no',
+        officialLinkLabel: 'Get Fylgja on Google Play',
         images: ['01.png', '02.png', '03.png']
     },
     'lego': {
