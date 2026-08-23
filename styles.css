@@ -70,11 +70,22 @@ h1 {
     color: var(--text-color);
     line-height: 1.3;
     max-width: 800px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-weight: 300;
     outline: none;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.category-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 105, 180, 0.25);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .subscribe-text {
@@ -432,6 +443,15 @@ h1 {
     color: var(--text-color);
     font-weight: 300;
     outline: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.subcategory h3 .category-icon {
+    width: 24px;
+    height: 24px;
 }
 
 .subcategory h3:focus:not(:active) {
@@ -1305,18 +1325,19 @@ h1, h2, h3, h4, p, a, .project-year {
 .webpage-icon {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: 50%;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    object-fit: contain;
+    object-fit: cover;
     display: block;
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .webpage-icon-placeholder {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: 50%;
     flex-shrink: 0;
     display: none;
     align-items: center;

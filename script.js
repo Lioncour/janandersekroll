@@ -305,6 +305,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function addCategoryIcon(heading, iconSrc) {
+        if (!heading || !iconSrc || heading.querySelector('.category-icon')) return;
+
+        const icon = document.createElement('img');
+        icon.className = 'category-icon';
+        icon.src = encodeAssetPath(iconSrc);
+        icon.alt = '';
+        icon.width = heading.tagName === 'H2' ? 28 : 24;
+        icon.height = heading.tagName === 'H2' ? 28 : 24;
+        icon.loading = 'lazy';
+        icon.decoding = 'async';
+        heading.insertBefore(icon, heading.firstChild);
+    }
+
+    function setupCategoryIcons() {
+        const mainCategoryIcons = [
+            { match: 'youtube', icon: 'content/youtube/flokroll-projects/icon logo.png' },
+            { match: 'projects / work', icon: 'content/projects/Fylgja/images/01.jpg' },
+            { match: 'webpages', icon: 'content/webpages/icons/onethingshop.no.png' },
+            { match: 'other things', icon: 'content/other/01.png' },
+            { match: 'very nice pictures', icon: 'content/very-nice-pictures/i-love-my-life/gutta.jpg' },
+            { match: 'i love books', icon: 'content/other/02.jpg' },
+            { match: 'blog', icon: 'content/about/profile.jpg' },
+            { match: 'about', icon: 'content/about/profile.jpg' }
+        ];
+
+        document.querySelectorAll('.category > h2').forEach((heading) => {
+            const label = heading.textContent.trim().toLowerCase();
+            const config = mainCategoryIcons.find((item) => label.includes(item.match));
+            if (config) {
+                addCategoryIcon(heading, config.icon);
+            }
+        });
+
+        const youtubeSubcategoryIcons = {
+            'Flokroll Projects': 'content/youtube/flokroll-projects/icon logo.png',
+            'Flokroll Adventure': 'content/youtube/flokroll-adventure/logo.png',
+            'Flokroll Life': 'content/youtube/flokroll-life/logo.png',
+            'Flokroll Dev': 'content/youtube/flokroll_dev/flokrolldevlogoicon.jpg',
+            'Flokroll Div': 'content/youtube/flokroll-div/logoicon flokroll div.png'
+        };
+
+        document.querySelectorAll('.subcategory > h3').forEach((heading) => {
+            const label = heading.textContent.trim();
+            if (youtubeSubcategoryIcons[label]) {
+                addCategoryIcon(heading, youtubeSubcategoryIcons[label]);
+                return;
+            }
+
+            const grid = heading.nextElementSibling?.querySelector('.very-nice-pictures-grid[data-subcategory]');
+            if (!grid) return;
+
+            const subcategoryId = grid.getAttribute('data-subcategory');
+            const config = veryNicePicturesConfig[subcategoryId];
+            if (config?.images?.length) {
+                addCategoryIcon(heading, `content/${config.folder}/${config.images[0]}`);
+            }
+        });
+    }
+
     // Category click handlers
     const categories = document.querySelectorAll('.category h2');
     categories.forEach(category => {
@@ -548,8 +608,23 @@ document.addEventListener('DOMContentLoaded', () => {
             images: [
                 'IMG_2004.JPG'
             ]
+        },
+        'i-love-my-life': {
+            folder: 'very-nice-pictures/i-love-my-life',
+            images: [
+                'gutta.jpg',
+                '20180729_164648.jpg',
+                '20190501_153758.jpg',
+                '20190611_194204.jpg',
+                'WP_20150412_005.jpg',
+                'WP_20150412_008.jpg',
+                'litenku.jpg',
+                'WP_20160729_22_11_37_Pro.jpg'
+            ]
         }
     };
+
+    setupCategoryIcons();
 
     let hasLoadedVeryNicePictures = false;
     function loadVeryNicePictures() {
@@ -579,9 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const otherImages = [
             '01.png',
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
-            '20180729_164648.jpg',
-            '20190501_153758.jpg',
-            '20190611_194204.jpg',
             '20190909_091540_1.webp',
             'Drap & Design_Page_02_Image_0001.jpg',
             'Drap & Design_Page_03_Image_0001.jpg',
@@ -609,7 +681,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'DSC08455.ARW.jpg',
             'DSC09074.jpg',
             'folding_1.webp',
-            'gutta.jpg',
             'IMG_4220.JPG',
             'IMG_4808.JPG',
             'IMG_5561.JPG',
@@ -619,16 +690,12 @@ document.addEventListener('DOMContentLoaded', () => {
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_054_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_055_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_056_Image_0001.jpg',
-            'litenku.jpg',
             'Sequence 01_6.webp',
             'skull_2.webp',
             'WP_20130917_007.JPG',
             'WP_20131229_001.jpg',
             'WP_20140611_003.jpg',
-            'WP_20140616_015.jpg',
-            'WP_20150412_005.jpg',
-            'WP_20150412_008.jpg',
-            'WP_20160729_22_11_37_Pro.jpg'
+            'WP_20140616_015.jpg'
         ];
 
         otherImages.forEach(imageName => {
@@ -1119,19 +1186,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Webpage favicons: local files first, then remote fallbacks, then letter placeholder
-    function normalizeDomain(domain) {
-        return String(domain || '').replace(/^www\./i, '').toLowerCase();
-    }
+    // Webpage favicons: fetch from each page URL, with fallbacks and letter placeholder
+    function faviconSourcesForPage(pageUrl) {
+        const url = new URL(pageUrl);
+        const normalizedUrl = pageUrl.replace(/\/$/, '');
+        const sources = [];
 
-    function faviconSourcesFor(domain) {
-        const host = normalizeDomain(domain);
-        return [
-            `content/webpages/icons/${host}.png`,
-            `https://icon.horse/icon/${host}`,
-            `https://icons.duckduckgo.com/ip3/${host}.ico`,
-            `https://www.google.com/s2/favicons?domain=${host}&sz=64`
-        ];
+        if (url.pathname && url.pathname !== '/') {
+            sources.push(`${normalizedUrl}/favicon.ico`);
+            sources.push(`${normalizedUrl}/favicon.png`);
+        }
+
+        sources.push(
+            `${url.origin}/favicon.ico`,
+            `${url.origin}/favicon.png`,
+            `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(pageUrl)}&size=64`,
+            `https://icon.horse/icon/${encodeURIComponent(pageUrl)}`,
+            `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`,
+            `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=64`
+        );
+
+        return [...new Set(sources)];
     }
 
     function showWebpageIconPlaceholder(img) {
@@ -1148,22 +1223,25 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder.style.display = 'flex';
     }
 
-    function loadFavicon(img, domain) {
+    function loadFavicon(img) {
+        const pageUrl = img.getAttribute('data-page-url') || img.closest('a')?.href;
+        if (!pageUrl) return;
+
         img.loading = 'eager';
         img.decoding = 'async';
 
-        const sources = faviconSourcesFor(domain);
+        const sources = [];
+        const existingSrc = img.getAttribute('src') || '';
+        if (existingSrc.startsWith('content/')) {
+            sources.push(existingSrc);
+        }
+        sources.push(...faviconSourcesForPage(pageUrl));
+
+        const uniqueSources = [...new Set(sources)];
         let currentIndex = 0;
 
-        // If HTML already points at a local icon, start from there; otherwise begin at 0.
-        const currentSrc = img.getAttribute('src') || '';
-        if (currentSrc) {
-            const matchIndex = sources.findIndex((src) => currentSrc.endsWith(src) || currentSrc.includes(src));
-            currentIndex = matchIndex >= 0 ? matchIndex : 0;
-        }
-
         const tryNext = () => {
-            if (currentIndex >= sources.length) {
+            if (currentIndex >= uniqueSources.length) {
                 showWebpageIconPlaceholder(img);
                 return;
             }
@@ -1182,26 +1260,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
-            img.src = sources[currentIndex];
+            img.src = uniqueSources[currentIndex];
         };
-
-        // Cached local icons may already be complete.
-        if (img.complete && img.naturalWidth > 0) {
-            img.style.display = 'block';
-            return;
-        }
 
         tryNext();
     }
-    
-    let hasLoadedWebpageFavicons = false;
-    function loadWebpageFavicons() {
-        if (hasLoadedWebpageFavicons) return;
-        hasLoadedWebpageFavicons = true;
 
-        document.querySelectorAll('.webpage-icon[data-domain]').forEach(img => {
-            const domain = img.getAttribute('data-domain');
-            loadFavicon(img, domain);
+    function loadWebpageFavicons() {
+        document.querySelectorAll('.webpage-item-link').forEach((link) => {
+            const img = link.querySelector('.webpage-icon');
+            if (!img) return;
+            img.setAttribute('data-page-url', link.href);
+            loadFavicon(img);
         });
     }
     
@@ -1295,7 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    setupLazyCategoryLoader('webpages', loadWebpageFavicons);
+    loadWebpageFavicons();
     setupLazyCategoryLoader('youtube', loadYouTubeIcons);
     setupLazyCategoryLoader('other things', loadOtherImages);
     setupLazyCategoryLoader('very nice pictures', loadVeryNicePictures);
