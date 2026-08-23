@@ -593,14 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'i-love-my-life': {
             folder: 'very-nice-pictures/i-love-my-life',
             images: [
-                'gutta.jpg',
-                '20180729_164648.jpg',
-                '20190501_153758.jpg',
-                '20190611_194204.jpg',
-                'WP_20150412_005.jpg',
-                'WP_20150412_008.jpg',
-                'litenku.jpg',
-                'WP_20160729_22_11_37_Pro.jpg',
                 'schous-pils-heater.jpg',
                 'swimming-dock-sunset.jpg',
                 'sunset-sea-view.jpg',
@@ -640,6 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const otherImages = [
             '01.png',
             '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg',
+            '20180729_164648.jpg',
+            '20190501_153758.jpg',
+            '20190611_194204.jpg',
             '20190909_091540_1.webp',
             'Drap & Design_Page_02_Image_0001.jpg',
             'Drap & Design_Page_03_Image_0001.jpg',
@@ -667,6 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'DSC08455.ARW.jpg',
             'DSC09074.jpg',
             'folding_1.webp',
+            'gutta.jpg',
             'IMG_4220.JPG',
             'IMG_4808.JPG',
             'IMG_5561.JPG',
@@ -676,12 +672,16 @@ document.addEventListener('DOMContentLoaded', () => {
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_054_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_055_Image_0001.jpg',
             'Jan Anders Ekroll IDE Diploma Report Til print with bleed_Page_056_Image_0001.jpg',
+            'litenku.jpg',
             'Sequence 01_6.webp',
             'skull_2.webp',
             'WP_20130917_007.JPG',
             'WP_20131229_001.jpg',
             'WP_20140611_003.jpg',
-            'WP_20140616_015.jpg'
+            'WP_20140616_015.jpg',
+            'WP_20150412_005.jpg',
+            'WP_20150412_008.jpg',
+            'WP_20160729_22_11_37_Pro.jpg'
         ];
 
         otherImages.forEach(imageName => {
