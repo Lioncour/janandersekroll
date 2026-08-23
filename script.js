@@ -312,33 +312,14 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.className = 'category-icon';
         icon.src = encodeAssetPath(iconSrc);
         icon.alt = '';
-        icon.width = heading.tagName === 'H2' ? 28 : 24;
-        icon.height = heading.tagName === 'H2' ? 28 : 24;
+        icon.width = 24;
+        icon.height = 24;
         icon.loading = 'lazy';
         icon.decoding = 'async';
         heading.insertBefore(icon, heading.firstChild);
     }
 
     function setupCategoryIcons() {
-        const mainCategoryIcons = [
-            { match: 'youtube', icon: 'content/youtube/flokroll-projects/icon logo.png' },
-            { match: 'projects / work', icon: 'content/projects/Fylgja/images/01.jpg' },
-            { match: 'webpages', icon: 'content/webpages/icons/onethingshop.no.png' },
-            { match: 'other things', icon: 'content/other/01.png' },
-            { match: 'very nice pictures', icon: 'content/very-nice-pictures/i-love-my-life/gutta.jpg' },
-            { match: 'i love books', icon: 'content/other/02.jpg' },
-            { match: 'blog', icon: 'content/about/profile.jpg' },
-            { match: 'about', icon: 'content/about/profile.jpg' }
-        ];
-
-        document.querySelectorAll('.category > h2').forEach((heading) => {
-            const label = heading.textContent.trim().toLowerCase();
-            const config = mainCategoryIcons.find((item) => label.includes(item.match));
-            if (config) {
-                addCategoryIcon(heading, config.icon);
-            }
-        });
-
         const youtubeSubcategoryIcons = {
             'Flokroll Projects': 'content/youtube/flokroll-projects/icon logo.png',
             'Flokroll Adventure': 'content/youtube/flokroll-adventure/logo.png',
@@ -589,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'my-bikes': {
             folder: 'very-nice-pictures/my-bikes',
             images: [
-                // Bike images (add more filenames here when available)
+                'yama-yellow.jpg'
             ]
         },
         'my-desk': {
@@ -619,7 +600,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'WP_20150412_005.jpg',
                 'WP_20150412_008.jpg',
                 'litenku.jpg',
-                'WP_20160729_22_11_37_Pro.jpg'
+                'WP_20160729_22_11_37_Pro.jpg',
+                'schous-pils-heater.jpg',
+                'swimming-dock-sunset.jpg',
+                'sunset-sea-view.jpg',
+                'river-crossing.jpg',
+                'workshop-portrait.jpg'
             ]
         }
     };
