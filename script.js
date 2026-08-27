@@ -570,7 +570,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'my-bikes': {
             folder: 'very-nice-pictures/my-bikes',
             images: [
-                'yama-yellow.jpg'
+                'yama-yellow.jpg',
+                'kuwahara-pink.jpg',
+                'silver-indoors.jpg',
+                'sticker-bomb.jpg',
+                'blue-banana-seat.jpg',
+                'mbk-loaded.jpg',
+                'black-mtb-street.jpg',
+                'light-blue-road.jpg',
+                'dbs-silver.jpg'
             ]
         },
         'my-desk': {
