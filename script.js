@@ -595,7 +595,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'my-laptops': {
             folder: 'very-nice-pictures/my-laptops',
             images: [
-                'IMG_2004.JPG'
+                'IMG_2004.JPG',
+                'sticker-lid.jpg',
+                'open-keyboard.jpg'
             ]
         },
         'i-love-my-life': {
