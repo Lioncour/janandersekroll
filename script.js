@@ -97,22 +97,28 @@ function createProjectImageSlot(src, alt, { eager = false } = {}) {
     placeholder.setAttribute('aria-hidden', 'true');
     slot.appendChild(placeholder);
 
-    const img = new Image();
+    // Keep the img in the DOM (hidden). Native loading="lazy" on a detached
+    // Image() never fires, which left later Oslonøkkelen tiles stuck on shimmer.
+    const img = document.createElement('img');
     img.alt = alt;
     img.className = 'modal-trigger';
     img.decoding = 'async';
-    if (!eager) {
-        img.loading = 'lazy';
-    }
+    img.style.display = 'none';
 
-    const isAnimated = /\.(gif|webp)$/i.test(src);
-    if (isAnimated) {
+    if (/\.(gif|webp)$/i.test(src)) {
         img.style.imageRendering = 'auto';
     }
 
+    let loadStarted = false;
+    const startLoad = () => {
+        if (loadStarted) return;
+        loadStarted = true;
+        img.src = src;
+    };
+
     img.onload = () => {
         placeholder.remove();
-        slot.appendChild(img);
+        img.style.display = '';
         slot.classList.add('is-loaded');
     };
 
@@ -120,7 +126,25 @@ function createProjectImageSlot(src, alt, { eager = false } = {}) {
         slot.remove();
     };
 
-    img.src = src;
+    slot.appendChild(img);
+
+    if (eager) {
+        startLoad();
+    } else if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    observer.disconnect();
+                    startLoad();
+                }
+            });
+        }, { rootMargin: '300px 0px' });
+        observer.observe(slot);
+    } else {
+        img.loading = 'lazy';
+        startLoad();
+    }
+
     return slot;
 }
 
