@@ -613,7 +613,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'WP_20130926_027.JPG',
                 'WP_20131006_003.jpg',
                 'WP_20150302_002.jpg',
-                'WP_20151224_16_11_12_Rich_LI.jpg'
+                'WP_20151224_16_11_12_Rich_LI.jpg',
+                'drawn-tablecloth.jpg'
             ]
         },
         'my-laptops': {
