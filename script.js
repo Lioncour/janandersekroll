@@ -28,6 +28,17 @@ const projectsConfig = {
         officialLinkLabel: 'Get Fylgja on Google Play',
         images: ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg']
     },
+    'ptw': {
+        title: 'PTW',
+        folder: 'PTW',
+        description:
+            'A fighting game with no fighting. When two players meet, the higher level wins. That is the whole game. And yes, it is live on Steam now :D\n\n' +
+            'You buy a level, and then you are one level higher than you were. One level, one press, about one dollar. No bundles, no discounts, no skill. Your level is shown as an 11-pole DIP switch, and every purchase lands in an honest ledger with your total spend visible on every screen.\n\n' +
+            'Made it in Godot as a deadpan little joke about pay-to-win, with a public board where everyone is ranked by level (which is to say by spend). Somehow ended up doing the whole Steam thing too: store page, achievements, leaderboards and all. Learned a ton.',
+        officialLink: 'https://store.steampowered.com/app/5404780/',
+        officialLinkLabel: 'Get PTW on Steam',
+        images: ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg']
+    },
     'lego': {
         title: 'Lego',
         folder: 'Lego',
